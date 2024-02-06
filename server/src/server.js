@@ -3,6 +3,7 @@ import mongoose, { mongo } from 'mongoose';
 import bodyParser from 'body-parser';
 import fs from 'fs';
 import cors from 'cors';
+import puppeteer from 'puppeteer';
 import Cpu from '../src/models/cpu.js';
 
 const app = express();
@@ -57,6 +58,22 @@ app.delete('/delete/:id', async (req, res) => {
     } catch (error) {
         console.log(error);
     }
+});
+
+app.get('/currentprice/:id', async(req, res) =>{
+    const {id} = req.params;
+    const selectedCpu = await db.collection('cpus').findOne({ "_id": new mongoose.Types.ObjectId(id) });
+    let cpuLink = selectedCpu['shopLink'];
+    console.log(cpuLink);
+
+    const browserPromise = puppeteer.launch();
+    const browser = await browserPromise;
+    let page = await browser.newPage();
+    await page.goto(cpuLink);
+
+    const price = await page.$eval('.sc-5492faee-2.ipHrwP.finalPrice', (h4) => h4.innerText);
+
+    res.json({preço: price});
 });
 
 app.listen(port, () => {
