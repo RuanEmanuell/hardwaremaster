@@ -3,7 +3,21 @@ import './App.css';
 
 function App() {
   const [cpuList, setCpuList] = useState(null);
-  const [cpuName, setCpuName] = useState('');
+  const [formData, setFormData] = useState({
+    cpuName: '',
+    cpuBrand: '',
+    cpuLaunch: '',
+    cpuGeneration: '',
+    cpuCores: '',
+    cpuThreads: '',
+    cpuFrequency: '',
+    cpuPerfomance: '',
+    cpuPrice: '',
+    cpuLink: '',
+    cpuLink2: '',
+    cpuLink3: '',
+    cpuImage: '',
+  });
 
   useEffect(() => {
     fetchApi();
@@ -24,9 +38,38 @@ function App() {
       const response = await fetch('http://localhost:3001/post', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: cpuName, brand: 'AMD', launchDate: '2019', generation: '3000', price: '0', shopLink:'https://www.kabum.com.br/produto/333145/processador-amd-ryzen-5-4600g-3-7ghz-4-2ghz-max-turbo-cache-11mb-am4-video-integrado-100-100000147box?gad_source=1', imageLink: 'https://tpucdn.com/cpu-specs/images/chips/2319-front.small.jpg'})
+        body: JSON.stringify({
+          name: formData.cpuName,
+          brand: formData.cpuBrand,
+          launchDate: formData.cpuLaunch,
+          generation: formData.cpuGeneration,
+          cores: formData.cpuCores,
+          threads: formData.cpuThreads,
+          frequency: formData.cpuFrequency,
+          perfomance: formData.cpuPerfomance,
+          price: formData.cpuPrice,
+          shopLink: formData.cpuLink,
+          shopLink2: formData.cpuLink2,
+          shopLink3: formData.cpuLink3,
+          imageLink: formData.cpuImage,
+        }),
       });
-      setCpuName('');
+      setFormData({
+        ...formData,
+        cpuName: '',
+        cpuBrand: '',
+        cpuLaunch: '',
+        cpuGeneration: '',
+        cpuCores: '',
+        cpuThreads: '',
+        cpuFrequency: '',
+        cpuPerfomance: '',
+        cpuPrice: '',
+        cpuLink: '',
+        cpuLink2: '',
+        cpuLink3: '',
+        cpuImage: '',
+      });
       fetchApi();
     } catch (err) {
       console.log(err);
@@ -40,7 +83,22 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: 'teste', brand: 'AMD', launchDate: '2019', generation: '3000', preço: '0' })
       });
-      setCpuName('');
+      setFormData({
+        ...formData,
+        cpuName: '',
+        cpuBrand: '',
+        cpuLaunch: '',
+        cpuGeneration: '',
+        cpuCores: '',
+        cpuThreads: '',
+        cpuFrequency: '',
+        cpuPerfomance: '',
+        cpuPrice: '',
+        cpuLink: '',
+        cpuLink2: '',
+        cpuLink3: '',
+        cpuImage: '',
+      });
       fetchApi();
     } catch (err) {
       console.log(err);
@@ -53,7 +111,22 @@ function App() {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' }
       });
-      setCpuName('');
+      setFormData({
+        ...formData,
+        cpuName: '',
+        cpuBrand: '',
+        cpuLaunch: '',
+        cpuGeneration: '',
+        cpuCores: '',
+        cpuThreads: '',
+        cpuFrequency: '',
+        cpuPerfomance: '',
+        cpuPrice: '',
+        cpuLink: '',
+        cpuLink2: '',
+        cpuLink3: '',
+        cpuImage: '',
+      });
       fetchApi();
     } catch (err) {
       console.log(err);
@@ -80,8 +153,13 @@ function App() {
 
 
   const HandleChange = (event) => {
-    setCpuName(event.target.value);
-  }
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
 
 
   return (
@@ -90,7 +168,7 @@ function App() {
         {cpuList.map((cpu) =>
         <div key={cpu.id}>
           <h1>{cpu['name']}</h1>
-          <h2>{cpu['price']}</h2>
+          <h2>R$ {cpu['price']}</h2>
           <img src={cpu['imageLink']} width={100}></img>
           <button onClick={()=>editCpu(cpu['_id'])}>Editar</button>
           <button onClick={()=>deleteCpu(cpu['_id'])}>Deletar</button>
@@ -99,10 +177,15 @@ function App() {
         )}
       </> : <></>}
       <br></br>
-      <input value={cpuName} onChange={HandleChange}></input>
-      <input></input>
-      <input></input>
-      <input></input>
+      {Object.keys(formData).map((fieldName) => (
+        <input
+          key={fieldName}
+          value={formData[fieldName]}
+          onChange={HandleChange}
+          placeholder={fieldName}
+          name={fieldName}
+        />
+      ))}
       <button onClick={createCpu}>Postar dados</button>
     </div>
   );

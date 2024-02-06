@@ -1,5 +1,5 @@
 import express from 'express';
-import mongoose, { mongo } from 'mongoose';
+import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import fs from 'fs';
 import cors from 'cors';
@@ -26,7 +26,6 @@ db.once('open', () => {
 app.get('/teste', async (req, res) => {
     const cpus = await db.collection('cpus').find({}).toArray();
     res.json(cpus);
-    console.log(cpus);
 });
 
 app.post('/post', async (req, res) => {
@@ -41,9 +40,9 @@ app.post('/post', async (req, res) => {
 });
 
 app.put('/update/:id', async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
     try {
-        const updatedCpu = await Cpu.findByIdAndUpdate(id, req.body, {new: true});
+        const updatedCpu = await Cpu.findByIdAndUpdate(id, req.body, { new: true });
         res.sendStatus(201);
     } catch (error) {
         console.log(error);
@@ -51,29 +50,54 @@ app.put('/update/:id', async (req, res) => {
 });
 
 app.delete('/delete/:id', async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
     try {
-        const updatedCpu = await Cpu.findByIdAndDelete(id, req.body, {new: true});
+        const updatedCpu = await Cpu.findByIdAndDelete(id, req.body, { new: true });
         res.sendStatus(201);
     } catch (error) {
         console.log(error);
     }
 });
 
-app.get('/currentprice/:id', async(req, res) =>{
-    const {id} = req.params;
+app.get('/currentprice/:id', async (req, res) => {
+    const { id } = req.params;
     const selectedCpu = await db.collection('cpus').findOne({ "_id": new mongoose.Types.ObjectId(id) });
-    let cpuLink = selectedCpu['shopLink'];
-    console.log(cpuLink);
 
     const browserPromise = puppeteer.launch();
     const browser = await browserPromise;
-    let page = await browser.newPage();
-    await page.goto(cpuLink);
 
-    const price = await page.$eval('.sc-5492faee-2.ipHrwP.finalPrice', (h4) => h4.innerText);
+    let price = selectedCpu['price'];
 
-    res.json({preço: price});
+    async function choosePrice(cpuLinks){
+        let currentPrice = price;
+        let priceLink = 0.0;
+        const page = await browser.newPage();
+        for(const cpuLink of cpuLinks){
+            await page.goto(cpuLink);
+            if (await page.$('.sc-5492faee-2.ipHrwP.finalPrice')) {
+                priceLink = await page.$eval('.sc-5492faee-2.ipHrwP.finalPrice', (h4) => parseFloat(h4.innerText.substring(3).replaceAll(',', '.')));
+            }else if(await page.$('#valVista')){
+                priceLink = await page.$eval('#valVista', (p) => parseFloat(p.innerText.substring(3).replaceAll(',', '.')));
+            }else if(await page.$('.jss272')){
+                priceLink = await page.$eval('.jss272', (div) => parseFloat(div.innerText.substring(3).replaceAll(',', '.')));
+            }
+    
+        }
+
+        if(priceLink != currentPrice && priceLink > 0.0){
+            currentPrice = priceLink
+        }
+
+        return currentPrice;
+    }
+
+    price = await choosePrice([selectedCpu['shopLink'], selectedCpu['shopLink2'], selectedCpu['shopLink3']]);
+
+    if (price != selectedCpu['price']) {
+        res.json({ preço: price });
+    } else {
+        console.log('Mesmo preço!');
+    }
 });
 
 app.listen(port, () => {
