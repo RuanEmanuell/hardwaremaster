@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&family=Press+Start+2P&display=swap');
+
+body{
+    background-color: #252525;
+    display: flex;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+}
+
+.mainContainer{
+    display: grid;
+    grid-template-columns: 1fr 8fr 1fr;
+    max-width: 1366px;
+    height: 100vh;
+}
+
+.cpuInfo{
+    margin-top: 5%;
+    height: 80%;
+}
+
+.cpuImage{
+    background-color: white;
+    width: 15%;
+    min-width: 200px;
+    height: 20%;
+    display: flex;
+    justify-self: center;
+    border-radius: 5px;
+    padding: 2% 0;
+}
+
+.cpuImage img{
+   width: 75%;
+   margin: auto;
+}
+
+.cpuSpecs{
+    background-color: white;
+    width: 20%;
+    min-width: 200px;
+    text-align: center;
+}
+
+.cpuSpecs h1{
+    padding-top: 10px;
+    font-size: large;
+}
+
+.cpuSpecs p{
+    margin: 3%;
+}
+
+.dualSpecBox{
+    display: grid;
+    grid-template-columns: 5fr 1fr;
+}
+
+.specCircle{
+    height: 80%;
+    width: 75%;
+    background-color: rgb(0, 182, 0);
+    border-radius: 50px;
+}
+
+button{
+    font-family: 'Inter', sans-serif;
+    border: none;
+}
+
+.editButton, .deleteButton{
+    background-color: white;
+}
+
+.editButton img, .deleteButton img{
+    width: 50%;
+}
+
+.editDeleteButtons{
+    margin-top: 5%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.updatePriceButton{
+    background-color: #DB5510;
+    border: none;
+    padding: 5%;
+    margin: 10% 0;
+    font-weight: bold;
+    color: white;
+    border-radius: 5px;
+}
+
+.updatePriceButton:hover{
+    cursor: pointer;
+    background-color: black;
+}
+
+.addCpu{
+    position: absolute;
+    right: 5%;
+    background-color: #DB5510;
+    border-radius: 50px;
+    color: white;
+    width: 12.5%;
+    min-width: 100px;
+    max-width: 100px;
+    height: 10%;
+    font-size: xx-large;
+}
+
+.addCpu h1{
+    margin: auto;
+}
+
+

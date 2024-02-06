@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import editIcon from './images/edit.png';
+import deleteIcon from './images/delete.png';
 import './App.css';
 
 function App() {
@@ -11,8 +13,11 @@ function App() {
     cpuCores: '',
     cpuThreads: '',
     cpuFrequency: '',
-    cpuPerfomance: '',
+    cpuIgpu: '',
     cpuPrice: '',
+    cpuPerformance: '',
+    igpuPerformance:'',
+    costBenefit:'',
     cpuLink: '',
     cpuLink2: '',
     cpuLink3: '',
@@ -46,8 +51,11 @@ function App() {
           cores: formData.cpuCores,
           threads: formData.cpuThreads,
           frequency: formData.cpuFrequency,
-          perfomance: formData.cpuPerfomance,
           price: formData.cpuPrice,
+          igpu: formData.cpuIgpu,
+          performance: formData.cpuPerformance,
+          igpuPerformance: formData.igpuPerformance,
+          costBenefit: formData.costBenefit,
           shopLink: formData.cpuLink,
           shopLink2: formData.cpuLink2,
           shopLink3: formData.cpuLink3,
@@ -63,8 +71,11 @@ function App() {
         cpuCores: '',
         cpuThreads: '',
         cpuFrequency: '',
-        cpuPerfomance: '',
+        cpuIgpu: '',
         cpuPrice: '',
+        cpuPerformance: '',
+        igpuPerformance:'',
+        costBenefit:'',
         cpuLink: '',
         cpuLink2: '',
         cpuLink3: '',
@@ -92,8 +103,11 @@ function App() {
         cpuCores: '',
         cpuThreads: '',
         cpuFrequency: '',
-        cpuPerfomance: '',
+        cpuIgpu: '',
         cpuPrice: '',
+        cpuPerformance: '',
+        igpuPerformance:'',
+        costBenefit:'',
         cpuLink: '',
         cpuLink2: '',
         cpuLink3: '',
@@ -163,20 +177,45 @@ function App() {
 
 
   return (
+    <div className="mainContainer">
+    <div></div>
     <div>
       {cpuList ? <>
         {cpuList.map((cpu) =>
-        <div key={cpu.id}>
+        <div key={cpu.id} className="cpuInfo">
+          <div className="cpuImage">
+            <img src={cpu['imageLink']}></img>
+          </div>
+          <div className="cpuSpecs">
           <h1>{cpu['name']}</h1>
-          <h2>R$ {cpu['price']}</h2>
-          <img src={cpu['imageLink']} width={100}></img>
-          <button onClick={()=>editCpu(cpu['_id'])}>Editar</button>
-          <button onClick={()=>deleteCpu(cpu['_id'])}>Deletar</button>
-          <button onClick={()=>updatePrice(cpu['_id'])}>Atualizar preço</button>
+          <p>Marca: {cpu['brand']}</p>
+          <p>Lançamento: {cpu['launchDate']}</p>
+          <p>Geração: {cpu['generation']}</p>
+          <p>Núcleos: {cpu['cores']}</p>
+          <p>Threads: {cpu['threads']}</p>
+          <p>Frequência: {cpu['frequency']}GHZ</p>
+          <p>Preço: R$ {cpu['price']}</p>
+          <p>Integrada: {cpu['igpu'] ? 'Sim' : 'Não'}</p>
+          <div className="dualSpecBox">
+          <p>Performance: </p> <div className="specCircle">{cpu['performance']}</div>
+          </div>
+          <div className="dualSpecBox">
+          <p>Performance(iGPU): </p> <div className="specCircle">{cpu['performance']}</div>
+          </div>
+          <div className="dualSpecBox">
+          <p>CxB: </p> <div className="specCircle">{cpu['costBenefit']}</div>
+          </div>
+          <div className="editDeleteButtons">
+          <button onClick={()=>editCpu(cpu['_id'])} className="editButton"><img src={editIcon}></img></button>
+          <button onClick={()=>deleteCpu(cpu['_id'])} className="deleteButton"><img src={deleteIcon}></img></button>
+          </div>
+          <button onClick={()=>updatePrice(cpu['_id'])} className="updatePriceButton">Atualizar preço</button>
+          </div>
           </div>
         )}
       </> : <></>}
       <br></br>
+      <div style={{display: 'none'}}>
       {Object.keys(formData).map((fieldName) => (
         <input
           key={fieldName}
@@ -187,6 +226,10 @@ function App() {
         />
       ))}
       <button onClick={createCpu}>Postar dados</button>
+      </div>
+      <button className="addCpu"><h1>+</h1></button>
+    </div>
+    <div></div>
     </div>
   );
 }
