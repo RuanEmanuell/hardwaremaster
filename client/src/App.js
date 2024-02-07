@@ -169,7 +169,7 @@ function App() {
     const { name, value, type, checked } = event.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked: value,
+      [name]: type === 'checkbox' ? checked : value,
     });
   };
 
@@ -226,67 +226,67 @@ function App() {
       </div>
       <div style={{ display: isAdding }} className="addCpuScreen">
         <div className="addCpuArea">
-        <button className="addCpu closeAddScreen" onClick={showModalAddCpu}><h1>X</h1></button>
+          <button className="addCpu closeAddScreen" onClick={showModalAddCpu}><h1>X</h1></button>
           <div className="imageAndPerformanceArea">
             <div className="cpuImage addCpuImage">
               <img src={formData.cpuImage}></img>
             </div>
             <div className="cpuImage cpuOtherInformation">
-                  <div className="cpuIgpu">
-                    <h3>Integrada:</h3>
-                    <input
-                      type="checkbox"
-                      checked = {formData.cpuIgpu}
-                      onChange={HandleChange}
-                      name="cpuIgpu"
-                      className="igpuCheckbox"
-                    />
-                  </div>
-                  <div 
-                  className="performanceBox">
-                    <h3>Performance:</h3>
-                    <input 
-                                        value={formData.cpuPerformance}
-                                        onChange={HandleChange}
-                                        name = 'cpuPerformance'
-                    className="performanceInput"></input>
-                  </div>
-                  <div className="performanceBox">
-                    <h3>Performance (iGPU):</h3>
-                    <input 
-                    value={formData.igpuPerformance}
-                    onChange={HandleChange}
-                    name = 'igpuPerformance'
-                    className="performanceInput"></input>
-                  </div>
-                  <div className="performanceBox">
-                    <h3>CxB:</h3>
-                    <input 
-                    value={formData.costBenefit}
-                    onChange={HandleChange}
-                    name = 'costBenefit'
-                    className="performanceInput"></input>
-                  </div>
+              <div className="cpuIgpu">
+                <h3>Integrada:</h3>
+                <input
+                  type="checkbox"
+                  checked={formData.cpuIgpu}
+                  onChange={HandleChange}
+                  name="cpuIgpu"
+                  className="igpuCheckbox"
+                />
+              </div>
+              <div
+                className="performanceBox">
+                <h3>Performance:</h3>
+                <input
+                  value={formData.cpuPerformance}
+                  onChange={HandleChange}
+                  name='cpuPerformance'
+                  className="performanceInput"></input>
+              </div>
+              <div className="performanceBox">
+                <h3>Performance (iGPU):</h3>
+                <input
+                  value={formData.igpuPerformance}
+                  onChange={HandleChange}
+                  name='igpuPerformance'
+                  className="performanceInput"></input>
+              </div>
+              <div className="performanceBox">
+                <h3>CxB:</h3>
+                <input
+                  value={formData.costBenefit}
+                  onChange={HandleChange}
+                  name='costBenefit'
+                  className="performanceInput"></input>
+              </div>
             </div>
           </div>
           <div className="addInputBox">
-          <div className="addInputArea">
-            {Object.keys(formData).map((fieldName) => (
-              fieldName != 'cpuIgpu' && fieldName != 'igpuPerformance' &&
-              fieldName != 'cpuPerformance' && fieldName != 'costBenefit'
-               ?
-                <input
-                  key={fieldName}
-                  value={formData[fieldName]}
-                  onChange={HandleChange}
-                  placeholder={fieldName}
-                  name={fieldName}
-                  className="addInput"
-                />
-                : <></>
-            ))}
-            <button onClick={createCpu} className="updatePriceButton saveCpuButton">Salvar</button>
-          </div>
+            <div className="addInputArea">
+              {Object.keys(formData).map((fieldName) => (
+                fieldName != 'cpuIgpu' && fieldName != 'igpuPerformance' &&
+                  fieldName != 'cpuPerformance' && fieldName != 'costBenefit'
+                  ?
+                  <input
+                    key={fieldName}
+                    value={formData[fieldName]}
+                    onChange={HandleChange}
+                    placeholder={fieldName}
+                    name={fieldName}
+                    className="addInput"
+                  />
+                  : <></>
+              ))}
+              <button onClick={createCpu} className="updatePriceButton saveCpuButton">Salvar</button>
+            </div>
           </div>
         </div>
       </div>
