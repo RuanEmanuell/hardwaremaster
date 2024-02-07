@@ -13,16 +13,17 @@ function App() {
     cpuCores: '',
     cpuThreads: '',
     cpuFrequency: '',
-    cpuIgpu: '',
+    cpuIgpu: false,
     cpuPrice: '',
     cpuPerformance: '',
-    igpuPerformance:'',
-    costBenefit:'',
+    igpuPerformance: '',
+    costBenefit: '',
     cpuLink: '',
     cpuLink2: '',
     cpuLink3: '',
     cpuImage: '',
   });
+  const [isAdding, setAdding] = useState('none');
 
   useEffect(() => {
     fetchApi();
@@ -71,11 +72,11 @@ function App() {
         cpuCores: '',
         cpuThreads: '',
         cpuFrequency: '',
-        cpuIgpu: '',
+        cpuIgpu: false,
         cpuPrice: '',
         cpuPerformance: '',
-        igpuPerformance:'',
-        costBenefit:'',
+        igpuPerformance: '',
+        costBenefit: '',
         cpuLink: '',
         cpuLink2: '',
         cpuLink3: '',
@@ -106,8 +107,8 @@ function App() {
         cpuIgpu: '',
         cpuPrice: '',
         cpuPerformance: '',
-        igpuPerformance:'',
-        costBenefit:'',
+        igpuPerformance: '',
+        costBenefit: '',
         cpuLink: '',
         cpuLink2: '',
         cpuLink3: '',
@@ -134,7 +135,7 @@ function App() {
         cpuCores: '',
         cpuThreads: '',
         cpuFrequency: '',
-        cpuPerfomance: '',
+        cpuperformance: '',
         cpuPrice: '',
         cpuLink: '',
         cpuLink2: '',
@@ -147,7 +148,7 @@ function App() {
     }
   }
 
-  async function updatePrice(id){
+  async function updatePrice(id) {
     let newPrice = '';
     const response = await fetch(`http://localhost:3001/currentprice/${id}`);
     const data = await response.json();
@@ -155,81 +156,141 @@ function App() {
     try {
       const response = await fetch(`http://localhost:3001/update/${id}`, {
         method: 'PUT',
-        headers:{'Content-Type':  'application/json'},
-        body:JSON.stringify({price: newPrice})
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ price: newPrice })
       })
       fetchApi();
     } catch (error) {
-      
+
+    }
+  }
+
+  const HandleChange = (event) => {
+    const { name, value, type, checked } = event.target;
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked: value,
+    });
+  };
+
+  function showModalAddCpu() {
+    if (isAdding == 'none') {
+      setAdding('block');
+    } else {
+      setAdding('none');
     }
   }
 
 
 
-  const HandleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-
-
   return (
     <div className="mainContainer">
-    <div></div>
-    <div>
-      {cpuList ? <>
-        {cpuList.map((cpu) =>
-        <div key={cpu.id} className="cpuInfo">
-          <div className="cpuImage">
-            <img src={cpu['imageLink']}></img>
-          </div>
-          <div className="cpuSpecs">
-          <h1>{cpu['name']}</h1>
-          <p>Marca: {cpu['brand']}</p>
-          <p>Lançamento: {cpu['launchDate']}</p>
-          <p>Geração: {cpu['generation']}</p>
-          <p>Núcleos: {cpu['cores']}</p>
-          <p>Threads: {cpu['threads']}</p>
-          <p>Frequência: {cpu['frequency']}GHZ</p>
-          <p>Preço: R$ {cpu['price']}</p>
-          <p>Integrada: {cpu['igpu'] ? 'Sim' : 'Não'}</p>
-          <div className="dualSpecBox">
-          <p>Performance: </p> <div className="specCircle">{cpu['performance']}</div>
-          </div>
-          <div className="dualSpecBox">
-          <p>Performance(iGPU): </p> <div className="specCircle">{cpu['performance']}</div>
-          </div>
-          <div className="dualSpecBox">
-          <p>CxB: </p> <div className="specCircle">{cpu['costBenefit']}</div>
-          </div>
-          <div className="editDeleteButtons">
-          <button onClick={()=>editCpu(cpu['_id'])} className="editButton"><img src={editIcon}></img></button>
-          <button onClick={()=>deleteCpu(cpu['_id'])} className="deleteButton"><img src={deleteIcon}></img></button>
-          </div>
-          <button onClick={()=>updatePrice(cpu['_id'])} className="updatePriceButton">Atualizar preço</button>
-          </div>
-          </div>
-        )}
-      </> : <></>}
-      <br></br>
-      <div style={{display: 'none'}}>
-      {Object.keys(formData).map((fieldName) => (
-        <input
-          key={fieldName}
-          value={formData[fieldName]}
-          onChange={HandleChange}
-          placeholder={fieldName}
-          name={fieldName}
-        />
-      ))}
-      <button onClick={createCpu}>Postar dados</button>
+      <div></div>
+      <div className="cpuList">
+        {cpuList ? <>
+          {cpuList.map((cpu) =>
+            <div key={cpu.id} className="cpuInfo">
+              <div className="cpuImage">
+                <img src={cpu['imageLink']}></img>
+              </div>
+              <div className="cpuSpecs">
+                <h1>{cpu['name']}</h1>
+                <p>Marca: {cpu['brand']}</p>
+                <p>Lançamento: {cpu['launchDate']}</p>
+                <p>Geração: {cpu['generation']}</p>
+                <p>Núcleos: {cpu['cores']}</p>
+                <p>Threads: {cpu['threads']}</p>
+                <p>Frequência: {cpu['frequency']}GHZ</p>
+                <p>Preço: R$ {cpu['price']}</p>
+                <p>Integrada: {cpu['igpu'] ? 'Sim' : 'Não'}</p>
+                <div className="dualSpecBox">
+                  <p>Performance: </p> <div className="specCircle">{cpu['performance']}</div>
+                </div>
+                <div className="dualSpecBox">
+                  <p>Performance(iGPU): </p> <div className="specCircle">{cpu['performance']}</div>
+                </div>
+                <div className="dualSpecBox">
+                  <p>CxB: </p> <div className="specCircle">{cpu['costBenefit']}</div>
+                </div>
+                <div className="editDeleteButtons">
+                  <button onClick={() => editCpu(cpu['_id'])} className="editButton"><img src={editIcon}></img></button>
+                  <button onClick={() => deleteCpu(cpu['_id'])} className="deleteButton"><img src={deleteIcon}></img></button>
+                </div>
+                <button onClick={() => updatePrice(cpu['_id'])} className="updatePriceButton">Atualizar preço</button>
+              </div>
+            </div>
+          )}
+        </> : <></>}
+        <br></br>
+        <button className="addCpu" onClick={showModalAddCpu}><h1>+</h1></button>
       </div>
-      <button className="addCpu"><h1>+</h1></button>
-    </div>
-    <div></div>
+      <div style={{ display: isAdding }} className="addCpuScreen">
+        <div className="addCpuArea">
+        <button className="addCpu closeAddScreen" onClick={showModalAddCpu}><h1>X</h1></button>
+          <div className="imageAndPerformanceArea">
+            <div className="cpuImage addCpuImage">
+              <img src={formData.cpuImage}></img>
+            </div>
+            <div className="cpuImage cpuOtherInformation">
+                  <div className="cpuIgpu">
+                    <h3>Integrada:</h3>
+                    <input
+                      type="checkbox"
+                      checked = {formData.cpuIgpu}
+                      onChange={HandleChange}
+                      name="cpuIgpu"
+                      className="igpuCheckbox"
+                    />
+                  </div>
+                  <div 
+                  className="performanceBox">
+                    <h3>Performance:</h3>
+                    <input 
+                                        value={formData.cpuPerformance}
+                                        onChange={HandleChange}
+                                        name = 'cpuPerformance'
+                    className="performanceInput"></input>
+                  </div>
+                  <div className="performanceBox">
+                    <h3>Performance (iGPU):</h3>
+                    <input 
+                    value={formData.igpuPerformance}
+                    onChange={HandleChange}
+                    name = 'igpuPerformance'
+                    className="performanceInput"></input>
+                  </div>
+                  <div className="performanceBox">
+                    <h3>CxB:</h3>
+                    <input 
+                    value={formData.costBenefit}
+                    onChange={HandleChange}
+                    name = 'costBenefit'
+                    className="performanceInput"></input>
+                  </div>
+            </div>
+          </div>
+          <div className="addInputBox">
+          <div className="addInputArea">
+            {Object.keys(formData).map((fieldName) => (
+              fieldName != 'cpuIgpu' && fieldName != 'igpuPerformance' &&
+              fieldName != 'cpuPerformance' && fieldName != 'costBenefit'
+               ?
+                <input
+                  key={fieldName}
+                  value={formData[fieldName]}
+                  onChange={HandleChange}
+                  placeholder={fieldName}
+                  name={fieldName}
+                  className="addInput"
+                />
+                : <></>
+            ))}
+            <button onClick={createCpu} className="updatePriceButton saveCpuButton">Salvar</button>
+          </div>
+          </div>
+        </div>
+      </div>
+      <div></div>
     </div>
   );
 }

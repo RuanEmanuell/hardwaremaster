@@ -73,6 +73,7 @@ app.get('/currentprice/:id', async (req, res) => {
         let priceLink = 0.0;
         const page = await browser.newPage();
         for(const cpuLink of cpuLinks){
+            if(cpuLink != ''){
             await page.goto(cpuLink);
             if (await page.$('.sc-5492faee-2.ipHrwP.finalPrice')) {
                 priceLink = await page.$eval('.sc-5492faee-2.ipHrwP.finalPrice', (h4) => parseFloat(h4.innerText.substring(3).replaceAll(',', '.')));
@@ -82,6 +83,7 @@ app.get('/currentprice/:id', async (req, res) => {
             }else if(await page.$('.jss272')){
                 priceLink = await page.$eval('.jss272', (div) => parseFloat(div.innerText.substring(3).replaceAll(',', '.')));
             }
+        }
     
         }
 
