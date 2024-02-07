@@ -5,6 +5,7 @@ import './App.css';
 
 function App() {
   const [cpuList, setCpuList] = useState(null);
+  const [editingCpuId, setEditingCpuId] = useState(null);
   const [formData, setFormData] = useState({
     cpuName: '',
     cpuBrand: '',
@@ -13,15 +14,15 @@ function App() {
     cpuCores: '',
     cpuThreads: '',
     cpuFrequency: '',
-    cpuIgpu: false,
     cpuPrice: '',
-    cpuPerformance: '',
-    igpuPerformance: '',
-    costBenefit: '',
     cpuLink: '',
     cpuLink2: '',
     cpuLink3: '',
     cpuImage: '',
+    cpuIgpu: false,
+    cpuPerformance: '',
+    igpuPerformance: '',
+    costBenefit: '',
   });
   const [isAdding, setAdding] = useState('none');
 
@@ -39,7 +40,56 @@ function App() {
     }
   }
 
-  async function createCpu() {
+  async function createOrEditCpu() {
+    if(editingCpuId){
+      try {
+        const response = await fetch(`http://localhost:3001/update/${editingCpuId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: formData.cpuName,
+            brand: formData.cpuBrand,
+            launchDate: formData.cpuLaunch,
+            generation: formData.cpuGeneration,
+            cores: formData.cpuCores,
+            threads: formData.cpuThreads,
+            frequency: formData.cpuFrequency,
+            price: formData.cpuPrice,
+            igpu: formData.cpuIgpu,
+            performance: formData.cpuPerformance,
+            igpuPerformance: formData.igpuPerformance,
+            costBenefit: formData.costBenefit,
+            shopLink: formData.cpuLink,
+            shopLink2: formData.cpuLink2,
+            shopLink3: formData.cpuLink3,
+            imageLink: formData.cpuImage,
+          }),
+        });
+        setFormData({
+          ...formData,
+          cpuName: '',
+          cpuBrand: '',
+          cpuLaunch: '',
+          cpuGeneration: '',
+          cpuCores: '',
+          cpuThreads: '',
+          cpuFrequency: '',
+          cpuIgpu: false,
+          cpuPrice: '',
+          cpuPerformance: '',
+          igpuPerformance: '',
+          costBenefit: '',
+          cpuLink: '',
+          cpuLink2: '',
+          cpuLink3: '',
+          cpuImage: '',
+        });
+        setEditingCpuId(null);
+        fetchApi();
+      } catch (err) {
+        console.log(err);
+      }
+    }else{
     try {
       const response = await fetch('http://localhost:3001/post', {
         method: 'POST',
@@ -87,37 +137,32 @@ function App() {
       console.log(err);
     }
   }
+  showModalAddCpu();
+  }
 
-  async function editCpu(id) {
-    try {
-      const response = await fetch(`http://localhost:3001/update/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: 'teste', brand: 'AMD', launchDate: '2019', generation: '3000', preço: '0' })
-      });
-      setFormData({
-        ...formData,
-        cpuName: '',
-        cpuBrand: '',
-        cpuLaunch: '',
-        cpuGeneration: '',
-        cpuCores: '',
-        cpuThreads: '',
-        cpuFrequency: '',
-        cpuIgpu: '',
-        cpuPrice: '',
-        cpuPerformance: '',
-        igpuPerformance: '',
-        costBenefit: '',
-        cpuLink: '',
-        cpuLink2: '',
-        cpuLink3: '',
-        cpuImage: '',
-      });
-      fetchApi();
-    } catch (err) {
-      console.log(err);
-    }
+  async function editCpu(index) {
+    setAdding(true);
+    let currentCPU = cpuList[index];
+    setEditingCpuId(currentCPU['_id']);
+    setFormData({
+      ...formData,
+      cpuName: currentCPU['name'],
+      cpuBrand: currentCPU['brand'],
+      cpuLaunch: currentCPU['launchDate'],
+      cpuGeneration: currentCPU['generation'],
+      cpuCores:  currentCPU['cores'],
+      cpuThreads: currentCPU['threads'],
+      cpuFrequency: currentCPU['frequency'],
+      cpuPrice: currentCPU['price'],
+      cpuLink: currentCPU['shopLink'],
+      cpuLink2: currentCPU['shopLink2'],
+      cpuLink3: currentCPU['shopLink3'],
+      cpuImage: currentCPU['imageLink'],
+      cpuIgpu:currentCPU['igpu'],
+      cpuPerformance: currentCPU['performance'],
+      igpuPerformance: currentCPU['igpuPerformance'],
+      costBenefit: currentCPU['costBenefit'],
+    });
   }
 
   async function deleteCpu(id) {
@@ -135,8 +180,11 @@ function App() {
         cpuCores: '',
         cpuThreads: '',
         cpuFrequency: '',
-        cpuperformance: '',
+        cpuIgpu: false,
         cpuPrice: '',
+        cpuPerformance: '',
+        igpuPerformance: '',
+        costBenefit: '',
         cpuLink: '',
         cpuLink2: '',
         cpuLink3: '',
@@ -182,13 +230,15 @@ function App() {
   }
 
 
+  let inputPlaceholders = 
+  ['Nome', 'Marca', 'Lançamento', 'Geração', 'Núcleos', 'Threads', 'Frequência', 'Preço', 'Link de loja', 'Link de loja 2', 'Link de loja 3', 'Link da Imagem']
 
   return (
     <div className="mainContainer">
       <div></div>
       <div className="cpuList">
         {cpuList ? <>
-          {cpuList.map((cpu) =>
+          {cpuList.map((cpu, index) =>
             <div key={cpu.id} className="cpuInfo">
               <div className="cpuImage">
                 <img src={cpu['imageLink']}></img>
@@ -213,7 +263,7 @@ function App() {
                   <p>CxB: </p> <div className="specCircle">{cpu['costBenefit']}</div>
                 </div>
                 <div className="editDeleteButtons">
-                  <button onClick={() => editCpu(cpu['_id'])} className="editButton"><img src={editIcon}></img></button>
+                  <button onClick={() => editCpu(index)} className="editButton"><img src={editIcon}></img></button>
                   <button onClick={() => deleteCpu(cpu['_id'])} className="deleteButton"><img src={deleteIcon}></img></button>
                 </div>
                 <button onClick={() => updatePrice(cpu['_id'])} className="updatePriceButton">Atualizar preço</button>
@@ -271,7 +321,7 @@ function App() {
           </div>
           <div className="addInputBox">
             <div className="addInputArea">
-              {Object.keys(formData).map((fieldName) => (
+              {Object.keys(formData).map((fieldName, index) => (
                 fieldName != 'cpuIgpu' && fieldName != 'igpuPerformance' &&
                   fieldName != 'cpuPerformance' && fieldName != 'costBenefit'
                   ?
@@ -279,13 +329,13 @@ function App() {
                     key={fieldName}
                     value={formData[fieldName]}
                     onChange={HandleChange}
-                    placeholder={fieldName}
+                    placeholder={inputPlaceholders[index]}
                     name={fieldName}
                     className="addInput"
                   />
                   : <></>
               ))}
-              <button onClick={createCpu} className="updatePriceButton saveCpuButton">Salvar</button>
+              <button onClick={createOrEditCpu} className="updatePriceButton saveCpuButton">Salvar</button>
             </div>
           </div>
         </div>

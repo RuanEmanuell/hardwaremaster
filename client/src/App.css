@@ -14,25 +14,27 @@ button {
 
 .mainContainer {
     display: grid;
-    grid-template-columns: 1fr 6fr 1fr;
-    max-width: 1366px;
+    grid-template-columns: 1fr 8fr 1fr;
+    max-width: 1200px;
     height: 100vh;
 }
 
 .cpuList {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
 }
 
 .cpuInfo {
-    margin-top: 5%;
+    margin-top: 12.5%;
+    margin-bottom: 12.5%;
     height: 80%;
 }
 
 .cpuImage {
     background-color: white;
-    width: 40%;
-    min-width: 200px;
-    height: 25%;
+    width: 95%;
+    min-width: 160px;
+    height: 30%;
     display: flex;
     justify-self: center;
     border-radius: 5px;
@@ -40,14 +42,14 @@ button {
 }
 
 .cpuImage img {
-    width: 75%;
+    width: 70%;
     margin: auto;
 }
 
 .cpuSpecs {
     background-color: white;
-    width: 40%;
-    min-width: 200px;
+    width: 95%;
+    min-width: 160px;
     text-align: center;
 }
 
@@ -108,8 +110,8 @@ button {
 }
 
 .addCpu {
-    position: absolute;
-    bottom: 5%;
+    position: fixed;
+    bottom: 1%;
     right: 5%;
     background-color: #DB5510;
     border-radius: 50px;
@@ -126,7 +128,7 @@ button {
 }
 
 .addCpuScreen {
-    position: absolute;
+    position: fixed;
     right: 0;
     width: 100vw;
     height: 100vh;
@@ -163,7 +165,7 @@ button {
 
 .addCpuImage {
     margin: 10% 0;
-    width: 90%;
+    width: 85%;
     height: 35%;
     max-height: 250px;
 }
@@ -218,3 +220,9 @@ button {
     text-align: center;
     font-weight: bold;
 }
+
+@media only screen and (max-width: 900px) {
+    .cpuList {
+        grid-template-columns: 1fr 1fr;
+    }
+  }
