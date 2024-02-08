@@ -64,14 +64,7 @@ button {
 
 .dualSpecBox {
     display: grid;
-    grid-template-columns: 5fr 1fr;
-}
-
-.specCircle {
-    height: 80%;
-    width: 75%;
-    background-color: rgb(0, 182, 0);
-    border-radius: 50px;
+    grid-template-columns: 6fr 1fr;
 }
 
 button {
@@ -94,7 +87,7 @@ button {
     grid-template-columns: 1fr 1fr;
 }
 
-.updatePriceButton {
+.orangeButton {
     background-color: #DB5510;
     border: none;
     padding: 5%;
@@ -104,7 +97,7 @@ button {
     border-radius: 5px;
 }
 
-.updatePriceButton:hover {
+.orangeButton:hover {
     cursor: pointer;
     background-color: black;
 }
@@ -180,13 +173,6 @@ button {
     height: 50%;
 }
 
-.saveCpuButton {
-    position: relative;
-    font-size: larger;
-    height: 50%;
-    left: 100%;
-}
-
 .cpuOtherInformation {
     margin-top: 20%;
     height: 40%;
@@ -221,8 +207,28 @@ button {
     font-weight: bold;
 }
 
+
+@media only screen and (max-width: 1200px) {
+    .addInputArea {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+    }
+}
+
 @media only screen and (max-width: 900px) {
     .cpuList {
         grid-template-columns: 1fr 1fr;
     }
-  }
+
+    .addInput {
+        width: 80%;
+    }
+
+    .addCpuArea {
+        grid-template-columns: 55% 50%;
+    }
+
+    .addInputArea {
+        grid-template-columns: 1fr;
+    }
+}
