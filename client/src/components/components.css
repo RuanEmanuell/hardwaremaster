@@ -20,6 +20,22 @@
     border: 1px solid rgba(0, 0, 0, 0.103);
 }
 
+.cpuIgpu,
+.performanceBox {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    height: 25%;
+    width: 100%;
+    margin-left: 5%;
+
+}
+
+.performanceBox {
+    text-size-adjust:calc(50%);
+    font-size: small;
+    grid-template-columns: 65% 35%;
+}
+
 
 @media only screen and (max-width: 800px) {
     .orangeButton {
