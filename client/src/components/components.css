@@ -2,7 +2,6 @@
     background-color: #DB5510;
     border: none;
     padding: 5%;
-    margin: 10% 0;
     font-weight: bold;
     color: white;
     border-radius: 5px;
@@ -22,8 +21,9 @@
 }
 
 
-@media only screen and (max-width: 1200px) {
-    .container {
+@media only screen and (max-width: 800px) {
+    .orangeButton {
         grid-column-start: 1;
+        margin: 5% auto;
     }
 }

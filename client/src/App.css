@@ -131,15 +131,14 @@ button {
 }
 
 .addCpuArea {
-    position: absolute;
-    top: 10%;
-    left: 15%;
+    margin: auto;
+    margin-top: 4%;
     width: 70%;
     height: 80%;
     background-color: #252525;
     max-width: 1366px;
     display: grid;
-    grid-template-columns: 35% 65%;
+    grid-template-columns: 1fr 2fr;
 }
 
 .addInput {
@@ -169,7 +168,6 @@ button {
     right: 5%;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
     height: 50%;
 }
 
@@ -211,11 +209,10 @@ button {
 @media only screen and (max-width: 1200px) {
     .addInputArea {
         grid-template-columns: 1fr 1fr;
-        grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
     }
 }
 
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 800px) {
     .cpuList {
         grid-template-columns: 1fr 1fr;
     }
