@@ -4,12 +4,11 @@ import deleteIcon from './images/delete.png';
 import './App.css';
 import SpecCircle from './components/speccircle';
 import OrangeButton from './components/orangebutton';
-import PerformanceBox from './components/performancebox';
 
 function App() {
   const [fullList, setFullList] = useState(null);
-  const [editingCpuId, setEditingCpuId] = useState(null);
-  const [formData, setFormData] = useState({
+  const [editingPartId, setEditingPartId] = useState(null);
+  const [cpuData, setCpuData] = useState({
     cpuName: '',
     cpuBrand: '',
     cpuLaunch: '',
@@ -27,6 +26,23 @@ function App() {
     igpuPerformance: '',
     costBenefit: '',
   });
+  const [gpuData, setGpuData] = useState({
+    gpuName: '',
+    gpuBrand: '',
+    gpuLaunch: '',
+    gpuGeneration: '',
+    gpuCores: '',
+    gpuMemory: '',
+    gpuMemoryType: '',
+    gpuMemoryBus: '',
+    shopLink: '',
+    shopLink2: '',
+    shopLink3: '',
+    gpuImage: '',
+    gpuPrice: '',
+    gpuPerformance: '',
+    costBenefit: '',
+  });
   const [isSelectingType, setSelecting] = useState('none');
   const [isAdding, setAdding] = useState('none');
 
@@ -34,9 +50,9 @@ function App() {
     fetchApi();
   }, []);
 
-  function clearInputs(){
-    setFormData({
-      ...formData,
+  function clearInputs() {
+    setCpuData({
+      ...cpuData,
       cpuName: '',
       cpuBrand: '',
       cpuLaunch: '',
@@ -54,9 +70,27 @@ function App() {
       cpuLink3: '',
       cpuImage: '',
     });
+    setGpuData({
+      ...gpuData,
+      gpuName: '',
+      gpuBrand: '',
+      gpuLaunch: '',
+      gpuGeneration: '',
+      gpuCores: '',
+      gpuMemory: '',
+      gpuMemoryType: '',
+      gpuMemoryBus: '',
+      shopLink: '',
+      shopLink2: '',
+      shopLink3: '',
+      gpuImage: '',
+      gpuPrice: '',
+      gpuPerformance: '',
+      costBenefit: ''
+    })
   }
 
-  function selectingPartType(){
+  function selectingPartType() {
     if (isSelectingType == 'none') {
       setSelecting('block');
     } else {
@@ -74,34 +108,25 @@ function App() {
     }
   }
 
-  async function createOrEditCpu() {
-    if (editingCpuId) {
+  async function createOrEditPart(partType) {
+    const isCpu = partType === 'cpu';
+    const dataToSend = isCpu ? {
+      type: partType,
+      ...cpuData
+    } : {
+      type: partType,
+      ...gpuData
+    };
+  
+    if (editingPartId) {
       try {
-        const response = await fetch(`http://localhost:3001/update/${editingCpuId}`, {
+        const response = await fetch(`http://localhost:3001/update/${editingPartId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'cpu',
-            name: formData.cpuName,
-            brand: formData.cpuBrand,
-            launchDate: formData.cpuLaunch,
-            generation: formData.cpuGeneration,
-            cores: formData.cpuCores,
-            threads: formData.cpuThreads,
-            frequency: formData.cpuFrequency,
-            price: formData.cpuPrice,
-            igpu: formData.cpuIgpu,
-            performance: formData.cpuPerformance,
-            igpuPerformance: formData.igpuPerformance,
-            costBenefit: formData.costBenefit,
-            shopLink: formData.cpuLink,
-            shopLink2: formData.cpuLink2,
-            shopLink3: formData.cpuLink3,
-            imageLink: formData.cpuImage,
-          }),
+          body: JSON.stringify(dataToSend),
         });
         clearInputs();
-        setEditingCpuId(null);
+        setEditingPartId(null);
         fetchApi();
       } catch (err) {
         console.log(err);
@@ -111,25 +136,7 @@ function App() {
         const response = await fetch('http://localhost:3001/post', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'cpu',
-            name: formData.cpuName,
-            brand: formData.cpuBrand,
-            launchDate: formData.cpuLaunch,
-            generation: formData.cpuGeneration,
-            cores: formData.cpuCores,
-            threads: formData.cpuThreads,
-            frequency: formData.cpuFrequency,
-            price: formData.cpuPrice,
-            igpu: formData.cpuIgpu,
-            performance: formData.cpuPerformance,
-            igpuPerformance: formData.igpuPerformance,
-            costBenefit: formData.costBenefit,
-            shopLink: formData.cpuLink,
-            shopLink2: formData.cpuLink2,
-            shopLink3: formData.cpuLink3,
-            imageLink: formData.cpuImage,
-          }),
+          body: JSON.stringify(dataToSend),
         });
         clearInputs();
         fetchApi();
@@ -137,35 +144,21 @@ function App() {
         console.log(err);
       }
     }
-    showModalAddCpu();
   }
-
-  async function editCpu(index) {
+  
+  async function editPart(index, partType) {
     setAdding(true);
-    let currentCPU = fullList[index];
-    setEditingCpuId(currentCPU['_id']);
-    setFormData({
-      ...formData,
-      cpuName: currentCPU['name'],
-      cpuBrand: currentCPU['brand'],
-      cpuLaunch: currentCPU['launchDate'],
-      cpuGeneration: currentCPU['generation'],
-      cpuCores: currentCPU['cores'],
-      cpuThreads: currentCPU['threads'],
-      cpuFrequency: currentCPU['frequency'],
-      cpuPrice: currentCPU['price'],
-      cpuLink: currentCPU['shopLink'],
-      cpuLink2: currentCPU['shopLink2'],
-      cpuLink3: currentCPU['shopLink3'],
-      cpuImage: currentCPU['imageLink'],
-      cpuIgpu: currentCPU['igpu'],
-      cpuPerformance: currentCPU['performance'],
-      igpuPerformance: currentCPU['igpuPerformance'],
-      costBenefit: currentCPU['costBenefit'],
-    });
+    let currentPart = fullList[index];
+    setEditingPartId(currentPart['_id']);
+  
+    if (partType === 'cpu') {
+      setCpuData({ ...currentPart });
+    } else if (partType === 'gpu') {
+      setGpuData({ ...currentPart });
+    }
   }
 
-  async function deleteCpu(id) {
+  async function deletePart(id) {
     try {
       const response = await fetch(`http://localhost:3001/delete/${id}`, {
         method: 'DELETE',
@@ -195,14 +188,22 @@ function App() {
     }
   }
 
-  const HandleChange = (event) => {
+  const HandleChange = (event, partType) => {
     const { name, value, type, checked } = event.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
+    
+    if (partType === 'cpu') {
+      setCpuData({
+        ...cpuData,
+        [name]: type === 'checkbox' ? checked : value,
+      });
+    } else if (partType === 'gpu') {
+      setGpuData({
+        ...gpuData,
+        [name]: type === 'checkbox' ? checked : value,
+      });
+    }
   };
-
+  
   function showModalAddCpu() {
     clearInputs();
     if (isAdding == 'none') {
@@ -212,138 +213,78 @@ function App() {
     }
   }
 
-
-  let inputPlaceholders =
-    ['Nome', 'Marca', 'Lançamento', 'Geração', 'Núcleos', 'Threads', 'Frequência', 'Preço', 'Link de loja', 'Link de loja 2', 'Link de loja 3', 'Link da Imagem']
-
   return (
     <div className="mainContainer">
       <div></div>
       <div>
         <h1 className="mainTitle">Todas as peças</h1>
-      <div className="cpuList">
-        {fullList ? <>
-          {fullList.map((part, index) =>
-          part['type'] == 'cpu' ? 
-            <div key={part.id} className="partInfo">
-              <div className="partImage">
-                <img src={part['imageLink']}></img>
-              </div>
-              <div className="partSpecs">
-                <h1>{part['name']}</h1>
-                <p>Marca: {part['brand']}</p>
-                <p>Lançamento: {part['launchDate']}</p>
-                <p>Geração: {part['generation']}</p>
-                <p>Núcleos: {part['cores']}</p>
-                <p>Threads: {part['threads']}</p>
-                <p>Frequência: {part['frequency']}GHZ</p>
-                <p>Preço: R$ {part['price']}</p>
-                <p>Tem integrada: {part['igpu'] ? 'Sim' : 'Não'}</p>
-                <SpecCircle performanceLabel='Performance:' performanceRating={part['performance']} />
-                <SpecCircle performanceLabel='Integrada (iGPU):' performanceRating={part['igpuPerformance']} />
-                <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
-                <div className="editDeleteButtons">
-                  <button onClick={() => editCpu(index)} className="editButton"><img src={editIcon}></img></button>
-                  <button onClick={() => deleteCpu(part['_id'])} className="deleteButton"><img src={deleteIcon}></img></button>
-                </div>
-                <OrangeButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
-              </div>
-            </div> : part['type'] == 'gpu' ? 
-            <div key={part.id} className="partInfo">
-              <div className="partImage">
-                <img src={part['imageLink']}></img>
-              </div>
-              <div className="partSpecs">
-                <h1>{part['name']}</h1>
-                <p>Marca: {part['brand']}</p>
-                <p>Lançamento: {part['launchDate']}</p>
-                <p>Geração: {part['generation']}</p>
-                <p>Núcleos: {part['cores']}</p>
-                <p>Memória: {part['memory']}GB</p>
-                <p>Tipo de memória: {part['memoryType']}</p>
-                <p>Interface da memória: {part['memoryBus']}</p>
-                <p>Preço: R$ {part['price']}</p>
-                <br></br>
-                <SpecCircle performanceLabel='Performance:' performanceRating={part['performance']}/>
-                <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
-                <br></br>
-                <div className="editDeleteButtons">
-                  <button onClick={() => editCpu(index)} className="editButton"><img src={editIcon}></img></button>
-                  <button onClick={() => deleteCpu(part['_id'])} className="deleteButton"><img src={deleteIcon}></img></button>
-                </div>
-                <OrangeButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
-              </div>
-            </div> :
-            <></>
-          )}
-        </> : <></>}
-        <br></br>
-        <div className="choosePartType" style={{ display: isSelectingType }}>
-          <h3 className="partType">CPU</h3>
-          <h3 className="partType">GPU</h3>
-          <h3 className="partType">MOBO</h3>
-          <h3 className="partType">RAM</h3>
-          <h3 className="partType">POWER</h3>
-          <h3 className="partType">SSD</h3>
-          <h3 className="partType">CASE</h3>
-        </div>
-        <button className="addCpu" onClick={selectingPartType}><h1>+</h1></button>
-      </div>
-      </div>
-      <div style={{ display: isAdding }} className="addCpuScreen">
-        <div className="addCpuArea">
-          <button className="addCpu closeAddScreen" onClick={showModalAddCpu}><h1>X</h1></button>
-          <div className="imageAndPerformanceArea">
-            <div className="cpuImage addCpuImage">
-              <img src={formData.cpuImage}></img>
-            </div>
-            <div className="cpuImage cpuOtherInformation">
-              <div className="cpuIgpu">
-                <h3>Integrada:</h3>
-                <input
-                  type="checkbox"
-                  checked={formData.cpuIgpu}
-                  onChange={HandleChange}
-                  name="cpuIgpu"
-                  className="igpuCheckbox"
-                />
-              </div>
-              <PerformanceBox 
-              label = 'Performance: '
-              value = {formData.cpuPerformance} 
-              onChange = {HandleChange} 
-              name = 'cpuPerformance'/>
-              <PerformanceBox 
-              label = 'Integrada (iGPU): '
-              value = {formData.igpuPerformance} 
-              onChange = {HandleChange} 
-              name = 'igpuPerformance'/>
-              <PerformanceBox 
-              label = 'Custo X Benefício: '
-              value = {formData.costBenefit} 
-              onChange = {HandleChange} 
-              name = 'costBenefit'/>
-            </div>
+        <div className="cpuList">
+          {fullList ? <>
+            {fullList.map((part, index) =>
+              part['type'] == 'cpu' ?
+                <div key={part.id} className="partInfo">
+                  <div className="partImage">
+                    <img src={part['imageLink']}></img>
+                  </div>
+                  <div className="partSpecs">
+                    <h1>{part['name']}</h1>
+                    <p>Marca: {part['brand']}</p>
+                    <p>Lançamento: {part['launchDate']}</p>
+                    <p>Geração: {part['generation']}</p>
+                    <p>Núcleos: {part['cores']}</p>
+                    <p>Threads: {part['threads']}</p>
+                    <p>Frequência: {part['frequency']}GHZ</p>
+                    <p>Preço: R$ {part['price']}</p>
+                    <p>Tem integrada: {part['igpu'] ? 'Sim' : 'Não'}</p>
+                    <SpecCircle performanceLabel='Performance:' performanceRating={part['performance']} />
+                    <SpecCircle performanceLabel='Integrada (iGPU):' performanceRating={part['igpuPerformance']} />
+                    <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
+                    <div className="editDeleteButtons">
+                      <button onClick={() => editPart(index)} className="editButton"><img src={editIcon}></img></button>
+                      <button onClick={() => deletePart(part['_id'])} className="deleteButton"><img src={deleteIcon}></img></button>
+                    </div>
+                    <OrangeButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
+                  </div>
+                </div> : part['type'] == 'gpu' ?
+                  <div key={part.id} className="partInfo">
+                    <div className="partImage">
+                      <img src={part['imageLink']}></img>
+                    </div>
+                    <div className="partSpecs">
+                      <h1>{part['name']}</h1>
+                      <p>Marca: {part['brand']}</p>
+                      <p>Lançamento: {part['launchDate']}</p>
+                      <p>Geração: {part['generation']}</p>
+                      <p>Núcleos: {part['cores']}</p>
+                      <p>Memória: {part['memory']}GB</p>
+                      <p>Tipo de memória: {part['memoryType']}</p>
+                      <p>Interface da memória: {part['memoryBus']}</p>
+                      <p>Preço: R$ {part['price']}</p>
+                      <br></br>
+                      <SpecCircle performanceLabel='Performance:' performanceRating={part['performance']} />
+                      <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
+                      <br></br>
+                      <div className="editDeleteButtons">
+                        <button onClick={() => editPart(index)} className="editButton"><img src={editIcon}></img></button>
+                        <button onClick={() => deletePart(part['_id'])} className="deleteButton"><img src={deleteIcon}></img></button>
+                      </div>
+                      <OrangeButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
+                    </div>
+                  </div> :
+                  <></>
+            )}
+          </> : <></>}
+          <br></br>
+          <div className="choosePartType" style={{ display: isSelectingType }}>
+            <h3 className="partType" onClick={() =>createOrEditPart('cpu')}>CPU</h3>
+            <h3 className="partType" onClick={() =>createOrEditPart('gpu')}>GPU</h3>
+            <h3 className="partType" onClick={() =>createOrEditPart('mobo')}>MOBO</h3>
+            <h3 className="partType" onClick={() =>createOrEditPart('ram')}>RAM</h3>
+            <h3 className="partType" onClick={() =>createOrEditPart('power')}>FONTE</h3>
+            <h3 className="partType" onClick={() =>createOrEditPart('ssd')}>SSD</h3>
+            <h3 className="partType" onClick={() =>createOrEditPart('case')}>GABINETE</h3>
           </div>
-          <div className="addInputBox">
-            <div className="addInputArea">
-              {Object.keys(formData).map((fieldName, index) => (
-                fieldName != 'cpuIgpu' && fieldName != 'igpuPerformance' &&
-                  fieldName != 'cpuPerformance' && fieldName != 'costBenefit'
-                  ?
-                  <input
-                    key={fieldName}
-                    value={formData[fieldName]}
-                    onChange={HandleChange}
-                    placeholder={inputPlaceholders[index]}
-                    name={fieldName}
-                    className="addInput"
-                  />
-                  : <></>
-              ))}
-              <OrangeButton onClick={createOrEditCpu} buttonLabel='Salvar'/>
-            </div>
-          </div>
+          <button className="addPart" onClick={selectingPartType}><h1>+</h1></button>
         </div>
       </div>
       <div></div>

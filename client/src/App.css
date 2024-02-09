@@ -113,7 +113,7 @@ button {
     background-color: black;
 }
 
-.addCpu {
+.addPart {
     position: fixed;
     bottom: 1%;
     right: 5%;
@@ -127,78 +127,8 @@ button {
     font-size: 150%;
 }
 
-.addCpu h1 {
+.addPart h1 {
     margin: auto;
-}
-
-.addCpuScreen {
-    position: fixed;
-    right: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.589);
-    display: flex;
-    justify-content: center;
-}
-
-.addCpuArea {
-    margin: auto;
-    margin-top: 7vh;
-    width: 70%;
-    height: 80%;
-    background-color: #252525;
-    max-width: 1366px;
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-}
-
-.addInput {
-    border: 3px solid black;
-    margin: 2% 5%;
-}
-
-.closeAddScreen {
-    background-color: red;
-}
-
-.imageAndPerformanceArea {
-    height: 100%;
-    margin: 5% 10%;
-}
-
-.addCpuImage {
-    margin: 10% 0;
-    width: 85%;
-    height: 35%;
-    max-height: 250px;
-}
-
-.addInputArea {
-    position: relative;
-    top: 20%;
-    right: 5%;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    height: 50%;
-}
-
-.cpuOtherInformation {
-    margin-top: 20%;
-    height: 40%;
-    display: block;
-    width: 90%;
-}
-
-.igpuCheckbox {
-    margin-top: 5%;
-    height: 50%;
-}
-
-.performanceInput {
-    width: 50%;
-    height: 50%;
-    text-align: center;
-    font-weight: bold;
 }
 
 .choosePartType{
