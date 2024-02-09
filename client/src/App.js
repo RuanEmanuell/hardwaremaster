@@ -7,7 +7,7 @@ import OrangeButton from './components/orangebutton';
 import PerformanceBox from './components/performancebox';
 
 function App() {
-  const [cpuList, setCpuList] = useState(null);
+  const [fullList, setFullList] = useState(null);
   const [editingCpuId, setEditingCpuId] = useState(null);
   const [formData, setFormData] = useState({
     cpuName: '',
@@ -27,6 +27,7 @@ function App() {
     igpuPerformance: '',
     costBenefit: '',
   });
+  const [isSelectingType, setSelecting] = useState('none');
   const [isAdding, setAdding] = useState('none');
 
   useEffect(() => {
@@ -55,11 +56,19 @@ function App() {
     });
   }
 
+  function selectingPartType(){
+    if (isSelectingType == 'none') {
+      setSelecting('block');
+    } else {
+      setSelecting('none');
+    }
+  }
+
   async function fetchApi() {
     try {
       const response = await fetch('http://localhost:3001/teste');
       const data = await response.json();
-      setCpuList(data);
+      setFullList(data);
     } catch (err) {
       console.log(err);
     }
@@ -72,6 +81,7 @@ function App() {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            type: 'cpu',
             name: formData.cpuName,
             brand: formData.cpuBrand,
             launchDate: formData.cpuLaunch,
@@ -102,6 +112,7 @@ function App() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            type: 'cpu',
             name: formData.cpuName,
             brand: formData.cpuBrand,
             launchDate: formData.cpuLaunch,
@@ -131,7 +142,7 @@ function App() {
 
   async function editCpu(index) {
     setAdding(true);
-    let currentCPU = cpuList[index];
+    let currentCPU = fullList[index];
     setEditingCpuId(currentCPU['_id']);
     setFormData({
       ...formData,
@@ -209,38 +220,74 @@ function App() {
     <div className="mainContainer">
       <div></div>
       <div>
-        <h1 className="mainTitle">Processadores</h1>
+        <h1 className="mainTitle">Todas as peças</h1>
       <div className="cpuList">
-        {cpuList ? <>
-          {cpuList.map((cpu, index) =>
-            <div key={cpu.id} className="cpuInfo">
-              <div className="cpuImage">
-                <img src={cpu['imageLink']}></img>
+        {fullList ? <>
+          {fullList.map((part, index) =>
+          part['type'] == 'cpu' ? 
+            <div key={part.id} className="partInfo">
+              <div className="partImage">
+                <img src={part['imageLink']}></img>
               </div>
-              <div className="cpuSpecs">
-                <h1>{cpu['name']}</h1>
-                <p>Marca: {cpu['brand']}</p>
-                <p>Lançamento: {cpu['launchDate']}</p>
-                <p>Geração: {cpu['generation']}</p>
-                <p>Núcleos: {cpu['cores']}</p>
-                <p>Threads: {cpu['threads']}</p>
-                <p>Frequência: {cpu['frequency']}GHZ</p>
-                <p>Preço: R$ {cpu['price']}</p>
-                <p>Tem integrada: {cpu['igpu'] ? 'Sim' : 'Não'}</p>
-                <SpecCircle performanceLabel='Performance:' performanceRating={cpu['performance']} />
-                <SpecCircle performanceLabel='Integrada (iGPU):' performanceRating={cpu['igpuPerformance']} />
-                <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={cpu['costBenefit']} />
+              <div className="partSpecs">
+                <h1>{part['name']}</h1>
+                <p>Marca: {part['brand']}</p>
+                <p>Lançamento: {part['launchDate']}</p>
+                <p>Geração: {part['generation']}</p>
+                <p>Núcleos: {part['cores']}</p>
+                <p>Threads: {part['threads']}</p>
+                <p>Frequência: {part['frequency']}GHZ</p>
+                <p>Preço: R$ {part['price']}</p>
+                <p>Tem integrada: {part['igpu'] ? 'Sim' : 'Não'}</p>
+                <SpecCircle performanceLabel='Performance:' performanceRating={part['performance']} />
+                <SpecCircle performanceLabel='Integrada (iGPU):' performanceRating={part['igpuPerformance']} />
+                <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
                 <div className="editDeleteButtons">
                   <button onClick={() => editCpu(index)} className="editButton"><img src={editIcon}></img></button>
-                  <button onClick={() => deleteCpu(cpu['_id'])} className="deleteButton"><img src={deleteIcon}></img></button>
+                  <button onClick={() => deleteCpu(part['_id'])} className="deleteButton"><img src={deleteIcon}></img></button>
                 </div>
-                <OrangeButton onClick={() => updatePrice(cpu['_id'])} buttonLabel='Atualizar preço' />
+                <OrangeButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
               </div>
-            </div>
+            </div> : part['type'] == 'gpu' ? 
+            <div key={part.id} className="partInfo">
+              <div className="partImage">
+                <img src={part['imageLink']}></img>
+              </div>
+              <div className="partSpecs">
+                <h1>{part['name']}</h1>
+                <p>Marca: {part['brand']}</p>
+                <p>Lançamento: {part['launchDate']}</p>
+                <p>Geração: {part['generation']}</p>
+                <p>Núcleos: {part['cores']}</p>
+                <p>Memória: {part['memory']}GB</p>
+                <p>Tipo de memória: {part['memoryType']}</p>
+                <p>Interface da memória: {part['memoryBus']}</p>
+                <p>Preço: R$ {part['price']}</p>
+                <br></br>
+                <SpecCircle performanceLabel='Performance:' performanceRating={part['performance']}/>
+                <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
+                <br></br>
+                <div className="editDeleteButtons">
+                  <button onClick={() => editCpu(index)} className="editButton"><img src={editIcon}></img></button>
+                  <button onClick={() => deleteCpu(part['_id'])} className="deleteButton"><img src={deleteIcon}></img></button>
+                </div>
+                <OrangeButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
+              </div>
+            </div> :
+            <></>
           )}
         </> : <></>}
         <br></br>
-        <button className="addCpu" onClick={showModalAddCpu}><h1>+</h1></button>
+        <div className="choosePartType" style={{ display: isSelectingType }}>
+          <h3 className="partType">CPU</h3>
+          <h3 className="partType">GPU</h3>
+          <h3 className="partType">MOBO</h3>
+          <h3 className="partType">RAM</h3>
+          <h3 className="partType">POWER</h3>
+          <h3 className="partType">SSD</h3>
+          <h3 className="partType">CASE</h3>
+        </div>
+        <button className="addCpu" onClick={selectingPartType}><h1>+</h1></button>
       </div>
       </div>
       <div style={{ display: isAdding }} className="addCpuScreen">

@@ -35,13 +35,13 @@ button {
     grid-template-columns: 1fr 1fr 1fr;
 }
 
-.cpuInfo {
+.partInfo {
     margin-top: 12.5%;
     margin-bottom: 12.5%;
     height: 80%;
 }
 
-.cpuImage {
+.partImage {
     background-color: white;
     width: 90%;
     min-width: 160px;
@@ -52,24 +52,24 @@ button {
     padding: 2% 0;
 }
 
-.cpuImage img {
+.partImage img {
     width: 70%;
     margin: auto;
 }
 
-.cpuSpecs {
+.partSpecs {
     background-color: white;
     width: 90%;
     min-width: 160px;
     text-align: center;
 }
 
-.cpuSpecs h1 {
+.partSpecs h1 {
     padding-top: 10px;
     font-size: large;
 }
 
-.cpuSpecs p {
+.partSpecs p {
     margin: 3%;
 }
 
@@ -199,6 +199,28 @@ button {
     height: 50%;
     text-align: center;
     font-weight: bold;
+}
+
+.choosePartType{
+    position: fixed;
+    bottom: 10%;
+    right: 4.5%;
+    text-align: center;
+    background-color: white;
+    width: 100px;
+}
+
+.partType{
+    border: 1px solid black;
+    margin: 0;
+    padding: 5% 0;
+    transition: all 0.5s;
+}
+
+.partType:hover{
+    cursor: pointer;
+    background-color:#DB5510;
+    color: white;
 }
 
 
