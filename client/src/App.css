@@ -18,6 +18,11 @@ button {
     font-family: 'Inter', sans-serif;
 }
 
+.mainTitle{
+    text-align: center;
+    color: #DB5510;
+}
+
 .mainContainer {
     display: grid;
     grid-template-columns: 1fr 8fr 1fr;
@@ -138,7 +143,7 @@ button {
 
 .addCpuArea {
     margin: auto;
-    margin-top: 4%;
+    margin-top: 7vh;
     width: 70%;
     height: 80%;
     background-color: #252525;
