@@ -203,9 +203,10 @@ function App() {
       });
     }
   };
-  
-  function showModalAddCpu() {
+
+  function showModalAddPart(partType) {
     clearInputs();
+    selectingPartType();
     if (isAdding == 'none') {
       setAdding('block');
     } else {
@@ -276,15 +277,23 @@ function App() {
           </> : <></>}
           <br></br>
           <div className="choosePartType" style={{ display: isSelectingType }}>
-            <h3 className="partType" onClick={() =>createOrEditPart('cpu')}>CPU</h3>
-            <h3 className="partType" onClick={() =>createOrEditPart('gpu')}>GPU</h3>
-            <h3 className="partType" onClick={() =>createOrEditPart('mobo')}>MOBO</h3>
-            <h3 className="partType" onClick={() =>createOrEditPart('ram')}>RAM</h3>
-            <h3 className="partType" onClick={() =>createOrEditPart('power')}>FONTE</h3>
-            <h3 className="partType" onClick={() =>createOrEditPart('ssd')}>SSD</h3>
-            <h3 className="partType" onClick={() =>createOrEditPart('case')}>GABINETE</h3>
+            <h3 className="partType" onClick={() =>showModalAddPart('cpu')}>CPU</h3>
+            <h3 className="partType" onClick={() =>showModalAddPart('gpu')}>GPU</h3>
+            <h3 className="partType" onClick={() =>showModalAddPart('mobo')}>MOBO</h3>
+            <h3 className="partType" onClick={() =>showModalAddPart('ram')}>RAM</h3>
+            <h3 className="partType" onClick={() =>showModalAddPart('power')}>FONTE</h3>
+            <h3 className="partType" onClick={() =>showModalAddPart('ssd')}>SSD</h3>
+            <h3 className="partType" onClick={() =>showModalAddPart('case')}>GABINETE</h3>
           </div>
           <button className="addPart" onClick={selectingPartType}><h1>+</h1></button>
+        </div>
+        <div style={{display: isAdding}} className="addPartContainer">
+            <div className="addPartModal">
+              <div className="addPartImageAndOtherInfo">
+                <div className="addPartImage"></div>
+              </div>
+              <div></div>
+            </div>
         </div>
       </div>
       <div></div>

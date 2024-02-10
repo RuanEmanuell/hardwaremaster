@@ -153,27 +153,36 @@ button {
     color: white;
 }
 
-
-@media only screen and (max-width: 1200px) {
-    .addInputArea {
-        grid-template-columns: 1fr 1fr;
-    }
+.addPartContainer{
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.829);
+    height: 100vh;
+    width: 100%;
 }
 
-@media only screen and (max-width: 800px) {
-    .cpuList {
-        grid-template-columns: 1fr 1fr;
-    }
+.addPartModal{
+    margin: auto;
+    margin-top: 15%;
+    width: 60%;
+    height: 60%;
+    min-width: 500px;
+    max-width: 1000px;
+    background-color: #252525;
+    display: grid;
+    grid-template-rows: 2fr 4fr;
+}
 
-    .addInput {
-        width: 80%;
-    }
+.addPartImageAndOtherInfo{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+}
 
-    .addCpuArea {
-        grid-template-columns: 55% 50%;
-    }
-
-    .addInputArea {
-        grid-template-columns: 1fr;
-    }
+.addPartImage{
+    position: relative;
+    top: 5%;
+    left: 5%;
+    height: 100%;
+    background-color: white;
 }
