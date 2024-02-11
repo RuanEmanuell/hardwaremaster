@@ -163,26 +163,67 @@ button {
 }
 
 .addPartModal{
-    margin: auto;
-    margin-top: 15%;
+    margin: min(50px, 5%) auto;
     width: 60%;
-    height: 60%;
     min-width: 500px;
     max-width: 1000px;
     background-color: #252525;
     display: grid;
-    grid-template-rows: 2fr 4fr;
+    grid-template-rows: 30vh auto 10vh;
 }
 
-.addPartImageAndOtherInfo{
+.addPartInputs{
+    padding: 5%;
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 1fr 3fr;
+    border: 2px solid blue;
 }
 
-.addPartImage{
-    position: relative;
-    top: 5%;
-    left: 5%;
-    height: 100%;
-    background-color: white;
+.inputLabel{
+    color: white;
 }
+
+.addPartImg{
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.addPartImgBox{
+    margin-top: 2%;
+    background-color: white;
+    border-radius: 10px;
+    width: 50%;
+    min-width: 350px;
+    display: flex;
+    justify-content: center;
+}
+
+.addPartImg img{
+    margin-top: 5%;
+    height: 80%;
+    width: fit-content;
+}
+
+.addPartInputs input, .addPartInputs label{
+    margin: 5px;
+    height: 75%;
+}
+
+.saveButtonContainer{
+    border: 2px solid green;
+    display: flex;
+    justify-content: center;
+}
+
+.saveButtonContainer button{
+    font-size: 100%;
+    padding: 2%;
+    margin: auto;
+}
+
+@media screen and (max-width: 900px) {
+    .addPartInputs{
+        grid-template-columns: auto;
+    }
+  }

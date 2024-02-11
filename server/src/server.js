@@ -31,6 +31,7 @@ app.get('/teste', async (req, res) => {
 app.post('/post', async (req, res) => {
     try {
         const newCpu = new Cpu(req.body);
+        console.log(newCpu);
         await newCpu.save();
         res.sendStatus(201)
     } catch (err) {

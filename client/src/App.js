@@ -20,7 +20,7 @@ function App() {
     cpuLink: '',
     cpuLink2: '',
     cpuLink3: '',
-    cpuImage: '',
+    imageLink: '',
     cpuIgpu: false,
     cpuPerformance: '',
     igpuPerformance: '',
@@ -38,13 +38,14 @@ function App() {
     shopLink: '',
     shopLink2: '',
     shopLink3: '',
-    gpuImage: '',
+    imageLink: '',
     gpuPrice: '',
     gpuPerformance: '',
     costBenefit: '',
   });
   const [isSelectingType, setSelecting] = useState('none');
   const [isAdding, setAdding] = useState('none');
+  const [selectedPartType, setSelectedType] = useState('cpu');
 
   useEffect(() => {
     fetchApi();
@@ -60,15 +61,15 @@ function App() {
       cpuCores: '',
       cpuThreads: '',
       cpuFrequency: '',
-      cpuIgpu: false,
       cpuPrice: '',
-      cpuPerformance: '',
-      igpuPerformance: '',
-      costBenefit: '',
       cpuLink: '',
       cpuLink2: '',
       cpuLink3: '',
-      cpuImage: '',
+      imageLink: '',
+      cpuIgpu: false,
+      cpuPerformance: '',
+      igpuPerformance: '',
+      costBenefit: '',
     });
     setGpuData({
       ...gpuData,
@@ -83,10 +84,10 @@ function App() {
       shopLink: '',
       shopLink2: '',
       shopLink3: '',
-      gpuImage: '',
+      imageLink: '',
       gpuPrice: '',
       gpuPerformance: '',
-      costBenefit: ''
+      costBenefit: '',
     })
   }
 
@@ -108,16 +109,16 @@ function App() {
     }
   }
 
-  async function createOrEditPart(partType) {
-    const isCpu = partType === 'cpu';
+  async function createOrEditPart() {
+    const isCpu = selectedPartType === 'cpu';
     const dataToSend = isCpu ? {
-      type: partType,
+      type: selectedPartType,
       ...cpuData
     } : {
-      type: partType,
+      type: selectedPartType,
       ...gpuData
     };
-  
+
     if (editingPartId) {
       try {
         const response = await fetch(`http://localhost:3001/update/${editingPartId}`, {
@@ -144,16 +145,17 @@ function App() {
         console.log(err);
       }
     }
+    showModalAddPart();
   }
-  
-  async function editPart(index, partType) {
-    setAdding(true);
+
+  function editPart(index) {
     let currentPart = fullList[index];
     setEditingPartId(currentPart['_id']);
-  
-    if (partType === 'cpu') {
+    showModalAddPart(currentPart['type']);
+
+    if (currentPart['type'] === 'cpu') {
       setCpuData({ ...currentPart });
-    } else if (partType === 'gpu') {
+    } else if (currentPart['type'] === 'gpu') {
       setGpuData({ ...currentPart });
     }
   }
@@ -188,15 +190,15 @@ function App() {
     }
   }
 
-  const HandleChange = (event, partType) => {
+  const HandleChange = (event) => {
     const { name, value, type, checked } = event.target;
-    
-    if (partType === 'cpu') {
+
+    if (selectedPartType === 'cpu') {
       setCpuData({
         ...cpuData,
         [name]: type === 'checkbox' ? checked : value,
       });
-    } else if (partType === 'gpu') {
+    } else if (selectedPartType === 'gpu') {
       setGpuData({
         ...gpuData,
         [name]: type === 'checkbox' ? checked : value,
@@ -206,6 +208,7 @@ function App() {
 
   function showModalAddPart(partType) {
     clearInputs();
+    setSelectedType(partType);
     selectingPartType();
     if (isAdding == 'none') {
       setAdding('block');
@@ -213,6 +216,11 @@ function App() {
       setAdding('none');
     }
   }
+
+  const partTypeDataMap = {
+    'cpu': cpuData,
+    'gpu': gpuData,
+  };
 
   return (
     <div className="mainContainer">
@@ -277,23 +285,41 @@ function App() {
           </> : <></>}
           <br></br>
           <div className="choosePartType" style={{ display: isSelectingType }}>
-            <h3 className="partType" onClick={() =>showModalAddPart('cpu')}>CPU</h3>
-            <h3 className="partType" onClick={() =>showModalAddPart('gpu')}>GPU</h3>
-            <h3 className="partType" onClick={() =>showModalAddPart('mobo')}>MOBO</h3>
-            <h3 className="partType" onClick={() =>showModalAddPart('ram')}>RAM</h3>
-            <h3 className="partType" onClick={() =>showModalAddPart('power')}>FONTE</h3>
-            <h3 className="partType" onClick={() =>showModalAddPart('ssd')}>SSD</h3>
-            <h3 className="partType" onClick={() =>showModalAddPart('case')}>GABINETE</h3>
+            <h3 className="partType" onClick={() => showModalAddPart('cpu')}>CPU</h3>
+            <h3 className="partType" onClick={() => showModalAddPart('gpu')}>GPU</h3>
+            <h3 className="partType" onClick={() => showModalAddPart('mobo')}>MOBO</h3>
+            <h3 className="partType" onClick={() => showModalAddPart('ram')}>RAM</h3>
+            <h3 className="partType" onClick={() => showModalAddPart('power')}>FONTE</h3>
+            <h3 className="partType" onClick={() => showModalAddPart('ssd')}>SSD</h3>
+            <h3 className="partType" onClick={() => showModalAddPart('case')}>GABINETE</h3>
           </div>
           <button className="addPart" onClick={selectingPartType}><h1>+</h1></button>
         </div>
-        <div style={{display: isAdding}} className="addPartContainer">
-            <div className="addPartModal">
-              <div className="addPartImageAndOtherInfo">
-                <div className="addPartImage"></div>
-              </div>
-              <div></div>
+        <div style={{ display: isAdding }} className="addPartContainer">
+          <div className="addPartModal">
+            <div className="addPartImg">
+            <div className="addPartImgBox">
+              <img src={
+                partTypeDataMap[selectedPartType]['imageLink']}></img>
+                </div>
             </div>
+            <div className="addPartInputs">
+                {Object.keys(partTypeDataMap[selectedPartType]).map((key) => 
+                key != '_id' && key != 'type' ?
+                <>
+                <label className="inputLabel">{key}:</label>
+                <input
+                  type = {key == 'cpuIgpu' ? 'checkbox' : 'text'}
+                  placeholder={key}
+                  key={key}
+                  name={key}
+                  onChange={(event) => HandleChange(event)}
+                  value={gpuData[key]}></input> </>: <></>)}
+              </div>
+              <div class="saveButtonContainer">
+              <OrangeButton onClick={() => createOrEditPart()} buttonLabel='Salvar'/>
+              </div>
+          </div>
         </div>
       </div>
       <div></div>

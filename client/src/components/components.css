@@ -5,7 +5,6 @@
     font-weight: bold;
     color: white;
     border-radius: 5px;
-    grid-column-start: 2;
 }
 
 .orangeButton:hover {
@@ -18,11 +17,4 @@
     width: 75%;
     border-radius: 50px;
     border: 1px solid rgba(0, 0, 0, 0.103);
-}
-
-@media only screen and (max-width: 800px) {
-    .orangeButton {
-        grid-column-start: 1;
-        margin: 5% auto;
-    }
 }
