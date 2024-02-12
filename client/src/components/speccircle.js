@@ -11,7 +11,7 @@ function SpecCircle(props) {
 
     return (
         <div className="dualSpecBox">
-            <p>{props.performanceLabel} </p> <div className="specCircle" style={{ 'backgroundColor': specCircleColor }}>{props.performanceRating}</div>
+            <p>{props.performanceLabel} </p> <div className="specCircle" style={{ 'backgroundColor': specCircleColor }}><p>{props.performanceRating}</p></div>
         </div>
     )
 }

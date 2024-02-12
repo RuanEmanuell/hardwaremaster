@@ -13,8 +13,13 @@
 }
 
 .specCircle {
-    height: 70%;
-    width: 75%;
+    margin: 10%;
     border-radius: 50px;
     border: 1px solid rgba(0, 0, 0, 0.103);
+    display: flex;
+    justify-content: center;
+}
+
+.specCircle p{
+    margin: auto;
 }

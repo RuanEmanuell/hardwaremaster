@@ -32,6 +32,7 @@ function App() {
           name: '',
           brand: '',
           launch: '',
+          cpuSocket: '',
           cpuGeneration: '',
           cpuCores: '',
           cpuThreads: '',
@@ -264,165 +265,96 @@ function App() {
       <div>
         <h1 className="mainTitle">Todas as peças</h1>
         <div className="partList">
-          {fullList ? <>
-            {fullList.map((part, index) =>
-              part['type'] == 'cpu' ?
+          {fullList ? (
+            <>
+              {fullList.map((part, index) => (
                 <div key={part.id} className="partInfo">
                   <div className="partImage">
-                    <img src={part['imageLink']}></img>
+                    <img src={part['imageLink']} alt={part['name']} />
                   </div>
                   <div className="partSpecs">
                     <h1>{part['name']}</h1>
                     <p>Marca: {part['brand']}</p>
-                    <p>Lançamento: {part['launch']}</p>
-                    <p>Geração: {part['cpuGeneration']}</p>
-                    <p>Núcleos: {part['cpuCores']}</p>
-                    <p>Threads: {part['cpuThreads']}</p>
-                    <p>Frequência: {part['cpuFrequency']}GHZ</p>
-                    <p>Preço: R$ {part['price']}</p>
-                    <p>Tem integrada: {part['cpuIgpu'] ? 'Sim' : 'Não'}</p>
-                    <SpecCircle performanceLabel='Performance:' performanceRating={part['cpuPerformance']} />
-                    <SpecCircle performanceLabel='Integrada (iGPU):' performanceRating={part['igpuPerformance']} />
-                    <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
-                    <div className="editDeleteButtons">
-                      <button onClick={() => editPart(index)} className="editButton"><img src={editIcon}></img></button>
-                      <button onClick={() => deletePart(part['_id'])} className="deleteButton"><img src={deleteIcon}></img></button>
-                    </div>
-                    <OrangeButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
-                  </div>
-                </div> : part['type'] == 'gpu' ?
-                  <div key={part.id} className="partInfo">
-                    <div className="partImage">
-                      <img src={part['imageLink']}></img>
-                    </div>
-                    <div className="partSpecs">
-                      <h1>{part['name']}</h1>
-                      <p>Marca: {part['brand']}</p>
-                      <p>Lançamento: {part['launch']}</p>
-                      <p>Geração: {part['gpuGeneration']}</p>
-                      <p>Núcleos: {part['gpuCores']}</p>
-                      <p>Memória: {part['gpuMemory']}GB</p>
-                      <p>Tipo de memória: {part['gpuMemoryType']}</p>
-                      <p>Interface da memória: {part['gpuMemoryBus']}</p>
-                      <p>Preço: R$ {part['price']}</p>
-                      <SpecCircle performanceLabel='Performance:' performanceRating={part['gpuPerformance']} />
-                      <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
-                      <div className="editDeleteButtons">
-                        <button onClick={() => editPart(index)} className="editButton"><img src={editIcon}></img></button>
-                        <button onClick={() => deletePart(part['_id'])} className="deleteButton"><img src={deleteIcon}></img></button>
-                      </div>
-                      <OrangeButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
-                    </div>
-                  </div> : part['type'] == 'mobo' ?
-                    <div key={part.id} className="partInfo">
-                      <div className="partImage">
-                        <img src={part['imageLink']}></img>
-                      </div>
-                      <div className="partSpecs">
-                        <h1>{part['name']}</h1>
-                        <p>Marca: {part['brand']}</p>
+                    {part['type'] === 'cpu' ? (
+                      <>
+                        <p>Lançamento: {part['launch']}</p>
+                        <p>Socket: {part['cpuSocket']}</p>
+                        <p>Geração: {part['cpuGeneration']}</p>
+                        <p>Núcleos: {part['cpuCores']}</p>
+                        <p>Threads: {part['cpuThreads']}</p>
+                        <p>Frequência: {part['cpuFrequency']}GHZ</p>
+                        <p>Preço: R$ {part['price']}</p>
+                        <p>Tem integrada: {part['cpuIgpu'] ? 'Sim' : 'Não'}</p>
+                        <SpecCircle performanceLabel='Performance:' performanceRating={part['cpuPerformance']} />
+                        <SpecCircle performanceLabel='Integrada (iGPU):' performanceRating={part['igpuPerformance']} />
+                      </>
+                    ) : part['type'] === 'gpu' ? (
+                      <>
+                        <p>Lançamento: {part['launch']}</p>
+                        <p>Geração: {part['gpuGeneration']}</p>
+                        <p>Núcleos: {part['gpuCores']}</p>
+                        <p>Memória: {part['gpuMemory']}GB</p>
+                        <p>Tipo de memória: {part['gpuMemoryType']}</p>
+                        <p>Interface da memória: {part['gpuMemoryBus']} bits</p>
+                        <p>Preço: R$ {part['price']}</p>
+                        <SpecCircle performanceLabel='Performance:' performanceRating={part['gpuPerformance']} />
+                      </>
+                    ) : part['type'] === 'mobo' ? (
+                      <>
                         <p>Chipset: {part['moboChipset']}</p>
                         <p>Socket compatível: {part['moboSocketCompatibility']}</p>
                         <p>Tipo de RAM compatível: {part['moboRamCompatibility']}</p>
                         <p>Slots de RAM: {part['moboSlots']}</p>
                         <p>Preço: R$ {part['price']}</p>
-                        <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
-                        <div className="editDeleteButtons">
-                          <button onClick={() => editPart(index)} className="editButton"><img src={editIcon}></img></button>
-                          <button onClick={() => deletePart(part['_id'])} className="deleteButton"><img src={deleteIcon}></img></button>
-                        </div>
-                        <OrangeButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
-                      </div>
-                    </div> : part['type'] == 'ram' ?
-                      <div key={part.id} className="partInfo">
-                        <div className="partImage">
-                          <img src={part['imageLink']}></img>
-                        </div>
-                        <div className="partSpecs">
-                          <h1>{part['name']}</h1>
-                          <p>Marca: {part['brand']}</p>
-                          <p>Frequência: {part['ramFrequency']}MHZ</p>
-                          <p>Capacidade: {part['ramCapacity']}GB</p>
-                          <p>Tipo da memória: {part['ramType']}</p>
-                          <p>Latência: {part['ramLatency']}</p>
-                          <p>Preço: R$ {part['price']}</p>
-                          <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
-                          <div className="editDeleteButtons">
-                            <button onClick={() => editPart(index)} className="editButton"><img src={editIcon}></img></button>
-                            <button onClick={() => deletePart(part['_id'])} className="deleteButton"><img src={deleteIcon}></img></button>
-                          </div>
-                          <OrangeButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
-                        </div>
-                      </div> : part['type'] == 'power' ?
-                      <div key={part.id} className="partInfo">
-                        <div className="partImage">
-                          <img src={part['imageLink']}></img>
-                        </div>
-                        <div className="partSpecs">
-                          <h1>{part['name']}</h1>
-                          <p>Marca: {part['brand']}</p>
-                          <p>Watts: {part['powerWatts']}W</p>
-                          <p>Efficiência: {part['powerEfficiency']}</p>
-                          <p>Modular: {part['powerModular']}</p>
-                          <p>Preço: R$ {part['price']}</p>
-                          <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
-                          <div className="editDeleteButtons">
-                            <button onClick={() => editPart(index)} className="editButton"><img src={editIcon}></img></button>
-                            <button onClick={() => deletePart(part['_id'])} className="deleteButton"><img src={deleteIcon}></img></button>
-                          </div>
-                          <OrangeButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
-                        </div>
-                      </div> : part['type'] == 'ssd' ?
-                      <div key={part.id} className="partInfo">
-                        <div className="partImage">
-                          <img src={part['imageLink']}></img>
-                        </div>
-                        <div className="partSpecs">
-                          <h1>{part['name']}</h1>
-                          <p>Marca: {part['brand']}</p>
-                          <p>Capacidade: {part['ssdCapacity']}GB</p>
-                          <p>Tipo do SSD: {part['ssdType']}</p>
-                          <p>Velocidade (Leitura): {part['ssdSpeed']}MB/s</p>
-                          <p>Preço: R$ {part['price']}</p>
-                          <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
-                          <div className="editDeleteButtons">
-                            <button onClick={() => editPart(index)} className="editButton"><img src={editIcon}></img></button>
-                            <button onClick={() => deletePart(part['_id'])} className="deleteButton"><img src={deleteIcon}></img></button>
-                          </div>
-                          <OrangeButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
-                        </div>
-                      </div> : part['type'] == 'case' ?
-                      <div key={part.id} className="partInfo">
-                        <div className="partImage">
-                          <img src={part['imageLink']}></img>
-                        </div>
-                        <div className="partSpecs">
-                          <h1>{part['name']}</h1>
-                          <p>Marca: {part['brand']}</p>
-                          <p>Formato do Gabinete: {part['caseForm']}</p>
-                          <p>Suporte a fans: {part['caseFanSupport']}</p>
-                          <p>Suporte a Water Cooler: {part['caseWcSupport']}</p>
-                          <p>Preço: R$ {part['price']}</p>
-                          <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
-                          <div className="editDeleteButtons">
-                            <button onClick={() => editPart(index)} className="editButton"><img src={editIcon}></img></button>
-                            <button onClick={() => deletePart(part['_id'])} className="deleteButton"><img src={deleteIcon}></img></button>
-                          </div>
-                          <OrangeButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
-                        </div>
-                      </div> :
-                      <></>
-            )}
-          </> : <></>}
+                      </>
+                    ) : part['type'] === 'ram' ? (
+                      <>
+                        <p>Frequência: {part['ramFrequency']}MHZ</p>
+                        <p>Capacidade: {part['ramCapacity']}GB</p>
+                        <p>Tipo da memória: {part['ramType']}</p>
+                        <p>Latência: {part['ramLatency']}</p>
+                        <p>Preço: R$ {part['price']}</p>
+                      </>
+                    ) : part['type'] === 'power' ? (
+                      <>
+                        <p>Watts: {part['powerWatts']}W</p>
+                        <p>Efficiência: {part['powerEfficiency']}</p>
+                        <p>Modular: {part['powerModular']}</p>
+                        <p>Preço: R$ {part['price']}</p>
+                      </>
+                    ) : part['type'] === 'ssd' ? (
+                      <>
+                        <p>Capacidade: {part['ssdCapacity']}GB</p>
+                        <p>Tipo do SSD: {part['ssdType']}</p>
+                        <p>Velocidade (Leitura): {part['ssdSpeed']}MB/s</p>
+                        <p>Preço: R$ {part['price']}</p>
+                      </>
+                    ) : part['type'] === 'case' ? (
+                      <>
+                        <p>Formato do Gabinete: {part['caseForm']}</p>
+                        <p>Suporte a fans: {part['caseFanSupport']}</p>
+                        <p>Suporte a Water Cooler: {part['caseWcSupport']}</p>
+                        <p>Preço: R$ {part['price']}</p>
+                      </>
+                    ) : null}
+                    <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
+                    <div className="editDeleteButtons">
+                      <button onClick={() => editPart(index)} className="editButton"><img src={editIcon} alt="Edit Icon" /></button>
+                      <button onClick={() => deletePart(part['_id'])} className="deleteButton"><img src={deleteIcon} alt="Delete Icon" /></button>
+                    </div>
+                    <OrangeButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
+                  </div>
+                </div>
+              ))}
+            </>
+          ) : <></>}
           <br></br>
           <div className="choosePartType" style={{ display: isSelectingType }}>
-            <h3 className="partType" onClick={() => showModalAddPart('cpu')}>CPU</h3>
-            <h3 className="partType" onClick={() => showModalAddPart('gpu')}>GPU</h3>
-            <h3 className="partType" onClick={() => showModalAddPart('mobo')}>MOBO</h3>
-            <h3 className="partType" onClick={() => showModalAddPart('ram')}>RAM</h3>
-            <h3 className="partType" onClick={() => showModalAddPart('power')}>FONTE</h3>
-            <h3 className="partType" onClick={() => showModalAddPart('ssd')}>SSD</h3>
-            <h3 className="partType" onClick={() => showModalAddPart('case')}>GABINETE</h3>
+            {Object.keys(partTypeDataMap).map((addPart, index) => (
+              <h3 key={index} className="partType" onClick={() => showModalAddPart(addPart)}>
+                {addPart}
+              </h3>
+            ))}
           </div>
           <button className="addPart" onClick={toggleSelecting}><h1>+</h1></button>
         </div>
