@@ -39,9 +39,9 @@ function App() {
           costBenefit: '',
         }
         : {
-          gpuName: '',
-          gpuBrand: '',
-          gpuLaunch: '',
+          name: '',
+          brand: '',
+          launch: '',
           gpuGeneration: '',
           gpuCores: '',
           gpuMemory: '',
@@ -68,7 +68,7 @@ function App() {
 
   async function fetchApi() {
     try {
-      const response = await fetch('http://localhost:3001/teste');
+      const response = await fetch('http://localhost:3001/list');
       const data = await response.json();
       setFullList(data);
     } catch (err) {
@@ -91,6 +91,9 @@ function App() {
       setEditingPartId(null);
       fetchApi();
       showModalAddPart();
+      if (isSelectingType == 'block') {
+        toggleSelecting();
+      }
     } catch (err) {
       console.log(err);
     }
@@ -100,7 +103,6 @@ function App() {
     const currentPart = fullList[index];
     setEditingPartId(currentPart['_id']);
     showModalAddPart(currentPart['type']);
-
     if (currentPart['type'] === 'cpu') {
       setCpuData({ ...currentPart });
     } else if (currentPart['type'] === 'gpu') {
@@ -154,7 +156,6 @@ function App() {
   function showModalAddPart(partType) {
     clearInputs();
     setSelectedType(partType);
-    toggleSelecting();
     setAdding((prevState) => (prevState === 'none' ? 'block' : 'none'));
   }
 
@@ -237,31 +238,32 @@ function App() {
           <button className="addPart" onClick={toggleSelecting}><h1>+</h1></button>
         </div>
         <div style={{ display: isAdding }} className="addPartContainer">
-          <div className="addPartModal">
-            <div className="addPartImg">
-              <div className="addPartImgBox">
-                <img src={
-                  partTypeDataMap[selectedPartType]['imageLink']}></img>
+          {selectedPartType ?
+            <div className="addPartModal">
+              <div className="addPartImg">
+                <div className="addPartImgBox">
+                  <img src={
+                    partTypeDataMap[selectedPartType]['imageLink']}></img>
+                </div>
               </div>
-            </div>
-            <div className="addPartInputs">
-              {Object.keys(partTypeDataMap[selectedPartType]).map((key) =>
-                key != '_id' && key != 'type' && key != '__v' ?
-                  <>
-                    <label className="inputLabel">{key}:</label>
-                    <input
-                      type={key == 'cpuIgpu' ? 'checkbox' : 'text'}
-                      placeholder={key}
-                      key={key}
-                      name={key}
-                      onChange={(event) => handleChange(event)}
-                      checked={partTypeDataMap[selectedPartType][key]}
-                      value={partTypeDataMap[selectedPartType][key]}></input> </> : <></>)}
-            </div>
-            <div class="saveButtonContainer">
-              <OrangeButton onClick={() => createOrEditPart()} buttonLabel='Salvar' />
-            </div>
-          </div>
+              <div className="addPartInputs">
+                {Object.keys(partTypeDataMap[selectedPartType]).map((key) =>
+                  key != '_id' && key != 'type' && key != '__v' ?
+                    <>
+                      <label className="inputLabel">{key}:</label>
+                      <input
+                        type={key == 'cpuIgpu' ? 'checkbox' : 'text'}
+                        placeholder={key}
+                        key={key}
+                        name={key}
+                        onChange={(event) => handleChange(event)}
+                        checked={partTypeDataMap[selectedPartType][key]}
+                        value={partTypeDataMap[selectedPartType][key]}></input> </> : <></>)}
+              </div>
+              <div className="saveButtonContainer">
+                <OrangeButton onClick={() => createOrEditPart()} buttonLabel='Salvar' />
+              </div>
+            </div> : <></>}
         </div>
       </div>
       <div></div>

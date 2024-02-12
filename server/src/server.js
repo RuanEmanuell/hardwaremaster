@@ -23,16 +23,15 @@ db.once('open', () => {
     console.log('Conectado ao MongoDB');
 });
 
-app.get('/teste', async (req, res) => {
-    const cpus = await db.collection('parts').find({}).toArray();
-    res.json(cpus);
+app.get('/list', async (req, res) => {
+    const parts = await db.collection('parts').find({}).toArray();
+    res.json(parts);
 });
 
 app.post('/post', async (req, res) => {
     try {
         const newPart = new Part(req.body);
         await newPart.save();
-        console.log(newPart);
         res.sendStatus(201)
     } catch (err) {
         console.log(err);
@@ -43,8 +42,7 @@ app.post('/post', async (req, res) => {
 app.put('/update/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const updatedPart = await Part.findByIdAndUpdate(id, req.body, { new: true });
-        console.log(updatedPart);
+        const updatedPart = await Part.findByIdAndUpdate(id, req.body);
         res.sendStatus(201);
     } catch (error) {
         console.log(error);
@@ -63,23 +61,22 @@ app.delete('/delete/:id', async (req, res) => {
 
 app.get('/currentprice/:id', async (req, res) => {
     const { id } = req.params;
-    const selectedCpu = await db.collection('parts').findOne({ "_id": new mongoose.Types.ObjectId(id) });
+    const selectedPart = await db.collection('parts').findOne({ "_id": new mongoose.Types.ObjectId(id) });
 
     const browserPromise = puppeteer.launch();
     const browser = await browserPromise;
 
-    let price = selectedCpu['price'];
+    let price = selectedPart['price'];
 
-    async function choosePrice(cpuLinks) {
+    async function choosePrice(partLinks) {
         let currentPrice = price;
         let priceLink = 0.0;
         const page = await browser.newPage();
-        for (const cpuLink of cpuLinks) {
-            if (cpuLink != '') {
-                await page.goto(cpuLink);
+        for (const partLink of partLinks) {
+            if (partLink != '') {
+                await page.goto(partLink);
                 if (await page.$('.sc-5492faee-2.ipHrwP.finalPrice')) {
                     priceLink = await page.$eval('.sc-5492faee-2.ipHrwP.finalPrice', (h4) => parseFloat(h4.innerText.substring(3).replaceAll(',', '.')));
-                    console.log('Menor preço:', priceLink, 'em', cpuLink);
                 } else if (await page.$('#valVista')) {
                     priceLink = await page.$eval('#valVista', (p) => parseFloat(p.innerText.substring(3).replaceAll(',', '.')));
                 } else if (await page.$('.jss272')) {
@@ -87,18 +84,17 @@ app.get('/currentprice/:id', async (req, res) => {
                 }
             }
 
-        }
+            if (priceLink != currentPrice && priceLink > 0.0) {
+                currentPrice = priceLink
+            }    
 
-        if (priceLink != currentPrice && priceLink > 0.0) {
-            currentPrice = priceLink
         }
-
         return currentPrice;
     }
 
-    price = await choosePrice([selectedCpu['shopLink'], selectedCpu['shopLink2'], selectedCpu['shopLink3']]);
+    price = await choosePrice([selectedPart['shopLink'], selectedPart['shopLink2'], selectedPart['shopLink3']]);
 
-    if (price != selectedCpu['price']) {
+    if (price != selectedPart['price']) {
         res.json({ preço: price });
     } else {
         console.log('Mesmo preço!');

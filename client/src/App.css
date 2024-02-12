@@ -176,7 +176,6 @@ button {
     padding: 5%;
     display: grid;
     grid-template-columns: 1fr 3fr;
-    border: 2px solid blue;
 }
 
 .inputLabel{
@@ -211,7 +210,6 @@ button {
 }
 
 .saveButtonContainer{
-    border: 2px solid green;
     display: flex;
     justify-content: center;
 }
