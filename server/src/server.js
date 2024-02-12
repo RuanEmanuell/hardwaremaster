@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import fs from 'fs';
 import cors from 'cors';
 import puppeteer from 'puppeteer';
-import Cpu from '../src/models/cpu.js';
+import Part from './models/part.js';
 
 const app = express();
 const port = 3001;
@@ -24,15 +24,15 @@ db.once('open', () => {
 });
 
 app.get('/teste', async (req, res) => {
-    const cpus = await db.collection('cpus').find({}).toArray();
+    const cpus = await db.collection('parts').find({}).toArray();
     res.json(cpus);
 });
 
 app.post('/post', async (req, res) => {
     try {
-        const newCpu = new Cpu(req.body);
-        console.log(newCpu);
-        await newCpu.save();
+        const newPart = new Part(req.body);
+        await newPart.save();
+        console.log(newPart);
         res.sendStatus(201)
     } catch (err) {
         console.log(err);
@@ -43,7 +43,8 @@ app.post('/post', async (req, res) => {
 app.put('/update/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const updatedCpu = await Cpu.findByIdAndUpdate(id, req.body, { new: true });
+        const updatedPart = await Part.findByIdAndUpdate(id, req.body, { new: true });
+        console.log(updatedPart);
         res.sendStatus(201);
     } catch (error) {
         console.log(error);
@@ -53,7 +54,7 @@ app.put('/update/:id', async (req, res) => {
 app.delete('/delete/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const updatedCpu = await Cpu.findByIdAndDelete(id, req.body, { new: true });
+        const deletedPart = await Part.findByIdAndDelete(id, req.body, { new: true });
         res.sendStatus(201);
     } catch (error) {
         console.log(error);
@@ -62,7 +63,7 @@ app.delete('/delete/:id', async (req, res) => {
 
 app.get('/currentprice/:id', async (req, res) => {
     const { id } = req.params;
-    const selectedCpu = await db.collection('cpus').findOne({ "_id": new mongoose.Types.ObjectId(id) });
+    const selectedCpu = await db.collection('parts').findOne({ "_id": new mongoose.Types.ObjectId(id) });
 
     const browserPromise = puppeteer.launch();
     const browser = await browserPromise;

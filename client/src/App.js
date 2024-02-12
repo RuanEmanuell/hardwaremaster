@@ -22,38 +22,38 @@ function App() {
     return {
       ...(type === 'cpu'
         ? {
-            cpuName: '',
-            cpuBrand: '',
-            cpuLaunch: '',
-            cpuGeneration: '',
-            cpuCores: '',
-            cpuThreads: '',
-            cpuFrequency: '',
-            cpuLink: '',
-            cpuLink2: '',
-            cpuLink3: '',
-            imageLink: '',
-            cpuIgpu: false,
-            cpuPerformance: '',
-            igpuPerformance: '',
-            costBenefit: '',
-          }
+          name: '',
+          brand: '',
+          launch: '',
+          cpuGeneration: '',
+          cpuCores: '',
+          cpuThreads: '',
+          cpuFrequency: '',
+          shopLink: '',
+          shopLink2: '',
+          shopLink3: '',
+          imageLink: '',
+          cpuIgpu: false,
+          cpuPerformance: '',
+          igpuPerformance: '',
+          costBenefit: '',
+        }
         : {
-            gpuName: '',
-            gpuBrand: '',
-            gpuLaunch: '',
-            gpuGeneration: '',
-            gpuCores: '',
-            gpuMemory: '',
-            gpuMemoryType: '',
-            gpuMemoryBus: '',
-            shopLink: '',
-            shopLink2: '',
-            shopLink3: '',
-            imageLink: '',
-            gpuPerformance: '',
-            costBenefit: '',
-          }),
+          gpuName: '',
+          gpuBrand: '',
+          gpuLaunch: '',
+          gpuGeneration: '',
+          gpuCores: '',
+          gpuMemory: '',
+          gpuMemoryType: '',
+          gpuMemoryBus: '',
+          shopLink: '',
+          shopLink2: '',
+          shopLink3: '',
+          imageLink: '',
+          gpuPerformance: '',
+          costBenefit: '',
+        }),
     };
   }
 
@@ -78,7 +78,7 @@ function App() {
 
   async function createOrEditPart() {
     const isCpu = selectedPartType === 'cpu';
-    const dataToSend = isCpu ? { type: selectedPartType, ...cpuData } : { type: selectedPartType, ...gpuData };
+    const dataToSend = isCpu ? { type: selectedPartType, ...cpuData, price: 0 } : { type: selectedPartType, ...gpuData, price: 0 };
 
     try {
       const response = await fetch(editingPartId ? `http://localhost:3001/update/${editingPartId}` : 'http://localhost:3001/post', {
@@ -179,14 +179,14 @@ function App() {
                   <div className="partSpecs">
                     <h1>{part['name']}</h1>
                     <p>Marca: {part['brand']}</p>
-                    <p>Lançamento: {part['launchDate']}</p>
-                    <p>Geração: {part['generation']}</p>
-                    <p>Núcleos: {part['cores']}</p>
-                    <p>Threads: {part['threads']}</p>
-                    <p>Frequência: {part['frequency']}GHZ</p>
+                    <p>Lançamento: {part['launch']}</p>
+                    <p>Geração: {part['cpuGeneration']}</p>
+                    <p>Núcleos: {part['cpuCores']}</p>
+                    <p>Threads: {part['cpuThreads']}</p>
+                    <p>Frequência: {part['cpuFrequency']}GHZ</p>
                     <p>Preço: R$ {part['price']}</p>
-                    <p>Tem integrada: {part['igpu'] ? 'Sim' : 'Não'}</p>
-                    <SpecCircle performanceLabel='Performance:' performanceRating={part['performance']} />
+                    <p>Tem integrada: {part['cpuIgpu'] ? 'Sim' : 'Não'}</p>
+                    <SpecCircle performanceLabel='Performance:' performanceRating={part['cpuPerformance']} />
                     <SpecCircle performanceLabel='Integrada (iGPU):' performanceRating={part['igpuPerformance']} />
                     <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
                     <div className="editDeleteButtons">
@@ -203,15 +203,15 @@ function App() {
                     <div className="partSpecs">
                       <h1>{part['name']}</h1>
                       <p>Marca: {part['brand']}</p>
-                      <p>Lançamento: {part['launchDate']}</p>
-                      <p>Geração: {part['generation']}</p>
-                      <p>Núcleos: {part['cores']}</p>
-                      <p>Memória: {part['memory']}GB</p>
-                      <p>Tipo de memória: {part['memoryType']}</p>
-                      <p>Interface da memória: {part['memoryBus']}</p>
+                      <p>Lançamento: {part['launch']}</p>
+                      <p>Geração: {part['gpuGeneration']}</p>
+                      <p>Núcleos: {part['gpuCores']}</p>
+                      <p>Memória: {part['gpuMemory']}GB</p>
+                      <p>Tipo de memória: {part['gpuMemoryType']}</p>
+                      <p>Interface da memória: {part['gpuMemoryBus']}</p>
                       <p>Preço: R$ {part['price']}</p>
                       <br></br>
-                      <SpecCircle performanceLabel='Performance:' performanceRating={part['performance']} />
+                      <SpecCircle performanceLabel='Performance:' performanceRating={part['gpuPerformance']} />
                       <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
                       <br></br>
                       <div className="editDeleteButtons">
@@ -239,27 +239,28 @@ function App() {
         <div style={{ display: isAdding }} className="addPartContainer">
           <div className="addPartModal">
             <div className="addPartImg">
-            <div className="addPartImgBox">
-              <img src={
-                partTypeDataMap[selectedPartType]['imageLink']}></img>
-                </div>
+              <div className="addPartImgBox">
+                <img src={
+                  partTypeDataMap[selectedPartType]['imageLink']}></img>
+              </div>
             </div>
             <div className="addPartInputs">
-                {Object.keys(partTypeDataMap[selectedPartType]).map((key) => 
-                key != '_id' && key != 'type' ?
-                <>
-                <label className="inputLabel">{key}:</label>
-                <input
-                  type = {key == 'cpuIgpu' ? 'checkbox' : 'text'}
-                  placeholder={key}
-                  key={key}
-                  name={key}
-                  onChange={(event) => handleChange(event)}
-                  value={gpuData[key]}></input> </>: <></>)}
-              </div>
-              <div class="saveButtonContainer">
-              <OrangeButton onClick={() => createOrEditPart()} buttonLabel='Salvar'/>
-              </div>
+              {Object.keys(partTypeDataMap[selectedPartType]).map((key) =>
+                key != '_id' && key != 'type' && key != '__v' ?
+                  <>
+                    <label className="inputLabel">{key}:</label>
+                    <input
+                      type={key == 'cpuIgpu' ? 'checkbox' : 'text'}
+                      placeholder={key}
+                      key={key}
+                      name={key}
+                      onChange={(event) => handleChange(event)}
+                      checked={partTypeDataMap[selectedPartType][key]}
+                      value={partTypeDataMap[selectedPartType][key]}></input> </> : <></>)}
+            </div>
+            <div class="saveButtonContainer">
+              <OrangeButton onClick={() => createOrEditPart()} buttonLabel='Salvar' />
+            </div>
           </div>
         </div>
       </div>
