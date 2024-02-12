@@ -130,7 +130,11 @@ function App() {
   function clearInputs() {
     setCpuData(getInitialPartData('cpu'));
     setGpuData(getInitialPartData('gpu'));
+    setMoboData(getInitialPartData('mobo'));
     setRamData(getInitialPartData('ram'));
+    setPowerData(getInitialPartData('power'));
+    setSsdData(getInitialPartData('ssd'));
+    setCaseData(getInitialPartData('case'));
   }
 
   function toggleSelecting() {
