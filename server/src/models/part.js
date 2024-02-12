@@ -14,7 +14,7 @@ const partSchema = new Schema({
     price: Number,
     costBenefit: Number,
     launch: Number,
-    //Cpu only
+    //CPU only
     cpuGeneration: String,
     cpuCores: Number,
     cpuThreads: Number,
@@ -22,12 +22,35 @@ const partSchema = new Schema({
     cpuIgpu: Boolean,
     cpuPerformance:Number,
     igpuPerformance:Number,
-    //Gpu only
+    //GPU only
+    gpuCores: Number,
     gpuGeneration: String,
     gpuMemory: Number,
     gpuMemoryType: String,
     gpuMemoryBus: Number,
-    gpuPerformance: Number
+    gpuPerformance: Number,
+    //MOBO only
+    moboChipset: String,
+    moboSocketCompatibility: String,
+    moboRamCompatibility: String,
+    moboSlots: Number,
+    //RAM only
+    ramFrequency: Number,
+    ramCapacity: Number,
+    ramType: String,
+    ramLatency: String,
+    //POWER SUPPLY only
+    powerWatts: Number,
+    powerEfficiency: String,
+    powerModular: String,
+    //SSD only
+    ssdCapacity: Number,
+    ssdType: String,
+    ssdSpeed: Number,
+    //CASE only
+    caseForm: String,
+    caseFanSupport: String,
+    caseWcSupport: String
 })
 
 const Cpu = mongoose.model('Part', partSchema);
