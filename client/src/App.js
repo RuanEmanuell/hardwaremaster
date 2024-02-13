@@ -7,6 +7,7 @@ import OrangeButton from './components/orangebutton';
 
 function App() {
   const [fullList, setFullList] = useState(null);
+  const [fullPartList, setFullPartList] = useState(null);
   const [editingPartId, setEditingPartId] = useState(null);
 
   const [cpuData, setCpuData] = useState(getInitialPartData('cpu'));
@@ -17,6 +18,9 @@ function App() {
   const [ssdData, setSsdData] = useState(getInitialPartData('ssd'));
   const [caseData, setCaseData] = useState(getInitialPartData('case'));
 
+  const [filterPart, setFilterPart] = useState('Todas as peças');
+  const [isFirstFilterVisible, setFirstFilterVisible] = useState('block');
+  const [isFilteringPart, setPartFilterVisibility] = useState('none');
   const [isSelectingType, setSelecting] = useState('none');
   const [isAdding, setAdding] = useState('none');
   const [selectedPartType, setSelectedType] = useState('cpu');
@@ -145,6 +149,7 @@ function App() {
     try {
       const response = await fetch('http://localhost:3001/list');
       const data = await response.json();
+      setFullPartList(data);
       setFullList(data);
     } catch (err) {
       console.log(err);
@@ -250,7 +255,37 @@ function App() {
   function showModalAddPart(partType) {
     clearInputs();
     setSelectedType(partType);
-    setAdding((prevState) => (prevState === 'none' ? 'block' : 'none'));
+    if (isAdding == 'none') {
+      setAdding('block');
+    } else {
+      setAdding('none');
+    }
+  }
+
+  function changeFilterVisibility() {
+    if (isFilteringPart == 'none') {
+      setPartFilterVisibility('block');
+      setFirstFilterVisible('none');
+    } else {
+      setPartFilterVisibility('none');
+      setFirstFilterVisible('block');
+    }
+  }
+
+  function selectFilterPart(filterPartType) {
+    setFilterPart(partFilterMenu[filterPartType]);
+    let filteredList = [];
+    if (filterPartType == 'all') {
+      filteredList = fullPartList
+    } else {
+      for (var i = 0; i < fullPartList.length; i++) {
+        if (fullPartList[i]['type'] === filterPartType) {
+          filteredList[filteredList.length] = fullPartList[i];
+        }
+      }
+    }
+    setFullList(filteredList)
+    changeFilterVisibility();
   }
 
   const partTypeDataMap = {
@@ -263,11 +298,38 @@ function App() {
     case: caseData
   }
 
+  const partFilterMenu = {
+    all: 'Todas as peças',
+    cpu: 'Processadores',
+    gpu: 'Placas de vídeo',
+    mobo: 'Placas-Mãe',
+    ram: 'Memórias RAM',
+    power: 'Fontes',
+    ssd: 'SSDs',
+    case: 'Gabinetes'
+  }
+
   return (
     <div className="mainContainer">
       <div></div>
       <div>
-        <h1 className="mainTitle">Todas as peças</h1>
+        <h1 className="mainTitle">{filterPart}</h1>
+        <div className="partFilters">
+          <div></div>
+          <div className="partFilterBox">
+            <label>Filtrar por:</label>
+            <div className="partType partFilter" onClick={changeFilterVisibility} style={{ display: isFirstFilterVisible }}>
+              <h4>{filterPart}</h4>
+            </div>
+            <div style={{ display: isFilteringPart }}>
+              {Object.keys(partFilterMenu).map((part, index) => (
+                <div className="partType partFilter" onClick={() => selectFilterPart(part)}>
+                  <h4>{partFilterMenu[part]}</h4>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
         <div className="partList">
           {fullList ? (
             <>

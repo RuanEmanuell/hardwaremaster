@@ -23,6 +23,31 @@ button {
     color: #DB5510;
 }
 
+.partFilters{
+    height: 2%;
+    color: #DB5510;
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr;
+    margin-bottom: 10%;
+    position: relative;
+    right: 0;
+}
+
+.partFilter{
+    color: black;
+    background-color: white;
+}
+
+.partFilter:hover{
+    background-color: black;
+    color: white;
+    cursor: pointer;
+}
+
+.partFilter h4{
+    margin: 0 2%;
+}
+
 .mainContainer {
     display: grid;
     grid-template-columns: 1fr 8fr 1fr;
