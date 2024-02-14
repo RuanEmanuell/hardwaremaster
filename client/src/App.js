@@ -229,9 +229,6 @@ function App() {
       setOrderFilterVisibility('none');
       setFirstOrderVisible('block');
     }
-    if (isAdding == 'block') {
-      setAdding('none');
-    }
     if (isSelectingType == 'block') {
       setSelecting('none');
     }
@@ -339,9 +336,8 @@ function App() {
   //////////////////////////////////////////////////////////////////////////////////
 
   return (
-    <div className="mainContainer">
-      <div className="gridSpacer" onClick={closeAllMenus}></div>
-      <main onClick={closeAllMenus}>
+    <div className="mainContainer" onClick={closeAllMenus}>
+      <main>
         <h1 className="mainTitle">{filterPart}</h1>
         <div className="partFilters">
           <div className="gridSpacer"></div>
@@ -485,7 +481,6 @@ function App() {
             </div>
           </div> : <></>}
       </div>
-      <div className="gridSpacer" onClick={closeAllMenus}></div>
     </div>
   );
 }
