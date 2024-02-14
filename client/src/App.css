@@ -24,13 +24,17 @@ button {
 }
 
 .partFilters{
-    height: 2%;
+    height: 2.5%;
     color: #DB5510;
     display: grid;
     grid-template-columns: 3fr 1fr 1fr;
-    margin-bottom: 10%;
     position: relative;
     right: 0;
+    width: 97%;
+}
+
+.partFilterBox{
+    margin: 0 1%;
 }
 
 .partFilter{

@@ -69,28 +69,31 @@ app.get('/currentprice/:id', async (req, res) => {
     let price = selectedPart['price'];
 
     async function choosePrice(partLinks) {
-        let currentPrice = price;
-        let priceLink = 0.0;
+        let currentPrice = '0.0';  
         const page = await browser.newPage();
+      
         for (const partLink of partLinks) {
-            if (partLink != '') {
-                await page.goto(partLink);
-                if (await page.$('.sc-5492faee-2.ipHrwP.finalPrice')) {
-                    priceLink = await page.$eval('.sc-5492faee-2.ipHrwP.finalPrice', (h4) => parseFloat(h4.innerText.substring(3).replaceAll(',', '.')));
-                } else if (await page.$('#valVista')) {
-                    priceLink = await page.$eval('#valVista', (p) => parseFloat(p.innerText.substring(3).replaceAll(',', '.')));
-                } else if (await page.$('.jss272')) {
-                    priceLink = await page.$eval('.jss272', (div) => parseFloat(div.innerText.substring(3).replaceAll(',', '.')));
-                }
+          if (partLink !== '') {
+            await page.goto(partLink);
+      
+            let priceLink = '0.0';  
+            
+            if (await page.$('.sc-5492faee-2.ipHrwP.finalPrice')) {
+              priceLink = await page.$eval('.sc-5492faee-2.ipHrwP.finalPrice', (h4) => h4.innerText.substring(3));
+            } else if (await page.$('#valVista')) {
+              priceLink = await page.$eval('#valVista', (p) => p.innerText.substring(3));
+            } else if (await page.$('.jss272')) {
+              priceLink = await page.$eval('.jss272', (div) => div.innerText.substring(3));
             }
-
-            if (priceLink != currentPrice && priceLink > 0.0) {
-                currentPrice = priceLink
-            }    
-
+      
+            if (priceLink !== currentPrice && parseFloat(priceLink) > 0.0) {
+              currentPrice = priceLink;
+            }
+          }
         }
+      
         return currentPrice;
-    }
+      }
 
     price = await choosePrice([selectedPart['shopLink'], selectedPart['shopLink2'], selectedPart['shopLink3']]);
 

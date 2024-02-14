@@ -21,6 +21,9 @@ function App() {
   const [filterPart, setFilterPart] = useState('Todas as peças');
   const [isFirstFilterVisible, setFirstFilterVisible] = useState('block');
   const [isFilteringPart, setPartFilterVisibility] = useState('none');
+  const [filterOrder, setFilterOrder] = useState('Relevância');
+  const [isFirstOrderVisible, setFirstOrderVisible] = useState('block');
+  const [isFilteringOrder, setOrderFilterVisibility] = useState('none');
   const [isSelectingType, setSelecting] = useState('none');
   const [isAdding, setAdding] = useState('none');
   const [selectedPartType, setSelectedType] = useState('cpu');
@@ -262,7 +265,7 @@ function App() {
     }
   }
 
-  function changeFilterVisibility() {
+  function changePartFilterVisibility() {
     if (isFilteringPart == 'none') {
       setPartFilterVisibility('block');
       setFirstFilterVisible('none');
@@ -276,16 +279,40 @@ function App() {
     setFilterPart(partFilterMenu[filterPartType]);
     let filteredList = [];
     if (filterPartType == 'all') {
-      filteredList = fullPartList
+      filteredList = fullPartList;
     } else {
-      for (var i = 0; i < fullPartList.length; i++) {
-        if (fullPartList[i]['type'] === filterPartType) {
-          filteredList[filteredList.length] = fullPartList[i];
-        }
-      }
+      filteredList = fullPartList.filter(part => part.type === filterPartType);
     }
     setFullList(filteredList)
-    changeFilterVisibility();
+    changePartFilterVisibility();
+  }
+
+  function changeOrderFilterVisibility() {
+    if (isFilteringOrder == 'none') {
+      setOrderFilterVisibility('block');
+      setFirstOrderVisible('none');
+    } else {
+      setOrderFilterVisibility('none');
+      setFirstOrderVisible('block');
+    }
+  }
+
+  function selectFilterOrder(filterOrderType) {
+    setFilterOrder(orderFilterMenu[filterOrderType]);
+    let filteredList = [...fullList];
+    if (filterOrderType == 'price') {
+      filteredList = fullList.sort((a, b) => parseFloat(a.price.replaceAll('.', '')) - parseFloat(b.price.replaceAll('.', '')));
+    } else if (filterOrderType == 'price2') {
+      filteredList = fullList.sort((a, b) => parseFloat(b.price.replaceAll('.', '')) - parseFloat(a.price.replaceAll('.', '')));
+    } else if (filterOrderType == 'costBenefit') {
+      filteredList = fullList.sort((a, b) => b.costBenefit - a.costBenefit);
+    }else if (filterOrderType == 'title') {
+      filteredList = fullList.sort((a, b) => a.name.localeCompare(b.name));
+    }else if (filterOrderType == 'title2') {
+      filteredList = fullList.sort((a, b) => b.name.localeCompare(a.name));
+    }
+    setFullList(filteredList)
+    changeOrderFilterVisibility();
   }
 
   const partTypeDataMap = {
@@ -309,6 +336,15 @@ function App() {
     case: 'Gabinetes'
   }
 
+  const orderFilterMenu = {
+    relevance: 'Relevância',
+    price: 'Menor preço',
+    price2: 'Maior preço',
+    costBenefit: 'Custo benefício',
+    title: 'Nome (A-Z)',
+    title2: 'Nome (Z-A)'
+  }
+
   return (
     <div className="mainContainer">
       <div></div>
@@ -318,13 +354,26 @@ function App() {
           <div></div>
           <div className="partFilterBox">
             <label>Filtrar por:</label>
-            <div className="partType partFilter" onClick={changeFilterVisibility} style={{ display: isFirstFilterVisible }}>
+            <div className="partType partFilter" onClick={changePartFilterVisibility} style={{ display: isFirstFilterVisible }}>
               <h4>{filterPart}</h4>
             </div>
             <div style={{ display: isFilteringPart }}>
               {Object.keys(partFilterMenu).map((part, index) => (
                 <div className="partType partFilter" onClick={() => selectFilterPart(part)}>
                   <h4>{partFilterMenu[part]}</h4>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="partFilterBox">
+            <label>Ordenar por:</label>
+            <div className="partType partFilter" onClick={changeOrderFilterVisibility} style={{ display: isFirstOrderVisible }}>
+              <h4>{filterOrder}</h4>
+            </div>
+            <div style={{ display: isFilteringOrder }}>
+              {Object.keys(orderFilterMenu).map((order, index) => (
+                <div className="partType partFilter" onClick={() => selectFilterOrder(order)}>
+                  <h4>{orderFilterMenu[order]}</h4>
                 </div>
               ))}
             </div>

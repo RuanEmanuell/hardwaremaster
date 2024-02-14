@@ -11,7 +11,7 @@ const partSchema = new Schema({
     shopLink2: String,
     shopLink3: String,
     imageLink: String,
-    price: Number,
+    price: String,
     costBenefit: Number,
     launch: Number,
     //CPU only
