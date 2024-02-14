@@ -13,13 +13,15 @@ function App() {
   const [editingPartId, setEditingPartId] = useState(null);
 
   //Add part type states
-  const [cpuData, setCpuData] = useState(getInitialPartData('cpu'));
-  const [gpuData, setGpuData] = useState(getInitialPartData('gpu'));
-  const [moboData, setMoboData] = useState(getInitialPartData('mobo'));
-  const [ramData, setRamData] = useState(getInitialPartData('ram'));
-  const [powerData, setPowerData] = useState(getInitialPartData('power'));
-  const [ssdData, setSsdData] = useState(getInitialPartData('ssd'));
-  const [caseData, setCaseData] = useState(getInitialPartData('case'));
+  const [partData, setPartData] = useState({
+    cpu: getInitialPartData('cpu'),
+    gpu: getInitialPartData('gpu'),
+    mobo: getInitialPartData('mobo'),
+    ram: getInitialPartData('ram'),
+    power: getInitialPartData('power'),
+    ssd: getInitialPartData('ssd'),
+    case: getInitialPartData('case'),
+  });
 
   //Filter and order states
   const [filterPart, setFilterPart] = useState('Todas as peças');
@@ -40,114 +42,77 @@ function App() {
   //Setting inputs for add part modal based on type
   function getInitialPartData(type) {
     return {
+      name: '',
+      brand: '',
+      launch: '',
+      shopLink: '',
+      shopLink2: '',
+      shopLink3: '',
+      imageLink: '',
+      costBenefit: '',
       ...(type === 'cpu'
         ? {
-          name: '',
-          brand: '',
-          launch: '',
           cpuSocket: '',
           cpuGeneration: '',
           cpuCores: '',
           cpuThreads: '',
           cpuFrequency: '',
-          shopLink: '',
-          shopLink2: '',
-          shopLink3: '',
-          imageLink: '',
           cpuIgpu: false,
           cpuPerformance: '',
           igpuPerformance: '',
-          costBenefit: ''
         }
-        : type === 'gpu' ? {
-          name: '',
-          brand: '',
-          launch: '',
-          gpuGeneration: '',
-          gpuCores: '',
-          gpuMemory: '',
-          gpuMemoryType: '',
-          gpuMemoryBus: '',
-          shopLink: '',
-          shopLink2: '',
-          shopLink3: '',
-          imageLink: '',
-          gpuPerformance: '',
-          costBenefit: ''
-        } : type === 'mobo' ? {
-          name: '',
-          brand: '',
-          launch: '',
-          moboChipset: '',
-          moboSocketCompatibility: '',
-          moboRamCompatibility: '',
-          moboSlots: '',
-          shopLink: '',
-          shopLink2: '',
-          shopLink3: '',
-          imageLink: '',
-          costBenefit: ''
-        } : type === 'ram' ? {
-          name: '',
-          brand: '',
-          launch: '',
-          ramFrequency: '',
-          ramCapacity: '',
-          ramType: '',
-          ramLatency: '',
-          shopLink: '',
-          shopLink2: '',
-          shopLink3: '',
-          imageLink: '',
-          costBenefit: ''
-        } : type === 'power' ? {
-          name: '',
-          brand: '',
-          launch: '',
-          powerWatts: '',
-          powerEfficiency: '',
-          powerModular: '',
-          shopLink: '',
-          shopLink2: '',
-          shopLink3: '',
-          imageLink: '',
-          costBenefit: ''
-        } : type === 'ssd' ? {
-          name: '',
-          brand: '',
-          launch: '',
-          ssdCapacity: '',
-          ssdType: '',
-          ssdSpeed: '',
-          shopLink: '',
-          shopLink2: '',
-          shopLink3: '',
-          imageLink: '',
-          costBenefit: ''
-        } : {
-          name: '',
-          brand: '',
-          launch: '',
-          caseForm: '',
-          caseFanSupport: '',
-          caseWcSupport: '',
-          shopLink: '',
-          shopLink2: '',
-          shopLink3: '',
-          imageLink: '',
-          costBenefit: ''
-        })
+        : type === 'gpu'
+          ? {
+            gpuGeneration: '',
+            gpuCores: '',
+            gpuMemory: '',
+            gpuMemoryType: '',
+            gpuMemoryBus: '',
+            gpuPerformance: '',
+          }
+          : type === 'mobo'
+            ? {
+              moboChipset: '',
+              moboSocketCompatibility: '',
+              moboRamCompatibility: '',
+              moboSlots: '',
+            }
+            : type === 'ram'
+              ? {
+                ramFrequency: '',
+                ramCapacity: '',
+                ramType: '',
+                ramLatency: '',
+              }
+              : type === 'power'
+                ? {
+                  powerWatts: '',
+                  powerEfficiency: '',
+                  powerModular: '',
+                }
+                : type === 'ssd'
+                  ? {
+                    ssdCapacity: '',
+                    ssdType: '',
+                    ssdSpeed: '',
+                  }
+                  : {
+                    caseForm: '',
+                    caseFanSupport: '',
+                    caseWcSupport: '',
+                  }),
     };
   }
 
   function clearInputs() {
-    setCpuData(getInitialPartData('cpu'));
-    setGpuData(getInitialPartData('gpu'));
-    setMoboData(getInitialPartData('mobo'));
-    setRamData(getInitialPartData('ram'));
-    setPowerData(getInitialPartData('power'));
-    setSsdData(getInitialPartData('ssd'));
-    setCaseData(getInitialPartData('case'));
+    const newData = { ...partData[selectedPartType] };
+    for (const key in newData) {
+      newData[key] = '';
+      if (key == 'cpuIgpu') {
+        newData[key] = false;
+      }
+    }
+    setPartData({ ...partData, [selectedPartType]: newData });
   }
 
   function toggleSelecting() {
@@ -161,45 +126,18 @@ function App() {
   //Input states controller
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
-    const data = partTypeDataMap[selectedPartType];
-
-    if (selectedPartType === 'cpu') {
-      setCpuData({ ...cpuData, [name]: type === 'checkbox' ? checked : value });
-    } else if (selectedPartType === 'gpu') {
-      setGpuData({ ...gpuData, [name]: value });
-    } else if (selectedPartType === 'mobo') {
-      setMoboData({ ...moboData, [name]: value });
-    } else if (selectedPartType === 'ram') {
-      setRamData({ ...ramData, [name]: value });
-    } else if (selectedPartType === 'power') {
-      setPowerData({ ...powerData, [name]: value });
-    } else if (selectedPartType === 'ssd') {
-      setSsdData({ ...ssdData, [name]: value });
-    } else if (selectedPartType === 'case') {
-      setCaseData({ ...caseData, [name]: value });
-    }
+    const newData = { ...partData[selectedPartType], [name]: type === 'checkbox' ? checked : value };
+    console.log(newData);
+    setPartData({ ...partData, [selectedPartType]: newData });
   };
+
 
   //Loading informations for editing part
   function editPart(index) {
     const currentPart = interfaceList[index];
     setEditingPartId(currentPart['_id']);
     showModalAddPart(currentPart['type']);
-    if (currentPart['type'] === 'cpu') {
-      setCpuData({ ...currentPart });
-    } else if (currentPart['type'] === 'gpu') {
-      setGpuData({ ...currentPart });
-    } else if (currentPart['type'] === 'mobo') {
-      setMoboData({ ...currentPart });
-    } else if (currentPart['type'] === 'ram') {
-      setRamData({ ...currentPart });
-    } else if (currentPart['type'] === 'power') {
-      setPowerData({ ...currentPart });
-    } else if (currentPart['type'] === 'ssd') {
-      setSsdData({ ...currentPart });
-    } else if (currentPart['type'] === 'case') {
-      setCaseData({ ...currentPart });
-    }
+    setPartData({ ...partData, [currentPart['type']]: { ...currentPart } });
   }
 
   //Showing modal form for adding or editing part
@@ -260,18 +198,26 @@ function App() {
   function selectFilterOrder(filterOrderType) {
     setFilterOrder(orderFilterMenu[filterOrderType]);
     let filteredList = [...interfaceList];
-    if (filterOrderType == 'price') {
-      filteredList = interfaceList.sort((a, b) => parseFloat(a.price.replaceAll('.', '')) - parseFloat(b.price.replaceAll('.', '')));
-    } else if (filterOrderType == 'price2') {
-      filteredList = interfaceList.sort((a, b) => parseFloat(b.price.replaceAll('.', '')) - parseFloat(a.price.replaceAll('.', '')));
-    } else if (filterOrderType == 'costBenefit') {
-      filteredList = interfaceList.sort((a, b) => b.costBenefit - a.costBenefit);
-    } else if (filterOrderType == 'title') {
-      filteredList = interfaceList.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (filterOrderType == 'title2') {
-      filteredList = interfaceList.sort((a, b) => b.name.localeCompare(a.name));
-    } else if (filterOrderType == 'relevance') {
-      filteredList = interfaceList.sort((a, b) => a._id.localeCompare(b._id));
+    
+    switch (filterOrderType) {
+      case 'price':
+        filteredList = interfaceList.sort((a, b) => parseFloat(a.price.replaceAll('.', '')) - parseFloat(b.price.replaceAll('.', '')));
+        break;
+      case 'price2':
+        filteredList = interfaceList.sort((a, b) => parseFloat(b.price.replaceAll('.', '')) - parseFloat(a.price.replaceAll('.', '')));
+        break;
+      case 'costBenefit':
+        filteredList = interfaceList.sort((a, b) => b.costBenefit - a.costBenefit);
+        break;
+      case 'title':
+        filteredList = interfaceList.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'title2':
+        filteredList = interfaceList.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      default:
+        filteredList = interfaceList.sort((a, b) => a._id.localeCompare(b._id));
+        break;
     }
     setInterfaceList(filteredList)
     changeOrderFilterVisibility();
@@ -279,13 +225,13 @@ function App() {
 
   //Visual objects for maping and creating dynamic components
   const partTypeDataMap = {
-    cpu: cpuData,
-    gpu: gpuData,
-    mobo: moboData,
-    ram: ramData,
-    power: powerData,
-    ssd: ssdData,
-    case: caseData
+    cpu: partData['cpu'],
+    gpu: partData['gpu'],
+    mobo: partData['mobo'],
+    ram: partData['ram'],
+    power: partData['power'],
+    ssd: partData['ssd'],
+    case: partData['case']
   }
 
   const partFilterMenu = {
@@ -324,7 +270,9 @@ function App() {
     const dataToSend = { type: selectedPartType, ...partTypeDataMap[selectedPartType] };
 
     try {
-      const response = await fetch(editingPartId ? `http://localhost:3001/update/${editingPartId}` : 'http://localhost:3001/post', {
+      const response = await fetch(editingPartId ?
+        `http://localhost:3001/list/update/${editingPartId}`
+        : 'http://localhost:3001/list/post', {
         method: editingPartId ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dataToSend),
@@ -344,7 +292,7 @@ function App() {
 
   async function deletePart(id) {
     try {
-      await fetch(`http://localhost:3001/delete/${id}`, {
+      await fetch(`http://localhost:3001/list/delete/${id}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -358,11 +306,11 @@ function App() {
 
   async function updatePrice(id) {
     try {
-      const response = await fetch(`http://localhost:3001/currentprice/${id}`);
+      const response = await fetch(`http://localhost:3001/list/currentprice/${id}`);
       const data = await response.json();
       const newPrice = data['preço'];
 
-      await fetch(`http://localhost:3001/update/${id}`, {
+      await fetch(`http://localhost:3001/list/update/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ price: newPrice }),

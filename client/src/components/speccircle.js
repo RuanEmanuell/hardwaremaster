@@ -3,7 +3,7 @@ import './components.css'
 function SpecCircle(props) {
     let specCircleColor = 'rgb(0, 182, 0)';
 
-    if (props.performanceRating <= 25) {
+    if (props.performanceRating <= 30) {
         specCircleColor = 'red';
     }else if (props.performanceRating <= 60) {
         specCircleColor = 'rgb(245, 228, 0)';
