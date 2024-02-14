@@ -4,14 +4,14 @@ import puppeteer from 'puppeteer';
 import Part from '../models/part.js';
 import db from '../database/connection.js';
 
-const router = Router();
+const listRouter = Router();
 
-router.get('/list', async (req, res) => {
+listRouter.get('/parts', async (req, res) => {
     const parts = await db.collection('parts').find({}).toArray();
     res.json(parts);
 });
 
-router.post('/post', async (req, res) => {
+listRouter.post('/post', async (req, res) => {
     try {
         const newPart = new Part(req.body);
         await newPart.save();
@@ -22,7 +22,7 @@ router.post('/post', async (req, res) => {
     }
 });
 
-router.put('/update/:id', async (req, res) => {
+listRouter.put('/update/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const updatedPart = await Part.findByIdAndUpdate(id, req.body);
@@ -32,7 +32,7 @@ router.put('/update/:id', async (req, res) => {
     }
 });
 
-router.delete('/delete/:id', async (req, res) => {
+listRouter.delete('/delete/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const deletedPart = await Part.findByIdAndDelete(id, req.body, { new: true });
@@ -42,7 +42,7 @@ router.delete('/delete/:id', async (req, res) => {
     }
 });
 
-router.get('/currentprice/:id', async (req, res) => {
+listRouter.get('/currentprice/:id', async (req, res) => {
     const { id } = req.params;
     const selectedPart = await db.collection('parts').findOne({ "_id": new mongoose.Types.ObjectId(id) });
 
@@ -87,4 +87,4 @@ router.get('/currentprice/:id', async (req, res) => {
     }
 });
 
-export default router;
+export default listRouter;

@@ -311,7 +311,7 @@ function App() {
   ///////////////////////CRUD functions/////////////////////////////////////////
   async function fetchApi() {
     try {
-      const response = await fetch('http://localhost:3001/list');
+      const response = await fetch('http://localhost:3001/list/parts');
       const data = await response.json();
       setFullPartList(data);
       setInterfaceList(data);
