@@ -1,8 +1,9 @@
 .partFilters{
-    height: 2.5%;
+    height: 3%;
+    min-height: 50px;
     color: #DB5510;
     display: grid;
-    grid-template-columns: 3fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr;
     position: relative;
     right: 0;
     width: 97%;
@@ -52,3 +53,10 @@
 .specCircle p{
     margin: auto;
 }
+
+
+@media screen and (max-width: 900px) {
+    .partFilters{
+        grid-template-columns: 1fr 2fr 2fr;
+    }
+  }

@@ -158,6 +158,156 @@ function App() {
     }
   }
 
+  //Input states controller
+  const handleChange = (event) => {
+    const { name, value, type, checked } = event.target;
+    const data = partTypeDataMap[selectedPartType];
+
+    if (selectedPartType === 'cpu') {
+      setCpuData({ ...cpuData, [name]: type === 'checkbox' ? checked : value });
+    } else if (selectedPartType === 'gpu') {
+      setGpuData({ ...gpuData, [name]: value });
+    } else if (selectedPartType === 'mobo') {
+      setMoboData({ ...moboData, [name]: value });
+    } else if (selectedPartType === 'ram') {
+      setRamData({ ...ramData, [name]: value });
+    } else if (selectedPartType === 'power') {
+      setPowerData({ ...powerData, [name]: value });
+    } else if (selectedPartType === 'ssd') {
+      setSsdData({ ...ssdData, [name]: value });
+    } else if (selectedPartType === 'case') {
+      setCaseData({ ...caseData, [name]: value });
+    }
+  };
+
+  //Loading informations for editing part
+  function editPart(index) {
+    const currentPart = interfaceList[index];
+    setEditingPartId(currentPart['_id']);
+    showModalAddPart(currentPart['type']);
+    if (currentPart['type'] === 'cpu') {
+      setCpuData({ ...currentPart });
+    } else if (currentPart['type'] === 'gpu') {
+      setGpuData({ ...currentPart });
+    } else if (currentPart['type'] === 'mobo') {
+      setMoboData({ ...currentPart });
+    } else if (currentPart['type'] === 'ram') {
+      setRamData({ ...currentPart });
+    } else if (currentPart['type'] === 'power') {
+      setPowerData({ ...currentPart });
+    } else if (currentPart['type'] === 'ssd') {
+      setSsdData({ ...currentPart });
+    } else if (currentPart['type'] === 'case') {
+      setCaseData({ ...currentPart });
+    }
+  }
+
+  //Showing modal form for adding or editing part
+  function showModalAddPart(partType) {
+    clearInputs();
+    setSelectedType(partType);
+    if (isAdding == 'none') {
+      setAdding('block');
+    } else {
+      setAdding('none');
+    }
+  }
+
+  //'Filter by' functions
+  function changePartFilterVisibility() {
+    if (isFilteringPart == 'none') {
+      setPartFilterVisibility('block');
+      setFirstFilterVisible('none');
+    } else {
+      setPartFilterVisibility('none');
+      setFirstFilterVisible('block');
+    }
+
+    if (isFilteringOrder == 'block') {
+      setOrderFilterVisibility('none');
+      setFirstOrderVisible('block');
+    }
+  }
+
+  function selectFilterPart(filterPartType) {
+    setFilterPart(partFilterMenu[filterPartType]);
+    let filteredList = [];
+    if (filterPartType === 'all') {
+      filteredList = fullPartList;
+    } else {
+      filteredList = fullPartList.filter(part => part.type === filterPartType);
+    }
+    setInterfaceList(filteredList);
+    changePartFilterVisibility();
+  }
+
+  //'Order by' functions
+  function changeOrderFilterVisibility() {
+    if (isFilteringOrder == 'none') {
+      setOrderFilterVisibility('block');
+      setFirstOrderVisible('none');
+    } else {
+      setOrderFilterVisibility('none');
+      setFirstOrderVisible('block');
+    }
+
+    if (isFilteringPart == 'block') {
+      setPartFilterVisibility('none');
+      setFirstFilterVisible('block');
+    }
+  }
+
+  function selectFilterOrder(filterOrderType) {
+    setFilterOrder(orderFilterMenu[filterOrderType]);
+    let filteredList = [...interfaceList];
+    if (filterOrderType == 'price') {
+      filteredList = interfaceList.sort((a, b) => parseFloat(a.price.replaceAll('.', '')) - parseFloat(b.price.replaceAll('.', '')));
+    } else if (filterOrderType == 'price2') {
+      filteredList = interfaceList.sort((a, b) => parseFloat(b.price.replaceAll('.', '')) - parseFloat(a.price.replaceAll('.', '')));
+    } else if (filterOrderType == 'costBenefit') {
+      filteredList = interfaceList.sort((a, b) => b.costBenefit - a.costBenefit);
+    } else if (filterOrderType == 'title') {
+      filteredList = interfaceList.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (filterOrderType == 'title2') {
+      filteredList = interfaceList.sort((a, b) => b.name.localeCompare(a.name));
+    } else if (filterOrderType == 'relevance') {
+      filteredList = interfaceList.sort((a, b) => a._id.localeCompare(b._id));
+    }
+    setInterfaceList(filteredList)
+    changeOrderFilterVisibility();
+  }
+
+  //Visual objects for maping and creating dynamic components
+  const partTypeDataMap = {
+    cpu: cpuData,
+    gpu: gpuData,
+    mobo: moboData,
+    ram: ramData,
+    power: powerData,
+    ssd: ssdData,
+    case: caseData
+  }
+
+  const partFilterMenu = {
+    all: 'Todas as peças',
+    cpu: 'Processadores',
+    gpu: 'Placas de vídeo',
+    mobo: 'Placas-Mãe',
+    ram: 'Memórias RAM',
+    power: 'Fontes',
+    ssd: 'SSDs',
+    case: 'Gabinetes'
+  }
+
+  const orderFilterMenu = {
+    relevance: 'Relevância',
+    price: 'Menor preço',
+    price2: 'Maior preço',
+    costBenefit: 'Custo benefício',
+    title: 'Nome (A-Z)',
+    title2: 'Nome (Z-A)'
+  }
+
   ///////////////////////CRUD functions/////////////////////////////////////////
   async function fetchApi() {
     try {
@@ -226,160 +376,13 @@ function App() {
 
   //////////////////////////////////////////////////////////////////////////////////
 
-  //Input states controller
-  const handleChange = (event) => {
-    const { name, value, type, checked } = event.target;
-    const data = partTypeDataMap[selectedPartType];
-
-    if (selectedPartType === 'cpu') {
-      setCpuData({ ...cpuData, [name]: type === 'checkbox' ? checked : value });
-    } else if (selectedPartType === 'gpu') {
-      setGpuData({ ...gpuData, [name]: value });
-    } else if (selectedPartType === 'mobo') {
-      setMoboData({ ...moboData, [name]: value });
-    } else if (selectedPartType === 'ram') {
-      setRamData({ ...ramData, [name]: value });
-    } else if (selectedPartType === 'power') {
-      setPowerData({ ...powerData, [name]: value });
-    } else if (selectedPartType === 'ssd') {
-      setSsdData({ ...ssdData, [name]: value });
-    } else if (selectedPartType === 'case') {
-      setCaseData({ ...caseData, [name]: value });
-    }
-  };
-
-  //Loading informations for editing part
-  function editPart(index) {
-    const currentPart = interfaceList[index];
-    setEditingPartId(currentPart['_id']);
-    showModalAddPart(currentPart['type']);
-    if (currentPart['type'] === 'cpu') {
-      setCpuData({ ...currentPart });
-    } else if (currentPart['type'] === 'gpu') {
-      setGpuData({ ...currentPart });
-    } else if (currentPart['type'] === 'mobo') {
-      setMoboData({ ...currentPart });
-    } else if (currentPart['type'] === 'ram') {
-      setRamData({ ...currentPart });
-    } else if (currentPart['type'] === 'power') {
-      setPowerData({ ...currentPart });
-    } else if (currentPart['type'] === 'ssd') {
-      setSsdData({ ...currentPart });
-    } else if (currentPart['type'] === 'case') {
-      setCaseData({ ...currentPart });
-    }
-  }
-
-  //Showing modal form for adding or editing part
-  function showModalAddPart(partType) {
-    clearInputs();
-    setSelectedType(partType);
-    if (isAdding == 'none') {
-      setAdding('block');
-    } else {
-      setAdding('none');
-    }
-  }
-
-  function changePartFilterVisibility() {
-    if (isFilteringPart == 'none') {
-      setPartFilterVisibility('block');
-      setFirstFilterVisible('none');
-    } else {
-      setPartFilterVisibility('none');
-      setFirstFilterVisible('block');
-    }
-
-    if (isFilteringOrder == 'block') {
-      setOrderFilterVisibility('none');
-      setFirstOrderVisible('block');
-    }
-  }
-
-  function selectFilterPart(filterPartType) {
-    setFilterPart(partFilterMenu[filterPartType]);
-    let filteredList = [];
-    if (filterPartType === 'all') {
-      filteredList = fullPartList;
-    } else {
-      filteredList = fullPartList.filter(part => part.type === filterPartType);
-    }
-    setInterfaceList(filteredList);
-    changePartFilterVisibility();
-  }
-
-  function changeOrderFilterVisibility() {
-    if (isFilteringOrder == 'none') {
-      setOrderFilterVisibility('block');
-      setFirstOrderVisible('none');
-    } else {
-      setOrderFilterVisibility('none');
-      setFirstOrderVisible('block');
-    }
-
-    if (isFilteringPart  == 'block') {
-      setPartFilterVisibility('none');
-      setFirstFilterVisible('block');
-    }
-  }
-
-  function selectFilterOrder(filterOrderType) {
-    setFilterOrder(orderFilterMenu[filterOrderType]);
-    let filteredList = [...interfaceList];
-    if (filterOrderType == 'price') {
-      filteredList = interfaceList.sort((a, b) => parseFloat(a.price.replaceAll('.', '')) - parseFloat(b.price.replaceAll('.', '')));
-    } else if (filterOrderType == 'price2') {
-      filteredList = interfaceList.sort((a, b) => parseFloat(b.price.replaceAll('.', '')) - parseFloat(a.price.replaceAll('.', '')));
-    } else if (filterOrderType == 'costBenefit') {
-      filteredList = interfaceList.sort((a, b) => b.costBenefit - a.costBenefit);
-    } else if (filterOrderType == 'title') {
-      filteredList = interfaceList.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (filterOrderType == 'title2') {
-      filteredList = interfaceList.sort((a, b) => b.name.localeCompare(a.name));
-    }else if (filterOrderType == 'relevance'){
-      filteredList = interfaceList.sort((a, b) => a._id.localeCompare(b._id));
-    }
-    setInterfaceList(filteredList)
-    changeOrderFilterVisibility();
-  }
-
-  const partTypeDataMap = {
-    cpu: cpuData,
-    gpu: gpuData,
-    mobo: moboData,
-    ram: ramData,
-    power: powerData,
-    ssd: ssdData,
-    case: caseData
-  }
-
-  const partFilterMenu = {
-    all: 'Todas as peças',
-    cpu: 'Processadores',
-    gpu: 'Placas de vídeo',
-    mobo: 'Placas-Mãe',
-    ram: 'Memórias RAM',
-    power: 'Fontes',
-    ssd: 'SSDs',
-    case: 'Gabinetes'
-  }
-
-  const orderFilterMenu = {
-    relevance: 'Relevância',
-    price: 'Menor preço',
-    price2: 'Maior preço',
-    costBenefit: 'Custo benefício',
-    title: 'Nome (A-Z)',
-    title2: 'Nome (Z-A)'
-  }
-
   return (
     <div className="mainContainer">
-      <div></div>
-      <div>
+      <div className="gridSpacer"></div>
+      <main>
         <h1 className="mainTitle">{filterPart}</h1>
         <div className="partFilters">
-          <div></div>
+          <div className="gridSpacer"></div>
           <FilterBox firstFilterLabel='Filtrar por'
             onClick={changePartFilterVisibility}
             firstFilterDisplayCondition={isFirstFilterVisible}
@@ -519,8 +522,8 @@ function App() {
               </div>
             </div> : <></>}
         </div>
-      </div>
-      <div></div>
+      </main>
+      <div className="gridSpacer"></div>
     </div>
   );
 }
