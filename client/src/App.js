@@ -2,14 +2,17 @@ import { useEffect, useState } from 'react';
 import editIcon from './images/edit.png';
 import deleteIcon from './images/delete.png';
 import './App.css';
+import FilterBox from './components/filter';
 import SpecCircle from './components/speccircle';
 import OrangeButton from './components/orangebutton';
 
 function App() {
-  const [fullList, setFullList] = useState(null);
+  //Visual interface states
+  const [interfaceList, setInterfaceList] = useState(null);
   const [fullPartList, setFullPartList] = useState(null);
   const [editingPartId, setEditingPartId] = useState(null);
 
+  //Add part type states
   const [cpuData, setCpuData] = useState(getInitialPartData('cpu'));
   const [gpuData, setGpuData] = useState(getInitialPartData('gpu'));
   const [moboData, setMoboData] = useState(getInitialPartData('mobo'));
@@ -18,6 +21,7 @@ function App() {
   const [ssdData, setSsdData] = useState(getInitialPartData('ssd'));
   const [caseData, setCaseData] = useState(getInitialPartData('case'));
 
+  //Filter and order states
   const [filterPart, setFilterPart] = useState('Todas as peças');
   const [isFirstFilterVisible, setFirstFilterVisible] = useState('block');
   const [isFilteringPart, setPartFilterVisibility] = useState('none');
@@ -28,10 +32,12 @@ function App() {
   const [isAdding, setAdding] = useState('none');
   const [selectedPartType, setSelectedType] = useState('cpu');
 
+  //Showing infos on screen on page load
   useEffect(() => {
     fetchApi();
   }, []);
 
+  //Setting inputs for add part modal based on type
   function getInitialPartData(type) {
     return {
       ...(type === 'cpu'
@@ -145,15 +151,20 @@ function App() {
   }
 
   function toggleSelecting() {
-    setSelecting((prevState) => (prevState === 'none' ? 'block' : 'none'));
+    if (isSelectingType == 'none') {
+      setSelecting('block');
+    } else {
+      setSelecting('none');
+    }
   }
 
+  ///////////////////////CRUD functions/////////////////////////////////////////
   async function fetchApi() {
     try {
       const response = await fetch('http://localhost:3001/list');
       const data = await response.json();
       setFullPartList(data);
-      setFullList(data);
+      setInterfaceList(data);
     } catch (err) {
       console.log(err);
     }
@@ -178,27 +189,6 @@ function App() {
       }
     } catch (err) {
       console.log(err);
-    }
-  }
-
-  function editPart(index) {
-    const currentPart = fullList[index];
-    setEditingPartId(currentPart['_id']);
-    showModalAddPart(currentPart['type']);
-    if (currentPart['type'] === 'cpu') {
-      setCpuData({ ...currentPart });
-    } else if (currentPart['type'] === 'gpu') {
-      setGpuData({ ...currentPart });
-    } else if (currentPart['type'] === 'mobo') {
-      setMoboData({ ...currentPart });
-    } else if (currentPart['type'] === 'ram') {
-      setRamData({ ...currentPart });
-    } else if (currentPart['type'] === 'power') {
-      setPowerData({ ...currentPart });
-    } else if (currentPart['type'] === 'ssd') {
-      setSsdData({ ...currentPart });
-    } else if (currentPart['type'] === 'case') {
-      setCaseData({ ...currentPart });
     }
   }
 
@@ -234,6 +224,9 @@ function App() {
     }
   }
 
+  //////////////////////////////////////////////////////////////////////////////////
+
+  //Input states controller
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
     const data = partTypeDataMap[selectedPartType];
@@ -255,6 +248,29 @@ function App() {
     }
   };
 
+  //Loading informations for editing part
+  function editPart(index) {
+    const currentPart = interfaceList[index];
+    setEditingPartId(currentPart['_id']);
+    showModalAddPart(currentPart['type']);
+    if (currentPart['type'] === 'cpu') {
+      setCpuData({ ...currentPart });
+    } else if (currentPart['type'] === 'gpu') {
+      setGpuData({ ...currentPart });
+    } else if (currentPart['type'] === 'mobo') {
+      setMoboData({ ...currentPart });
+    } else if (currentPart['type'] === 'ram') {
+      setRamData({ ...currentPart });
+    } else if (currentPart['type'] === 'power') {
+      setPowerData({ ...currentPart });
+    } else if (currentPart['type'] === 'ssd') {
+      setSsdData({ ...currentPart });
+    } else if (currentPart['type'] === 'case') {
+      setCaseData({ ...currentPart });
+    }
+  }
+
+  //Showing modal form for adding or editing part
   function showModalAddPart(partType) {
     clearInputs();
     setSelectedType(partType);
@@ -273,17 +289,22 @@ function App() {
       setPartFilterVisibility('none');
       setFirstFilterVisible('block');
     }
+
+    if (isFilteringOrder == 'block') {
+      setOrderFilterVisibility('none');
+      setFirstOrderVisible('block');
+    }
   }
 
   function selectFilterPart(filterPartType) {
     setFilterPart(partFilterMenu[filterPartType]);
     let filteredList = [];
-    if (filterPartType == 'all') {
+    if (filterPartType === 'all') {
       filteredList = fullPartList;
     } else {
       filteredList = fullPartList.filter(part => part.type === filterPartType);
     }
-    setFullList(filteredList)
+    setInterfaceList(filteredList);
     changePartFilterVisibility();
   }
 
@@ -295,23 +316,30 @@ function App() {
       setOrderFilterVisibility('none');
       setFirstOrderVisible('block');
     }
+
+    if (isFilteringPart  == 'block') {
+      setPartFilterVisibility('none');
+      setFirstFilterVisible('block');
+    }
   }
 
   function selectFilterOrder(filterOrderType) {
     setFilterOrder(orderFilterMenu[filterOrderType]);
-    let filteredList = [...fullList];
+    let filteredList = [...interfaceList];
     if (filterOrderType == 'price') {
-      filteredList = fullList.sort((a, b) => parseFloat(a.price.replaceAll('.', '')) - parseFloat(b.price.replaceAll('.', '')));
+      filteredList = interfaceList.sort((a, b) => parseFloat(a.price.replaceAll('.', '')) - parseFloat(b.price.replaceAll('.', '')));
     } else if (filterOrderType == 'price2') {
-      filteredList = fullList.sort((a, b) => parseFloat(b.price.replaceAll('.', '')) - parseFloat(a.price.replaceAll('.', '')));
+      filteredList = interfaceList.sort((a, b) => parseFloat(b.price.replaceAll('.', '')) - parseFloat(a.price.replaceAll('.', '')));
     } else if (filterOrderType == 'costBenefit') {
-      filteredList = fullList.sort((a, b) => b.costBenefit - a.costBenefit);
-    }else if (filterOrderType == 'title') {
-      filteredList = fullList.sort((a, b) => a.name.localeCompare(b.name));
-    }else if (filterOrderType == 'title2') {
-      filteredList = fullList.sort((a, b) => b.name.localeCompare(a.name));
+      filteredList = interfaceList.sort((a, b) => b.costBenefit - a.costBenefit);
+    } else if (filterOrderType == 'title') {
+      filteredList = interfaceList.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (filterOrderType == 'title2') {
+      filteredList = interfaceList.sort((a, b) => b.name.localeCompare(a.name));
+    }else if (filterOrderType == 'relevance'){
+      filteredList = interfaceList.sort((a, b) => a._id.localeCompare(b._id));
     }
-    setFullList(filteredList)
+    setInterfaceList(filteredList)
     changeOrderFilterVisibility();
   }
 
@@ -352,37 +380,27 @@ function App() {
         <h1 className="mainTitle">{filterPart}</h1>
         <div className="partFilters">
           <div></div>
-          <div className="partFilterBox">
-            <label>Filtrar por:</label>
-            <div className="partType partFilter" onClick={changePartFilterVisibility} style={{ display: isFirstFilterVisible }}>
-              <h4>{filterPart}</h4>
-            </div>
-            <div style={{ display: isFilteringPart }}>
-              {Object.keys(partFilterMenu).map((part, index) => (
-                <div className="partType partFilter" onClick={() => selectFilterPart(part)}>
-                  <h4>{partFilterMenu[part]}</h4>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="partFilterBox">
-            <label>Ordenar por:</label>
-            <div className="partType partFilter" onClick={changeOrderFilterVisibility} style={{ display: isFirstOrderVisible }}>
-              <h4>{filterOrder}</h4>
-            </div>
-            <div style={{ display: isFilteringOrder }}>
-              {Object.keys(orderFilterMenu).map((order, index) => (
-                <div className="partType partFilter" onClick={() => selectFilterOrder(order)}>
-                  <h4>{orderFilterMenu[order]}</h4>
-                </div>
-              ))}
-            </div>
-          </div>
+          <FilterBox firstFilterLabel='Filtrar por'
+            onClick={changePartFilterVisibility}
+            firstFilterDisplayCondition={isFirstFilterVisible}
+            currentFilter={filterPart}
+            isFiltering={isFilteringPart}
+            filterMenu={partFilterMenu}
+            selectFilter={selectFilterPart}
+          />
+          <FilterBox firstFilterLabel='Ordenar por'
+            onClick={changeOrderFilterVisibility}
+            firstFilterDisplayCondition={isFirstOrderVisible}
+            currentFilter={filterOrder}
+            isFiltering={isFilteringOrder}
+            filterMenu={orderFilterMenu}
+            selectFilter={selectFilterOrder}
+          />
         </div>
         <div className="partList">
-          {fullList ? (
+          {interfaceList ? (
             <>
-              {fullList.map((part, index) => (
+              {interfaceList.map((part, index) => (
                 <div key={part.id} className="partInfo">
                   <div className="partImage">
                     <img src={part['imageLink']} alt={part['name']} />

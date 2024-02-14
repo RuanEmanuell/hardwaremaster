@@ -1,3 +1,32 @@
+.partFilters{
+    height: 2.5%;
+    color: #DB5510;
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr;
+    position: relative;
+    right: 0;
+    width: 97%;
+}
+
+.partFilterBox{
+    margin: 0 1%;
+}
+
+.partFilter{
+    color: black;
+    background-color: white;
+}
+
+.partFilter:hover{
+    background-color: black;
+    color: white;
+    cursor: pointer;
+}
+
+.partFilter h4{
+    margin: 0 2%;
+}
+
 .orangeButton {
     background-color: #DB5510;
     border: none;
