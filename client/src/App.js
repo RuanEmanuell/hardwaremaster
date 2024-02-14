@@ -175,6 +175,7 @@ function App() {
     } else {
       filteredList = fullPartList.filter(part => part.type === filterPartType);
     }
+    filteredList = sortByCriteria(filteredList, filterOrder);
     setInterfaceList(filteredList);
     changePartFilterVisibility();
   }
@@ -196,28 +197,26 @@ function App() {
     setFilterOrder(orderFilterMenu[filterOrderType]);
     let filteredList = [...interfaceList];
 
-    switch (filterOrderType) {
-      case 'price':
-        filteredList = interfaceList.sort((a, b) => parseFloat(a.price.replaceAll('.', '')) - parseFloat(b.price.replaceAll('.', '')));
-        break;
-      case 'price2':
-        filteredList = interfaceList.sort((a, b) => parseFloat(b.price.replaceAll('.', '')) - parseFloat(a.price.replaceAll('.', '')));
-        break;
-      case 'costBenefit':
-        filteredList = interfaceList.sort((a, b) => b.costBenefit - a.costBenefit);
-        break;
-      case 'title':
-        filteredList = interfaceList.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case 'title2':
-        filteredList = interfaceList.sort((a, b) => b.name.localeCompare(a.name));
-        break;
-      default:
-        filteredList = interfaceList.sort((a, b) => a._id.localeCompare(b._id));
-        break;
-    }
+    filteredList = sortByCriteria(filteredList, orderFilterMenu[filterOrderType]);
     setInterfaceList(filteredList)
     changeOrderFilterVisibility();
+  }
+
+  function sortByCriteria(list, criteria) {
+    switch (criteria) {
+      case 'Menor preço':
+        return list.sort((a, b) => parseFloat(a.price.replaceAll('.', '')) - parseFloat(b.price.replaceAll('.', '')));
+      case 'Maior preço':
+        return list.sort((a, b) => parseFloat(b.price.replaceAll('.', '')) - parseFloat(a.price.replaceAll('.', '')));
+      case 'Custo benefício':
+        return list.sort((a, b) => b.costBenefit - a.costBenefit);
+      case 'Nome (A-Z)':
+        return list.sort((a, b) => a.name.localeCompare(b.name));
+      case 'Nome (Z-A)':
+        return list.sort((a, b) => b.name.localeCompare(a.name));
+      default:
+        return list.sort((a, b) => a._id.localeCompare(b._id));
+    }
   }
 
   function closeAllMenus() {
