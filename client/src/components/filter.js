@@ -8,8 +8,10 @@ function FilterBox(props) {
               <h4>{props.currentFilter}</h4>
             </div>
             <div style={{ display: props.isFiltering }}>
-              {Object.keys(props.filterMenu).map((filter) => (
-                <div className="partType partFilter" onClick={() => props.selectFilter(filter)}>
+              {Object.keys(props.filterMenu).map((filter, index) => (
+                <div className="partType partFilter" 
+                key = {index}
+                onClick={() => props.selectFilter(filter)}>
                   <h4>{props.filterMenu[filter]}</h4>
                 </div>
               ))}
