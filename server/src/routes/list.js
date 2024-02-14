@@ -67,6 +67,8 @@ listRouter.get('/currentprice/:id', async (req, res) => {
               priceLink = await page.$eval('#valVista', (p) => p.innerText.substring(3));
             } else if (await page.$('.jss272')) {
               priceLink = await page.$eval('.jss272', (div) => div.innerText.substring(3));
+            } else if (await page.$('.a-offscreen')) {
+              priceLink = await page.$eval('.a-offscreen', (span) => span.innerText.substring(2));
             }
       
             if (priceLink !== currentPrice && parseFloat(priceLink) > 0.0) {

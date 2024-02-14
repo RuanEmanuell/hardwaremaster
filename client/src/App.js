@@ -48,6 +48,7 @@ function App() {
       shopLink: '',
       shopLink2: '',
       shopLink3: '',
+      shopLink4: '',
       imageLink: '',
       costBenefit: '',
       ...(type === 'cpu'
@@ -116,6 +117,7 @@ function App() {
   }
 
   function toggleSelecting() {
+    closeAllMenus();
     if (isSelectingType == 'none') {
       setSelecting('block');
     } else {
@@ -142,6 +144,7 @@ function App() {
 
   //Showing modal form for adding or editing part
   function showModalAddPart(partType) {
+    closeAllMenus();
     clearInputs();
     setSelectedType(partType);
     if (isAdding == 'none') {
@@ -153,17 +156,14 @@ function App() {
 
   //'Filter by' functions
   function changePartFilterVisibility() {
+    closeAllMenus();
+
     if (isFilteringPart == 'none') {
       setPartFilterVisibility('block');
       setFirstFilterVisible('none');
     } else {
       setPartFilterVisibility('none');
       setFirstFilterVisible('block');
-    }
-
-    if (isFilteringOrder == 'block') {
-      setOrderFilterVisibility('none');
-      setFirstOrderVisible('block');
     }
   }
 
@@ -181,6 +181,8 @@ function App() {
 
   //'Order by' functions
   function changeOrderFilterVisibility() {
+    closeAllMenus();
+
     if (isFilteringOrder == 'none') {
       setOrderFilterVisibility('block');
       setFirstOrderVisible('none');
@@ -188,17 +190,12 @@ function App() {
       setOrderFilterVisibility('none');
       setFirstOrderVisible('block');
     }
-
-    if (isFilteringPart == 'block') {
-      setPartFilterVisibility('none');
-      setFirstFilterVisible('block');
-    }
   }
 
   function selectFilterOrder(filterOrderType) {
     setFilterOrder(orderFilterMenu[filterOrderType]);
     let filteredList = [...interfaceList];
-    
+
     switch (filterOrderType) {
       case 'price':
         filteredList = interfaceList.sort((a, b) => parseFloat(a.price.replaceAll('.', '')) - parseFloat(b.price.replaceAll('.', '')));
@@ -221,6 +218,23 @@ function App() {
     }
     setInterfaceList(filteredList)
     changeOrderFilterVisibility();
+  }
+
+  function closeAllMenus() {
+    if (isFilteringPart == 'block') {
+      setPartFilterVisibility('none');
+      setFirstFilterVisible('block');
+    }
+    if (isFilteringOrder == 'block') {
+      setOrderFilterVisibility('none');
+      setFirstOrderVisible('block');
+    }
+    if (isAdding == 'block') {
+      setAdding('none');
+    }
+    if (isSelectingType == 'block') {
+      setSelecting('none');
+    }
   }
 
   //Visual objects for maping and creating dynamic components
@@ -326,8 +340,8 @@ function App() {
 
   return (
     <div className="mainContainer">
-      <div className="gridSpacer"></div>
-      <main>
+      <div className="gridSpacer" onClick={closeAllMenus}></div>
+      <main onClick={closeAllMenus}>
         <h1 className="mainTitle">{filterPart}</h1>
         <div className="partFilters">
           <div className="gridSpacer"></div>
@@ -442,36 +456,36 @@ function App() {
           </div>
           <button className="addPart" onClick={toggleSelecting}><h1>+</h1></button>
         </div>
-        <div style={{ display: isAdding }} className="addPartContainer">
-          {selectedPartType ?
-            <div className="addPartModal">
-              <div className="addPartImg">
-                <div className="addPartImgBox">
-                  <img src={
-                    partTypeDataMap[selectedPartType]['imageLink']}></img>
-                </div>
-              </div>
-              <div className="addPartInputs">
-                {Object.keys(partTypeDataMap[selectedPartType]).map((key) =>
-                  key != '_id' && key != 'type' && key != '__v' ?
-                    <>
-                      <label className="inputLabel">{key}:</label>
-                      <input
-                        type={key == 'cpuIgpu' ? 'checkbox' : 'text'}
-                        placeholder={key}
-                        key={key}
-                        name={key}
-                        onChange={(event) => handleChange(event)}
-                        checked={partTypeDataMap[selectedPartType][key]}
-                        value={partTypeDataMap[selectedPartType][key]}></input> </> : <></>)}
-              </div>
-              <div className="saveButtonContainer">
-                <OrangeButton onClick={() => createOrEditPart()} buttonLabel='Salvar' />
-              </div>
-            </div> : <></>}
-        </div>
       </main>
-      <div className="gridSpacer"></div>
+      <div style={{ display: isAdding }} className="addPartContainer">
+        {selectedPartType ?
+          <div className="addPartModal">
+            <div className="addPartImg">
+              <div className="addPartImgBox">
+                <img src={
+                  partTypeDataMap[selectedPartType]['imageLink']}></img>
+              </div>
+            </div>
+            <div className="addPartInputs">
+              {Object.keys(partTypeDataMap[selectedPartType]).map((key) =>
+                key != '_id' && key != 'type' && key != '__v' ?
+                  <>
+                    <label className="inputLabel">{key}:</label>
+                    <input
+                      type={key == 'cpuIgpu' ? 'checkbox' : 'text'}
+                      placeholder={key}
+                      key={key}
+                      name={key}
+                      onChange={(event) => handleChange(event)}
+                      checked={partTypeDataMap[selectedPartType][key]}
+                      value={partTypeDataMap[selectedPartType][key]}></input> </> : <></>)}
+            </div>
+            <div className="saveButtonContainer">
+              <OrangeButton onClick={() => createOrEditPart()} buttonLabel='Salvar' />
+            </div>
+          </div> : <></>}
+      </div>
+      <div className="gridSpacer" onClick={closeAllMenus}></div>
     </div>
   );
 }

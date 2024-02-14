@@ -10,6 +10,7 @@ const partSchema = new Schema({
     shopLink: String,
     shopLink2: String,
     shopLink3: String,
+    shopLink4: String,
     imageLink: String,
     price: String,
     costBenefit: Number,
