@@ -3,12 +3,42 @@
     padding: 0;
     background-color: #DB5510;
     color: white;
-    font-weight: bolder;
-    height: 10vh;
+    height: calc(2.5vw + 2.5vh);
+    max-height: 5%;
     width: 100vw;
-    border: 2px solid red ;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
 }
 
 .navLogo{
-    padding: 0 2%;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.navLogo h1{
+    margin: 0;
+    margin-left: 2%;
+    margin-top: calc(0.5vh + 0.5vw);
+    font-size: calc(1vh + 1vw);
+    text-transform: uppercase;
+    font-weight: 900;
+}
+
+.navOption{
+   text-align: center;
+   cursor: pointer;
+}
+
+.navIcon{
+    width: 15%;
+}
+
+.navOptions{
+    margin-top: 1.5%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+.navLabel{
+    margin: 0;
 }
