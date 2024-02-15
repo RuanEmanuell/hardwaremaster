@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import editIcon from '../../images/edit.png';
-import deleteIcon from '../../images/delete.png';
-import './styles/list.css';
+import listStyle from './styles/list.module.css';
+import EditIcon from '../../images/edit.png';
+import DeleteIcon from '../../images/delete.png';
 import FilterBox from '../../components/list/filter';
 import SpecCircle from '../../components/list/speccircle';
 import OrangeButton from '../../components/global/orangebutton';
@@ -336,11 +336,11 @@ function List() {
   //////////////////////////////////////////////////////////////////////////////////
 
   return (
-    <div className="mainContainer" onClick={closeAllMenus}>
+    <div className={listStyle.mainContainer} onClick={closeAllMenus}>
       <main>
-        <h1 className="mainTitle">{filterPart}</h1>
-        <div className="partFilters">
-          <div className="gridSpacer"></div>
+        <h1 className={listStyle.mainTitle}>{filterPart}</h1>
+        <div className={listStyle.partFilters}>
+          <div className={listStyle.gridSpacer}></div>
           <FilterBox firstFilterLabel='Filtrar por'
             onClick={changePartFilterVisibility}
             firstFilterDisplayCondition={isFirstFilterVisible}
@@ -358,15 +358,15 @@ function List() {
             selectFilter={selectFilterOrder}
           />
         </div>
-        <div className="partList">
+        <div className={listStyle.partList}>
           {interfaceList ? (
             <>
               {interfaceList.map((part, index) => (
-                <div key={part.id} className="partInfo">
-                  <div className="partImage">
+                <div key={part.id} className={listStyle.partInfo}>
+                  <div className={listStyle.partImage}>
                     <img src={part['imageLink']} alt={part['name']} />
                   </div>
-                  <div className="partSpecs">
+                  <div className={listStyle.partSpecs}>
                     <h1>{part['name']}</h1>
                     <p>Marca: {part['brand']}</p>
                     {part['type'] === 'cpu' ? (
@@ -432,9 +432,9 @@ function List() {
                       </>
                     ) : null}
                     <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
-                    <div className="editDeleteButtons">
-                      <button onClick={() => editPart(index)} className="editButton"><img src={editIcon} alt="Edit Icon" /></button>
-                      <button onClick={() => deletePart(part['_id'])} className="deleteButton"><img src={deleteIcon} alt="Delete Icon" /></button>
+                    <div className={listStyle.editDeleteButtons}>
+                      <button onClick={() => editPart(index)} className={listStyle.editButton}><img src={EditIcon} alt="Edit Icon" /></button>
+                      <button onClick={() => deletePart(part['_id'])} className={listStyle.deleteButton}><img src={DeleteIcon} alt="Delete Icon" /></button>
                     </div>
                     <OrangeButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
                   </div>
@@ -443,9 +443,9 @@ function List() {
             </>
           ) : <></>}
           <br></br>
-          <div className="choosePartType" style={{ display: isSelectingType }}>
+          <div className={listStyle.choosePartType} style={{ display: isSelectingType }}>
             {Object.keys(partTypeDataMap).map((addPart, index) => (
-              <h3 key={index} className="partType" onClick={() => showModalAddPart(addPart)}>
+              <h3 key={index} className={listStyle.partType} onClick={() => showModalAddPart(addPart)}>
                 {addPart}
               </h3>
             ))}
@@ -453,20 +453,20 @@ function List() {
           <CircleButton onClick={toggleSelecting} buttonIcon='+' />
         </div>
       </main>
-      <div style={{ display: isAdding }} className="addPartContainer">
+      <div style={{ display: isAdding }} className={listStyle.addPartContainer}>
         {selectedPartType ?
-          <div className="addPartModal">
-            <div className="addPartImg">
-              <div className="addPartImgBox">
+          <div className={listStyle.addPartModal}>
+            <div className={listStyle.addPartImg}>
+              <div className={listStyle.addPartImgBox}>
                 <img src={
                   partTypeDataMap[selectedPartType]['imageLink']}></img>
               </div>
             </div>
-            <div className="addPartInputs">
+            <div className={listStyle.addPartInputs}>
               {Object.keys(partTypeDataMap[selectedPartType]).map((key) =>
                 key != '_id' && key != 'type' && key != '__v' ?
                   <>
-                    <label className="inputLabel">{key}:</label>
+                    <label className={listStyle.inputLabel}>{key}:</label>
                     <input
                       type={key == 'cpuIgpu' ? 'checkbox' : 'text'}
                       placeholder={key}
@@ -476,7 +476,7 @@ function List() {
                       checked={partTypeDataMap[selectedPartType][key]}
                       value={partTypeDataMap[selectedPartType][key]}></input> </> : <></>)}
             </div>
-            <div className="saveButtonContainer">
+            <div className={listStyle.saveButtonContainer}>
               <OrangeButton onClick={() => createOrEditPart()} buttonLabel='Salvar' />
             </div>
           </div> : <></>}

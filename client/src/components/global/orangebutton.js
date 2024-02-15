@@ -1,8 +1,8 @@
-import './styles/globalcomponents.css'
+import globalComponentStyle from './styles/globalcomponents.module.css'
 
 function OrangeButton(props) {
     return (
-        <button className="orangeButton" onClick = {props.onClick}>{props.buttonLabel}</button>
+        <button className={globalComponentStyle.orangeButton} onClick = {props.onClick}>{props.buttonLabel}</button>
     )
 }
 

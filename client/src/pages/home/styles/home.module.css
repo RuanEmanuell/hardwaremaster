@@ -1,0 +1,14 @@
+.navBar{
+    margin: 0;
+    padding: 0;
+    background-color: #DB5510;
+    color: white;
+    font-weight: bolder;
+    height: 10vh;
+    width: 100vw;
+    border: 2px solid red ;
+}
+
+.navLogo{
+    padding: 0 2%;
+}

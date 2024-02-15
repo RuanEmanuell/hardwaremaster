@@ -12,6 +12,17 @@ button {
     text-align: center;
 }
 
+.partFilters{
+    height: 70px;
+    display: grid;
+    grid-template-columns: 0.66fr 1fr 1fr;
+    position: relative;
+    right: 0;
+    width: 80%;
+    min-width: 400px;
+    transition: all 1s;
+}
+
 .partList {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -57,11 +68,6 @@ button {
 
 .partSpecs p {
     margin: 3%;
-}
-
-.dualSpecBox {
-    display: grid;
-    grid-template-columns: 6fr 1fr;
 }
 
 button {

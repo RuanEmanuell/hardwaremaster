@@ -1,4 +1,4 @@
-import './styles/listcomponents.css'
+import listComponentStyle from './styles/listcomponents.module.css'
 
 function SpecCircle(props) {
     let specCircleColor = 'rgb(0, 182, 0)';
@@ -10,8 +10,8 @@ function SpecCircle(props) {
     }
 
     return (
-        <div className="dualSpecBox">
-            <p>{props.performanceLabel} </p> <div className="specCircle" style={{ 'backgroundColor': specCircleColor }}><p>{props.performanceRating}</p></div>
+        <div className={listComponentStyle.dualSpecBox}>
+            <p>{props.performanceLabel} </p> <div className={listComponentStyle.specCircle} style={{ 'backgroundColor': specCircleColor }}><p>{props.performanceRating}</p></div>
         </div>
     )
 }
