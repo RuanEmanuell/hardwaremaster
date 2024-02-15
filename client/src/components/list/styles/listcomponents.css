@@ -1,7 +1,6 @@
 .partFilters{
     height: 3%;
     min-height: 50px;
-    color: #DB5510;
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
     position: relative;
