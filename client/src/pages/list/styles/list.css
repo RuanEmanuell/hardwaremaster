@@ -27,7 +27,7 @@ button {
 .partImage {
     background-color: white;
     width: 90%;
-    min-width: 160px;
+    min-width: 170px;
     height: 30%;
     display: flex;
     justify-self: center;
@@ -46,7 +46,7 @@ button {
 .partSpecs {
     background-color: white;
     width: 90%;
-    min-width: 160px;
+    min-width: 170px;
     text-align: center;
 }
 

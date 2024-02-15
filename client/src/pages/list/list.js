@@ -131,7 +131,6 @@ function List() {
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
     const newData = { ...partData[selectedPartType], [name]: type === 'checkbox' ? checked : value };
-    console.log(newData);
     setPartData({ ...partData, [selectedPartType]: newData });
   };
 
