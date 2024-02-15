@@ -1,10 +1,10 @@
-import './components.css'
+import './styles/listcomponents.css'
 
 function SpecCircle(props) {
     let specCircleColor = 'rgb(0, 182, 0)';
 
     if (props.performanceRating <= 30) {
-        specCircleColor = 'red';
+        specCircleColor = 'rgb(230, 0, 0)';
     }else if (props.performanceRating <= 60) {
         specCircleColor = 'rgb(245, 228, 0)';
     }

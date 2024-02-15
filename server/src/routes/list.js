@@ -61,6 +61,7 @@ listRouter.get('/currentprice/:id', async (req, res) => {
 
         let priceLink = '0.0';
 
+        
         if (await page.$('.sc-5492faee-2.ipHrwP.finalPrice')) {
           priceLink = await page.$eval('.sc-5492faee-2.ipHrwP.finalPrice', (h4) => h4.innerText.substring(3));
         } else if (await page.$('#valVista')) {
@@ -75,7 +76,7 @@ listRouter.get('/currentprice/:id', async (req, res) => {
           priceLink = await page.$eval('.a-offscreen', (span) => span.innerText.substring(2));
         }
         
-        if (parseInt(priceLink) < parseInt(currentPrice) && parseInt(priceLink) > 10) {
+        if (parseInt(priceLink) !== parseInt(currentPrice) && parseInt(priceLink) > 10) {
           currentPrice = priceLink;
         }
       }

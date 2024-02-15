@@ -6,7 +6,7 @@
     grid-template-columns: 2fr 1fr 1fr;
     position: relative;
     right: 0;
-    width: 97%;
+    width: 98%;
     min-width: 400px;
 }
 
@@ -29,20 +29,6 @@
     margin: 0 2%;
 }
 
-.orangeButton {
-    background-color: #DB5510;
-    border: none;
-    padding: 5%;
-    font-weight: bold;
-    color: white;
-    border-radius: 5px;
-}
-
-.orangeButton:hover {
-    cursor: pointer;
-    background-color: black;
-}
-
 .specCircle {
     margin: 10%;
     border-radius: 50px;
@@ -52,11 +38,12 @@
 }
 
 .specCircle p{
+    font-weight: bold;
     margin: auto;
 }
 
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 1000px) {
     .partFilters{
         grid-template-columns: 1fr 2fr 2fr;
     }

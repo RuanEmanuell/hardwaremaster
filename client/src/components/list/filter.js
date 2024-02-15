@@ -1,4 +1,4 @@
-import './components.css'
+import './styles/listcomponents.css'
 
 function FilterBox(props) {
     return (

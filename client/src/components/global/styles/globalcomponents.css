@@ -1,0 +1,31 @@
+.orangeButton {
+    background-color: #DB5510;
+    border: none;
+    padding: 5%;
+    font-weight: bold;
+    color: white;
+    border-radius: 5px;
+}
+
+.orangeButton:hover {
+    cursor: pointer;
+    background-color: black;
+}
+
+.circleButton {
+    position: fixed;
+    bottom: 1%;
+    right: 5%;
+    background-color: #DB5510;
+    border-radius: 50px;
+    color: white;
+    width: 30%;
+    min-width: 50px;
+    max-width: 80px;
+    height: 8%;
+    font-size: 150%;
+}
+
+.circleButton h1 {
+    margin: auto;
+}

@@ -1,4 +1,4 @@
-import './components.css'
+import './styles/globalcomponents.css'
 
 function OrangeButton(props) {
     return (
