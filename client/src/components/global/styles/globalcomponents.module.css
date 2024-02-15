@@ -24,6 +24,7 @@
     min-width: 50px;
     max-width: 80px;
     height: 8%;
+    min-height: 80px;
     font-size: 150%;
 }
 

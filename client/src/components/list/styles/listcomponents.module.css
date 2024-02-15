@@ -1,10 +1,10 @@
 .partFilterBox{
-    margin: 0 1%;
-    width: 100%;
+    width: 95%;
 }
 
 .partFilter{
-    width: 97%;
+    font-size: calc(7px + 35%);
+    width: 100%;
     background-color: white;
     color: black;
     border: 1px solid black;

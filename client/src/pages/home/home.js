@@ -5,7 +5,7 @@ function Home() {
   return (
     <div>
       <div className={homeStyle.navBar}>
-        <h1 className={homeStyle.navLogo}>HARDWAREMASTER</h1>
+        <h1 className={homeStyle.navLogo}>HardwareMaster</h1>
       </div>
       <main>
       </main>

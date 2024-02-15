@@ -357,6 +357,7 @@ function List() {
             filterMenu={orderFilterMenu}
             selectFilter={selectFilterOrder}
           />
+          <div className={listStyle.gridSpacer}></div>
         </div>
         <div className={listStyle.partList}>
           {interfaceList ? (
