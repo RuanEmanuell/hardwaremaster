@@ -15,4 +15,6 @@ Still under development.
      Run the NodeJS server with 'npm run dev'.
      Access http://localhost:3000 in your browser.
     
-### Here are some images of the project running (coming soon)
+### Here are some images of the project running:
+
+![Untitled-ezgif com-video-to-gif-converter](https://github.com/RuanEmanuell/hardwaremaster/assets/113607857/20590703-9b72-4642-b5ce-dd7f1d31229d)
