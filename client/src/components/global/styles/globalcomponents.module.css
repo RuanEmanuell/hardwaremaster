@@ -32,14 +32,20 @@
     margin: auto;
 }
 
+.navBarContainer{
+    background-color: #DB5510;
+    width: 100vw;
+    max-height: 100px;
+    height: calc(2vw + 5vh);
+    display: flex;
+    justify-content: center;
+}
+
 .navBar {
     margin: 0;
     padding: 0;
-    background-color: #DB5510;
+    max-width: 1280px;
     color: white;
-    height: calc(2vw + 5vh);
-    max-height: 100px;
-    width: 100vw;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
 }
@@ -57,9 +63,9 @@
 
 .navLogo h1 {
     margin: 0;
-    margin-left: 5%;
+    margin-left: 10%;
     margin-top: calc(2vh + 0.5vw);
-    font-size: calc(1.5vh + 1vw);
+    font-size: min(max(30px), calc(1.5vh + 1vw));
     text-transform: uppercase;
     font-weight: 900;
 }
@@ -104,10 +110,9 @@
 }
 
 .hamburguerMenu{
-    margin-top: calc(3px + 0.75vw + 0.75vh);
-    width: 20%;
-    max-width: 40px;
-    max-height: 30px;
+    margin-top: calc(12px + 0.5vw);
+    width: 30px;
+    height: 30px;
     padding: 0 33%;
     align-self: center;
     display: grid;
@@ -153,4 +158,20 @@
     .hamburguerMenuContainer{
         display: block;
     }
+}
+
+@media screen and (max-width: 480px) {
+    .hamburguerMenu{
+        margin-top: 10px;
+        width: 20px;
+        height: 20px;
+    }
+    
+}
+
+@media screen and (max-height: 568px) {
+    .hamburguerMenu{
+        margin-top: calc(5px);
+    }
+    
 }

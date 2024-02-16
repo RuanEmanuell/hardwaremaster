@@ -128,11 +128,7 @@ function List() {
 
   function toggleSelecting() {
     closeAllMenus();
-    if (isSelectingType == 'none') {
-      setSelecting('block');
-    } else {
-      setSelecting('none');
-    }
+    setSelecting(isSelectingType === 'block' ? 'none' : 'block');
   }
 
   //Input states controller

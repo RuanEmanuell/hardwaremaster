@@ -1,0 +1,57 @@
+.mainContainer{
+    display: flex;
+    justify-content: center;
+}
+
+.homeOptionsGrid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    height: 90vh;
+}
+
+.homeOption{
+    height: 40%;
+    margin: 35% 10%;
+    background-color: white;
+    display: grid;
+    grid-template-rows: 2fr 1fr;
+    transition: 0.5s all;
+}
+
+.homeOption:hover{
+    cursor: pointer;
+    .homeOptionImg{
+        width: 75%;
+    }
+}
+
+.homeOptionImgBox{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.homeOptionImg{
+    margin: 5%;
+    height: fit-content;
+    width: 70%;
+    transition: 0.5s all;
+}
+
+.homeOptionDescriptionBox{
+    height: fit-content;
+    background-color: grey;
+    display: grid;
+    grid-template-rows: 3fr 1fr;
+}
+
+.homeOptionLabel{
+    margin: 5%;
+    color: white;
+    text-align: center;
+}
+
+.homeOptionButtonBox{
+    display: flex;
+    justify-content: center;
+}
