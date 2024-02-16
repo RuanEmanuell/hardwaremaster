@@ -43,7 +43,7 @@
 }
 
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 960px) {
     .partFilters{
         grid-template-columns: 1fr 2fr 2fr;
     }

@@ -31,3 +31,126 @@
 .circleButton h1 {
     margin: auto;
 }
+
+.navBar {
+    margin: 0;
+    padding: 0;
+    background-color: #DB5510;
+    color: white;
+    height: calc(2vw + 5vh);
+    max-height: 100px;
+    width: 100vw;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.navBar a {
+    color: white;
+    text-decoration: none;
+}
+
+.navLogo {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.navLogo h1 {
+    margin: 0;
+    margin-left: 5%;
+    margin-top: calc(2vh + 0.5vw);
+    font-size: calc(1.5vh + 1vw);
+    text-transform: uppercase;
+    font-weight: 900;
+}
+
+.navOptions {
+    margin-top: calc(1vh + 0.5vw);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.navOption {
+    text-align: center;
+    transition: all 0.5s;
+}
+
+.navOption:hover{
+    cursor: pointer;
+    background-color: grey;
+    border-radius: 50px;
+    padding: 5%;
+}
+
+.navIcon {
+    width: 15%;
+}
+
+.navLabel {
+    margin: 0;
+}
+
+.hamburguerMenuContainer{
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+.hamburguerMenu div{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.hamburguerMenu{
+    margin-top: calc(3px + 0.75vw + 0.75vh);
+    width: 20%;
+    max-width: 40px;
+    max-height: 30px;
+    padding: 0 33%;
+    align-self: center;
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr;
+}
+
+.dash{
+    width: 100%;
+    max-width: 40px;
+    max-height: 4px;
+    margin: 12.5% 0;
+    background-color: white;
+    border-radius: 50px;
+}
+
+.hamburguerMenuOptions{
+    position: relative;
+    z-index: 1;
+    border: 2px solid black;
+}
+
+.hamburguerMenuOption{
+    width: 82%;
+    padding: 2% 3%;
+    text-align: center;
+    background-color: white;
+    border: 2px solid black;
+    color: black;
+    transition: 0.2s all;
+}
+
+.hamburguerMenuOption:hover{
+    cursor: pointer;
+    color: white;
+    background-color: black;
+    padding: 5%;
+}
+
+@media screen and (max-width: 960px) {
+    .navOption {
+        display: none;
+    }
+    .hamburguerMenuContainer{
+        display: block;
+    }
+}

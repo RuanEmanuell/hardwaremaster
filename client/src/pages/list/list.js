@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import NavBar from '../../components/global/navbar';
 import listStyle from './styles/list.module.css';
 import EditIcon from '../../images/edit.png';
 import DeleteIcon from '../../images/delete.png';
@@ -34,6 +35,13 @@ function List() {
   const [isSelectingType, setSelecting] = useState('none');
   const [isAdding, setAdding] = useState('none');
   const [selectedPartType, setSelectedType] = useState('cpu');
+
+  const [isHamburguerMenuOptionVisible, setHamburguerMenuOptionVisible] = useState(true);
+
+  //Controller for navbar options visibility
+  useEffect(()=>{
+    setHamburguerMenuOptionVisible(true);
+  }, [isHamburguerMenuOptionVisible]); 
 
   //Showing infos on screen on page load
   useEffect(() => {
@@ -220,7 +228,7 @@ function List() {
     }
   }
 
-  function closeAllMenus() {
+  async function closeAllMenus() {
     if (isFilteringPart == 'block') {
       setPartFilterVisibility('none');
       setFirstFilterVisible('block');
@@ -232,6 +240,8 @@ function List() {
     if (isSelectingType == 'block') {
       setSelecting('none');
     }
+
+    setHamburguerMenuOptionVisible(false);
   }
 
   //Visual objects for maping and creating dynamic components
@@ -336,6 +346,8 @@ function List() {
   //////////////////////////////////////////////////////////////////////////////////
 
   return (
+    <div>
+    <NavBar isHamburguerMenuOptionVisible = {isHamburguerMenuOptionVisible}/>
     <div className={listStyle.mainContainer} onClick={closeAllMenus}>
       <main>
         <h1 className={listStyle.mainTitle}>{filterPart}</h1>
@@ -482,6 +494,7 @@ function List() {
             </div>
           </div> : <></>}
       </div>
+    </div>
     </div>
   );
 }
