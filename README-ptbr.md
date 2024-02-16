@@ -17,4 +17,4 @@ Ainda em desenvolvimento.
     
 ### Aqui estão algumas imagens do projeto rodando:
 
-![Untitled-ezgif com-video-to-gif-converter](https://github.com/RuanEmanuell/hardwaremaster/assets/113607857/5272107e-8636-4b62-8afd-ca1554176681)
+![ezgif-7-ce56214882](https://github.com/RuanEmanuell/hardwaremaster/assets/113607857/fbfcee89-593c-405b-aa93-4f47bc61fa45)
