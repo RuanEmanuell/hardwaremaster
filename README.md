@@ -17,4 +17,4 @@ Still under development.
     
 ### Here are some images of the project running:
 
-![Untitled-ezgif com-video-to-gif-converter](https://github.com/RuanEmanuell/hardwaremaster/assets/113607857/20590703-9b72-4642-b5ce-dd7f1d31229d)
+![ezgif-7-ce56214882](https://github.com/RuanEmanuell/hardwaremaster/assets/113607857/ca5eac57-59d7-4f53-b5e9-8371e820dc8b)
