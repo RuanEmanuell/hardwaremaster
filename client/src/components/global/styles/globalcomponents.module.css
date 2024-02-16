@@ -125,8 +125,8 @@
 
 .hamburguerMenuOptions{
     position: relative;
+    top: 1vh;
     z-index: 1;
-    border: 2px solid black;
 }
 
 .hamburguerMenuOption{
@@ -134,7 +134,7 @@
     padding: 2% 3%;
     text-align: center;
     background-color: white;
-    border: 2px solid black;
+    border: 3px solid black;
     color: black;
     transition: 0.2s all;
 }

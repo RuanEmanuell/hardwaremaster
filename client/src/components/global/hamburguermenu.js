@@ -12,10 +12,8 @@ function HamburguerMenu(props) {
     }
 
     useEffect(() => {
-        if (props.isHamburguerMenuOptionVisible === false) {
-            setHamburguerMenuOptionVisible('none');
-        }
-    })
+        setHamburguerMenuOptionVisible('none');
+    }, [props.isHamburguerMenuOptionVisible])
 
     return (
         <div className={globalComponentStyle.hamburguerMenuContainer}>
