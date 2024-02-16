@@ -1,8 +1,8 @@
-.partFilterBox{
+.partFilterBox {
     width: 95%;
 }
 
-.partFilter{
+.partFilter {
     font-size: calc(7px + 35%);
     width: 100%;
     background-color: white;
@@ -13,13 +13,13 @@
     text-transform: uppercase;
 }
 
-.partFilter:hover{
+.partFilter:hover {
     background-color: black;
     color: white;
     cursor: pointer;
 }
 
-.partFilter h4{
+.partFilter h4 {
     margin: 0 2%;
 }
 
@@ -31,7 +31,7 @@
     justify-content: center;
 }
 
-.specCircle p{
+.specCircle p {
     font-weight: bold;
     font-size: small;
     margin: auto;
@@ -44,7 +44,7 @@
 
 
 @media screen and (max-width: 960px) {
-    .partFilters{
+    .partFilters {
         grid-template-columns: 1fr 2fr 2fr;
     }
-  }
+}

@@ -8,7 +8,7 @@ import bookIcon from '../../images/book.png';
 
 function NavBar(props) {
     return (
-        <nav className = {globalComponentStyle.navBarContainer}>
+        <nav className={globalComponentStyle.navBarContainer}>
             <div className={globalComponentStyle.navBar}>
                 <div className={globalComponentStyle.navLogo}>
                     <h1>HardwareMaster</h1>
