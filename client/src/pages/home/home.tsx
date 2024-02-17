@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import homeStyle from './styles/home.module.css';
@@ -7,10 +8,10 @@ import GpuIcon from '../../images/gpu.png';
 import MotherboardIcon from '../../images/motherboard.png';
 import BookIcon from '../../images/bookhome.png';
 
-function Home() {
+const Home : React.FC = () => {
   return (
     <div >
-      <NavBar />
+      <NavBar isHamburguerMenuOptionVisible = {true}/>
       <div className={homeStyle.homeBody}>
         <div className={homeStyle.mainContainer}>
           <main className={homeStyle.homeOptionsGrid}>

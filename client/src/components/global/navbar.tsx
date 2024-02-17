@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import globalComponentStyle from './styles/globalcomponents.module.css';
 import NavBarIcon from './navbaricon';
@@ -6,7 +7,11 @@ import homeIcon from '../../images/home.png';
 import buildIcon from '../../images/build.png';
 import bookIcon from '../../images/book.png';
 
-function NavBar(props) {
+interface Props {
+    isHamburguerMenuOptionVisible: boolean;
+}
+
+const NavBar : React.FC<Props> = ({isHamburguerMenuOptionVisible}) => {
     return (
         <nav className={globalComponentStyle.navBarContainer}>
             <div className={globalComponentStyle.navBar}>
@@ -31,7 +36,7 @@ function NavBar(props) {
                         />
                     </Link>
                 </div>
-                <HamburguerMenu isHamburguerMenuOptionVisible={props.isHamburguerMenuOptionVisible} />
+                <HamburguerMenu isHamburguerMenuOptionVisible={isHamburguerMenuOptionVisible} />
             </div>
         </nav>
     )

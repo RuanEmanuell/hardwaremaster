@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/home/home';
 import List from './pages/list/list';
 
-function App() {
+const App : React.FC = () => {
   return (
     <Router>
       <Routes>

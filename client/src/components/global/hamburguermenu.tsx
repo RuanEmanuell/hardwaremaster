@@ -1,19 +1,24 @@
+import React from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import globalComponentStyle from './styles/globalcomponents.module.css'
 import { useEffect } from 'react';
 
-function HamburguerMenu(props) {
+interface Props {
+    isHamburguerMenuOptionVisible: boolean;
+}
 
-    const [isHamburguerMenuOptionVisible, setHamburguerMenuOptionVisible] = useState('none');
+const HamburguerMenu: React.FC<Props> = ({ isHamburguerMenuOptionVisible }) => {
+
+    const [hamburguerMenuOptionVisibility, setHamburguerMenuOptionVisibility] = useState('none');
 
     function openHamburguerMenuOption() {
-        setHamburguerMenuOptionVisible(isHamburguerMenuOptionVisible === 'block' ? 'none' : 'block');
+        setHamburguerMenuOptionVisibility(hamburguerMenuOptionVisibility === 'block' ? 'none' : 'block');
     }
 
     useEffect(() => {
-        setHamburguerMenuOptionVisible('none');
-    }, [props.isHamburguerMenuOptionVisible])
+        setHamburguerMenuOptionVisibility('none');
+    }, [isHamburguerMenuOptionVisible])
 
     return (
         <div className={globalComponentStyle.hamburguerMenuContainer}>
@@ -24,7 +29,7 @@ function HamburguerMenu(props) {
                     <div className={globalComponentStyle.dash}></div>
                 </div>
             </div>
-            <div className={globalComponentStyle.hamburguerMenuOptions} style={{ display: isHamburguerMenuOptionVisible }}>
+            <div className={globalComponentStyle.hamburguerMenuOptions} style={{ display: hamburguerMenuOptionVisibility }}>
                 <Link to='/'>
                     <div className={globalComponentStyle.hamburguerMenuOption}>
                         <h4>Inicio</h4>
