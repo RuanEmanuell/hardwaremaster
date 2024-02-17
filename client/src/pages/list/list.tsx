@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import NavBar from '../../components/global/navbar';
 import listStyle from './styles/list.module.css';
 import EditIcon from '../../images/edit.png';
@@ -8,14 +8,80 @@ import SpecCircle from '../../components/list/speccircle';
 import StandartButton from '../../components/global/standartbutton';
 import CircleButton from '../../components/global/circlebutton';
 
-function List() {
-  //Visual interface states
-  const [interfaceList, setInterfaceList] = useState(null);
-  const [fullPartList, setFullPartList] = useState(null);
-  const [editingPartId, setEditingPartId] = useState(null);
+interface PartData {
+  name: string;
+  brand: string;
+  launch: string;
+  shopLink: string;
+  shopLink2: string;
+  shopLink3: string;
+  shopLink4: string;
+  imageLink: string;
+  costBenefit: string;
+  price: string;
+  cpu?: {
+    cpuSocket: string;
+    cpuGeneration: string;
+    cpuCores: string;
+    cpuThreads: string;
+    cpuFrequency: string;
+    cpuIgpu: boolean;
+    cpuPerformance: string;
+    igpuPerformance: string;
+  };
+  gpu?: {
+    gpuGeneration: string;
+    gpuCores: string;
+    gpuMemory: string;
+    gpuMemoryType: string;
+    gpuMemoryBus: string;
+    gpuPerformance: string;
+  };
+  mobo?: {
+    moboChipset: string;
+    moboSocketCompatibility: string;
+    moboRamCompatibility: string;
+    moboSlots: string;
+  };
+  ram?: {
+    ramFrequency: string;
+    ramCapacity: string;
+    ramType: string;
+    ramLatency: string;
+  };
+  power?: {
+    powerWatts: string;
+    powerEfficiency: string;
+    powerModular: string;
+  };
+  ssd?: {
+    ssdCapacity: string;
+    ssdType: string;
+    ssdSpeed: string;
+  };
+  case?: {
+    caseForm: string;
+    caseFanSupport: string;
+    caseWcSupport: string;
+  };
+}
 
-  //Add part type states
-  const [partData, setPartData] = useState({
+interface Part {
+  _id: string;
+  type: string;
+  [key: string]: string;
+}
+
+interface ListProps { }
+
+const List: React.FC<ListProps> = () => {
+  // Visual interface states
+  const [interfaceList, setInterfaceList] = useState<Part[]>([]);
+  const [fullPartList, setFullPartList] = useState<Part[]>([]);
+  const [editingPartId, setEditingPartId] = useState<string | null>(null);
+
+  // Add part type states
+  const [partData, setPartData] = useState<{ [key: string]: PartData }>({
     cpu: getInitialPartData('cpu'),
     gpu: getInitialPartData('gpu'),
     mobo: getInitialPartData('mobo'),
@@ -25,30 +91,30 @@ function List() {
     case: getInitialPartData('case'),
   });
 
-  //Filter and order states
-  const [filterPartLabel, setfilterPartLabel] = useState('Todas as peças');
-  const [firstFilterLabelVisibility, setFirstFilterLabelVisibility] = useState('block');
-  const [filterPartMenuVisibility, setFilterPartMenuVisibility] = useState('none');
-  const [filterOrderLabel, setFilterOrderLabel] = useState('Relevância');
-  const [firstOrderLabelVisibility, setfirstOrderLabelVisibility] = useState('block');
-  const [filterOrderMenuVisibility, setfilterOrderMenuVisibility] = useState('none');
-  const [selectTypeMenuVisibility, setSelectTypeMenuVisibility] = useState('none');
-  const [addPartModalVisibility, setAddPartModalVisibility] = useState('none');
-  const [selectedPartType, setSelectedType] = useState('cpu');
-  const [isHamburguerMenuOptionVisible, setHamburguerMenuOptionVisible] = useState(true);
+  // Filter and order states
+  const [filterPartLabel, setfilterPartLabel] = useState<string>('Todas as peças');
+  const [firstFilterLabelVisibility, setFirstFilterLabelVisibility] = useState<string>('block');
+  const [filterPartMenuVisibility, setFilterPartMenuVisibility] = useState<string>('none');
+  const [filterOrderLabel, setFilterOrderLabel] = useState<string>('Relevância');
+  const [firstOrderLabelVisibility, setFirstOrderLabelVisibility] = useState<string>('block');
+  const [filterOrderMenuVisibility, setFilterOrderMenuVisibility] = useState<string>('none');
+  const [selectTypeMenuVisibility, setSelectTypeMenuVisibility] = useState<string>('none');
+  const [addPartModalVisibility, setAddPartModalVisibility] = useState<string>('none');
+  const [selectedPartType, setSelectedType] = useState<string>('cpu');
+  const [isHamburguerMenuOptionVisible, setHamburguerMenuOptionVisible] = useState<boolean>(true);
 
-  //Controller for navbar options visibility
+  // Controller for navbar options visibility
   useEffect(() => {
     setHamburguerMenuOptionVisible(true);
   }, [isHamburguerMenuOptionVisible]);
 
-  //Showing infos on screen on page load
+  // Showing infos on screen on page load
   useEffect(() => {
     getPartList();
   }, []);
 
-  //Setting inputs for add part modal based on type
-  function getInitialPartData(type) {
+  // Setting inputs for add part modal based on type
+  function getInitialPartData(type: string): PartData {
     return {
       name: '',
       brand: '',
@@ -62,17 +128,17 @@ function List() {
       price: '',
       ...(type === 'cpu'
         ? {
-          cpuSocket: '',
-          cpuGeneration: '',
-          cpuCores: '',
-          cpuThreads: '',
-          cpuFrequency: '',
-          cpuIgpu: false,
-          cpuPerformance: '',
-          igpuPerformance: '',
-        }
+            cpuSocket: '',
+            cpuGeneration: '',
+            cpuCores: '',
+            cpuThreads: '',
+            cpuFrequency: '',
+            cpuIgpu: '',
+            cpuPerformance: '',
+            igpuPerformance: '',
+          }
         : type === 'gpu'
-          ? {
+        ? {
             gpuGeneration: '',
             gpuCores: '',
             gpuMemory: '',
@@ -80,81 +146,81 @@ function List() {
             gpuMemoryBus: '',
             gpuPerformance: '',
           }
-          : type === 'mobo'
-            ? {
-              moboChipset: '',
-              moboSocketCompatibility: '',
-              moboRamCompatibility: '',
-              moboSlots: '',
-            }
-            : type === 'ram'
-              ? {
-                ramFrequency: '',
-                ramCapacity: '',
-                ramType: '',
-                ramLatency: '',
-              }
-              : type === 'power'
-                ? {
-                  powerWatts: '',
-                  powerEfficiency: '',
-                  powerModular: '',
-                }
-                : type === 'ssd'
-                  ? {
-                    ssdCapacity: '',
-                    ssdType: '',
-                    ssdSpeed: '',
-                  }
-                  : {
-                    caseForm: '',
-                    caseFanSupport: '',
-                    caseWcSupport: '',
-                  }),
+        : type === 'mobo'
+        ? {
+            moboChipset: '',
+            moboSocketCompatibility: '',
+            moboRamCompatibility: '',
+            moboSlots: '',
+          }
+        : type === 'ram'
+        ? {
+            ramFrequency: '',
+            ramCapacity: '',
+            ramType: '',
+            ramLatency: '',
+          }
+        : type === 'power'
+        ? {
+            powerWatts: '',
+            powerEfficiency: '',
+            powerModular: '',
+          }
+        : type === 'ssd'
+        ? {
+            ssdCapacity: '',
+            ssdType: '',
+            ssdSpeed: '',
+          }
+        : {
+            caseForm: '',
+            caseFanSupport: '',
+            caseWcSupport: '',
+          }),
     };
   }
 
   function clearInputs() {
-    const newData = { ...partData[selectedPartType] };
+    const newData = { ...(partData[selectedPartType] as any) };
+  
     for (const key in newData) {
       newData[key] = '';
-      if (key === 'cpuIgpu') {
-        newData[key] = false;
-      }
     }
+  
     setPartData({ ...partData, [selectedPartType]: newData });
   }
-
+  
   function toggleSelecting() {
     closeAllMenus();
     setSelectTypeMenuVisibility(selectTypeMenuVisibility === 'block' ? 'none' : 'block');
   }
 
-  //Input states controller
-  const handleChange = (event) => {
+  // Input states controller
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = event.target;
     const newData = { ...partData[selectedPartType], [name]: type === 'checkbox' ? checked : value };
     setPartData({ ...partData, [selectedPartType]: newData });
   };
 
-
-  //Loading informations for editing part
-  function editPart(index) {
+  // Loading informations for editing part
+  function editPart(index: number) {
     const currentPart = interfaceList[index];
     setEditingPartId(currentPart['_id']);
     showModalAddPart(currentPart['type']);
-    setPartData({ ...partData, [currentPart['type']]: { ...currentPart } });
+    setPartData({ ...partData, [currentPart.type]: { ...currentPart as any } });
   }
 
-  //Showing modal form for adding or editing part
-  function showModalAddPart(partType) {
+  // Showing modal form for adding or editing part
+  function showModalAddPart(partType: string) {
     closeAllMenus();
     clearInputs();
-    setSelectedType(partType);
+    if (partType !== '') {
+      setSelectedType(partType);
+    }
     setAddPartModalVisibility(addPartModalVisibility === 'none' ? 'block' : 'none');
   }
 
-  //'Filter by' functions
+  // 'Filter by' functions
   function changePartFilterVisibility() {
     closeAllMenus();
 
@@ -167,51 +233,53 @@ function List() {
     }
   }
 
-  function selectFilterPart(filterPartType) {
+  function selectFilterPart(filterPartType: string) {
     setfilterPartLabel(partFilterMenu[filterPartType]);
-    let filteredList = [];
+    let filteredList: Part[] = [];
     if (filterPartType === 'all') {
-      filteredList = fullPartList;
+      filteredList = fullPartList!;
     } else {
-      filteredList = fullPartList.filter(part => part.type === filterPartType);
+      filteredList = fullPartList!.filter((part) => part.type === filterPartType);
     }
     filteredList = sortByCriteria(filteredList, filterOrderLabel);
     setInterfaceList(filteredList);
     changePartFilterVisibility();
   }
 
-  ///////////////////////////////////////
-
-  //'Order by' functions
+  // 'Order by' functions
   function changeOrderFilterVisibility() {
     closeAllMenus();
 
     if (filterOrderMenuVisibility === 'none') {
-      setfilterOrderMenuVisibility('block');
-      setfirstOrderLabelVisibility('none');
+      setFilterOrderMenuVisibility('block');
+      setFirstOrderLabelVisibility('none');
     } else {
-      setfilterOrderMenuVisibility('none');
-      setfirstOrderLabelVisibility('block');
+      setFilterOrderMenuVisibility('none');
+      setFirstOrderLabelVisibility('block');
     }
   }
 
-  function selectFilterOrder(filterOrderType) {
+  function selectFilterOrder(filterOrderType: string) {
     setFilterOrderLabel(orderFilterMenu[filterOrderType]);
-    let filteredList = [...interfaceList];
+    let filteredList: Part[] = [...interfaceList!];
 
     filteredList = sortByCriteria(filteredList, orderFilterMenu[filterOrderType]);
-    setInterfaceList(filteredList)
+    setInterfaceList(filteredList);
     changeOrderFilterVisibility();
   }
 
-  function sortByCriteria(list, criteria) {
+  function sortByCriteria(list: Part[], criteria: string): Part[] {
     switch (criteria) {
       case 'Menor preço':
-        return list.sort((a, b) => parseFloat(a.price.replaceAll('.', '')) - parseFloat(b.price.replaceAll('.', '')));
+        return list.sort(
+          (a, b) => parseFloat(a.price.replaceAll('.', '')) - parseFloat(b.price.replaceAll('.', ''))
+        );
       case 'Maior preço':
-        return list.sort((a, b) => parseFloat(b.price.replaceAll('.', '')) - parseFloat(a.price.replaceAll('.', '')));
+        return list.sort(
+          (a, b) => parseFloat(b.price.replaceAll('.', '')) - parseFloat(a.price.replaceAll('.', ''))
+        );
       case 'Custo benefício':
-        return list.sort((a, b) => b.costBenefit - a.costBenefit);
+        return list.sort((a, b) => parseFloat(b.costBenefit) - parseFloat(a.costBenefit));
       case 'Nome (A-Z)':
         return list.sort((a, b) => a.name.localeCompare(b.name));
       case 'Nome (Z-A)':
@@ -220,7 +288,6 @@ function List() {
         return list.sort((a, b) => a._id.localeCompare(b._id));
     }
   }
-  ///////////////////////////////////////
 
   async function closeAllMenus() {
     if (filterPartMenuVisibility === 'block') {
@@ -228,8 +295,8 @@ function List() {
       setFirstFilterLabelVisibility('block');
     }
     if (filterOrderMenuVisibility === 'block') {
-      setfilterOrderMenuVisibility('none');
-      setfirstOrderLabelVisibility('block');
+      setFilterOrderMenuVisibility('none');
+      setFirstOrderLabelVisibility('block');
     }
     if (selectTypeMenuVisibility === 'block') {
       setSelectTypeMenuVisibility('none');
@@ -238,18 +305,18 @@ function List() {
     setHamburguerMenuOptionVisible(false);
   }
 
-  //Visual objects for maping and creating dynamic components
-  const partTypeDataMap = {
+  // Visual objects for mapping and creating dynamic components
+  const partTypeDataMap: { [key: string]: PartData } = {
     cpu: partData['cpu'],
     gpu: partData['gpu'],
     mobo: partData['mobo'],
     ram: partData['ram'],
     power: partData['power'],
     ssd: partData['ssd'],
-    case: partData['case']
-  }
+    case: partData['case'],
+  };
 
-  const partFilterMenu = {
+  const partFilterMenu: { [key: string]: string } = {
     all: 'Todas as peças',
     cpu: 'Processadores',
     gpu: 'Placas de vídeo',
@@ -257,23 +324,23 @@ function List() {
     ram: 'Memórias RAM',
     power: 'Fontes',
     ssd: 'SSDs',
-    case: 'Gabinetes'
-  }
+    case: 'Gabinetes',
+  };
 
-  const orderFilterMenu = {
+  const orderFilterMenu: { [key: string]: string } = {
     relevance: 'Relevância',
     price: 'Menor preço',
     price2: 'Maior preço',
     costBenefit: 'Custo benefício',
     title: 'Nome (A-Z)',
-    title2: 'Nome (Z-A)'
-  }
+    title2: 'Nome (Z-A)',
+  };
 
-  ///////////////////////CRUD functions/////////////////////////////////////////
+  // CRUD functions
   async function getPartList() {
     try {
       const response = await fetch('http://localhost:3001/list/parts');
-      const data = await response.json();
+      const data: Part[] = await response.json();
       setFullPartList(data);
       setInterfaceList(data);
     } catch (err) {
@@ -282,21 +349,24 @@ function List() {
   }
 
   async function createOrEditPart() {
-    const dataToSend = { type: selectedPartType, ...partTypeDataMap[selectedPartType] };
+    const dataToSend: any = { type: selectedPartType, ...partTypeDataMap[selectedPartType] };
 
     try {
-      await fetch(editingPartId ?
-        `http://localhost:3001/list/update/${editingPartId}`
-        : 'http://localhost:3001/list/post', {
-        method: editingPartId ? 'PUT' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dataToSend),
-      });
+      await fetch(
+        editingPartId
+          ? `http://localhost:3001/list/update/${editingPartId}`
+          : 'http://localhost:3001/list/post',
+        {
+          method: editingPartId ? 'PUT' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(dataToSend),
+        }
+      );
 
       clearInputs();
       setEditingPartId(null);
       getPartList();
-      showModalAddPart();
+      showModalAddPart('');
       if (selectTypeMenuVisibility === 'block') {
         toggleSelecting();
       }
@@ -305,7 +375,7 @@ function List() {
     }
   }
 
-  async function deletePart(id) {
+  async function deletePart(id: string) {
     try {
       await fetch(`http://localhost:3001/list/delete/${id}`, {
         method: 'DELETE',
@@ -319,7 +389,7 @@ function List() {
     }
   }
 
-  async function updatePrice(id) {
+  async function updatePrice(id: string) {
     try {
       const response = await fetch(`http://localhost:3001/list/currentprice/${id}`);
       const data = await response.json();
@@ -335,9 +405,7 @@ function List() {
     } catch (error) {
       console.log(error);
     }
-  }
-
-  //////////////////////////////////////////////////////////////////////////////////
+  };
 
   return (
     <div>
@@ -347,7 +415,8 @@ function List() {
           <h1 className={listStyle.mainTitle}>{filterPartLabel}</h1>
           <div className={listStyle.partFilters}>
             <div className={listStyle.gridSpacer}></div>
-            <FilterBox firstFilterLabel='Filtrar por'
+            <FilterBox
+              firstFilterLabel='Filtrar por'
               onClick={changePartFilterVisibility}
               firstFilterDisplayCondition={firstFilterLabelVisibility}
               currentFilter={filterPartLabel}
@@ -355,7 +424,8 @@ function List() {
               filterMenu={partFilterMenu}
               selectFilter={selectFilterPart}
             />
-            <FilterBox firstFilterLabel='Ordenar por'
+            <FilterBox
+              firstFilterLabel='Ordenar por'
               onClick={changeOrderFilterVisibility}
               firstFilterDisplayCondition={firstOrderLabelVisibility}
               currentFilter={filterOrderLabel}
@@ -366,7 +436,7 @@ function List() {
             <div className={listStyle.gridSpacer}></div>
           </div>
           <div className={listStyle.partList}>
-            {interfaceList ? (
+            {interfaceList.length > 0 ? (
               <>
                 {interfaceList.map((part, index) => (
                   <div key={part.id} className={listStyle.partInfo}>
@@ -385,7 +455,7 @@ function List() {
                           <p>Threads: {part['cpuThreads']}</p>
                           <p>Frequência: {part['cpuFrequency']}GHZ</p>
                           <p>Preço: R$ {part['price']}</p>
-                          <p>Tem integrada: {part['cpuIgpu'] ? 'Sim' : 'Não'}</p>
+                          <p>Tem integrada: {part['cpuIgpu']}</p>
                           <SpecCircle performanceLabel='Performance:' performanceRating={part['cpuPerformance']} />
                           <SpecCircle performanceLabel='Integrada (iGPU):' performanceRating={part['igpuPerformance']} />
                         </>
@@ -461,37 +531,46 @@ function List() {
           </div>
         </main>
         <div style={{ display: addPartModalVisibility }} className={listStyle.addPartContainer}>
-          {selectedPartType ?
+          {selectedPartType ? (
             <div className={listStyle.addPartModal}>
               <div className={listStyle.addPartImg}>
                 <div className={listStyle.addPartImgBox}>
-                  <img src={
-                    partTypeDataMap[selectedPartType]['imageLink']} alt={'Imagem da peça que será adicionada ao sistema'}></img>
+                  <img
+                    src={partTypeDataMap[selectedPartType]['imageLink']}
+                    alt={'Imagem da peça que será adicionada ao sistema'}
+                  ></img>
                 </div>
               </div>
               <div className={listStyle.addPartInputs}>
                 {Object.keys(partTypeDataMap[selectedPartType]).map((key) =>
-                  key !== '_id' && key !== 'type' && key !== '__v' ?
+                  key !== '_id' && key !== 'type' && key !== '__v' ? (
                     <>
                       <label className={listStyle.inputLabel}>{key}:</label>
                       <input
-                        type={key === 'cpuIgpu' ? 'checkbox' : 'text'}
+                        type='text'
                         placeholder={key}
                         key={key}
                         name={key}
                         onChange={(event) => handleChange(event)}
-                        checked={partTypeDataMap[selectedPartType][key]}
-                        value={partTypeDataMap[selectedPartType][key]}></input> </> : <></>)}
+                        value={(partTypeDataMap[selectedPartType] as any)[key]}
+                      ></input>{' '}
+                    </>
+                  ) : (
+                    <></>
+                  )
+                )}
               </div>
               <div className={listStyle.saveButtonContainer}>
                 <StandartButton onClick={() => createOrEditPart()} buttonLabel='Salvar' />
               </div>
-            </div> : <></>}
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     </div>
   );
-}
-
+};
 
 export default List;

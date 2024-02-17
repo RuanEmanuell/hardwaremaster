@@ -76,7 +76,7 @@ listRouter.get('/currentprice/:id', async (req, res) => {
           priceLink = await page.$eval('.a-offscreen', (span) => span.innerText.substring(2));
         }
         
-        if (parseInt(priceLink) !== parseInt(currentPrice) && parseInt(priceLink) > 10) {
+        if (parseInt(priceLink) < parseInt(currentPrice) && parseInt(priceLink) > 10) {
           currentPrice = priceLink;
         }
       }

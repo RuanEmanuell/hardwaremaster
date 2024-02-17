@@ -21,7 +21,7 @@ const partSchema = new Schema({
     cpuCores: Number,
     cpuThreads: Number,
     cpuFrequency: Number,
-    cpuIgpu: Boolean,
+    cpuIgpu: String,
     cpuPerformance:Number,
     igpuPerformance:Number,
     //GPU only
