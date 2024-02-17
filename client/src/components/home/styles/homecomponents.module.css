@@ -1,6 +1,6 @@
 .homeOption {
     height: 40%;
-    margin: min(max(100px), 10%) 5%;
+    margin: min(max(100px), 12%) 5%;
     background-color: white;
     display: grid;
     grid-template-rows: 2fr 1fr;

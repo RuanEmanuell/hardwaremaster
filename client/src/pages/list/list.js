@@ -5,7 +5,7 @@ import EditIcon from '../../images/edit.png';
 import DeleteIcon from '../../images/delete.png';
 import FilterBox from '../../components/list/filter';
 import SpecCircle from '../../components/list/speccircle';
-import OrangeButton from '../../components/global/orangebutton';
+import StandartButton from '../../components/global/standartbutton';
 import CircleButton from '../../components/global/circlebutton';
 
 function List() {
@@ -445,7 +445,7 @@ function List() {
                       <button onClick={() => editPart(index)} className={listStyle.editButton}><img src={EditIcon} alt="Edit Icon" /></button>
                       <button onClick={() => deletePart(part['_id'])} className={listStyle.deleteButton}><img src={DeleteIcon} alt="Delete Icon" /></button>
                     </div>
-                    <OrangeButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
+                    <StandartButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
                   </div>
                 </div>
               ))}
@@ -486,7 +486,7 @@ function List() {
                       value={partTypeDataMap[selectedPartType][key]}></input> </> : <></>)}
             </div>
             <div className={listStyle.saveButtonContainer}>
-              <OrangeButton onClick={() => createOrEditPart()} buttonLabel='Salvar' />
+              <StandartButton onClick={() => createOrEditPart()} buttonLabel='Salvar' />
             </div>
           </div> : <></>}
       </div>

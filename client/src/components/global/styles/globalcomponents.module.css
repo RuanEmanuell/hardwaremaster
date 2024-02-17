@@ -131,7 +131,7 @@
 .hamburguerMenuOptions {
     position: relative;
     top: 1vh;
-    z-index: 1;
+    z-index: 2;
 }
 
 .hamburguerMenuOption {

@@ -1,5 +1,5 @@
 import homeComponentStyle from './styles/homecomponents.module.css';
-import OrangeButton from '../../components/global/orangebutton';
+import StandartButton from '../global/standartbutton';
 
 function HomeOption(props) {
     return (
@@ -12,7 +12,7 @@ function HomeOption(props) {
                     {props.optionDescription}
                 </h2>
                 <div className={homeComponentStyle.homeOptionButtonBox}>
-                    <OrangeButton buttonLabel={props.buttonLabel} />
+                    <StandartButton buttonLabel={props.buttonLabel} backgroundColor = {props.buttonBackgroundColor}/>
                 </div>
 
             </div>

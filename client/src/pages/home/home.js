@@ -17,16 +17,19 @@ function Home() {
             <HomeOption
               icon={GpuIcon}
               optionDescription=' Já sabe o que você quer montar? Escolha cada componente e veja quanto a sua futura máquina vai custar!'
-              buttonLabel='Montar PC customizado' />
+              buttonLabel='Montar PC customizado' 
+              buttonBackgroundColor = '#0066FF'/>
             <HomeOption
               icon={MotherboardIcon}
               optionDescription='Defina seu orçamento e preferências, e deixe que o nosso algoritmo decida o melhor PC possível para você!'
-              buttonLabel='Encontre seu PC ideal' />
+              buttonLabel='Encontre seu PC ideal' 
+              buttonBackgroundColor = '#DB5510'/>
             <Link to='/list'>
               <HomeOption
                 icon={BookIcon}
                 optionDescription='Tá curioso sobre alguma especificação ou sobre o preço de alguma peça? Veja a nossa base de dados completa.'
-                buttonLabel='Ver todas as peças' />
+                buttonLabel='Ver todas as peças' 
+                buttonBackgroundColor = '#00C22B'/>
             </Link>
           </main>
         </div>
