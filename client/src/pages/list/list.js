@@ -26,22 +26,21 @@ function List() {
   });
 
   //Filter and order states
-  const [filterPart, setFilterPart] = useState('Todas as peças');
-  const [isFirstFilterVisible, setFirstFilterVisible] = useState('block');
-  const [isFilteringPart, setPartFilterVisibility] = useState('none');
-  const [filterOrder, setFilterOrder] = useState('Relevância');
-  const [isFirstOrderVisible, setFirstOrderVisible] = useState('block');
-  const [isFilteringOrder, setOrderFilterVisibility] = useState('none');
-  const [isSelectingType, setSelecting] = useState('none');
-  const [isAdding, setAdding] = useState('none');
+  const [filterPartLabel, setfilterPartLabel] = useState('Todas as peças');
+  const [firstFilterLabelVisibility, setFirstFilterLabelVisibility] = useState('block');
+  const [filterPartMenuVisibility, setFilterPartMenuVisibility] = useState('none');
+  const [filterOrderLabel, setFilterOrderLabel] = useState('Relevância');
+  const [firstOrderLabelVisibility, setfirstOrderLabelVisibility] = useState('block');
+  const [filterOrderMenuVisibility, setfilterOrderMenuVisibility] = useState('none');
+  const [selectTypeMenuVisibility, setSelectTypeMenuVisibility] = useState('none');
+  const [addPartModalVisibility, setAddPartModalVisibility] = useState('none');
   const [selectedPartType, setSelectedType] = useState('cpu');
-
   const [isHamburguerMenuOptionVisible, setHamburguerMenuOptionVisible] = useState(true);
 
   //Controller for navbar options visibility
-  useEffect(()=>{
+  useEffect(() => {
     setHamburguerMenuOptionVisible(true);
-  }, [isHamburguerMenuOptionVisible]); 
+  }, [isHamburguerMenuOptionVisible]);
 
   //Showing infos on screen on page load
   useEffect(() => {
@@ -119,7 +118,7 @@ function List() {
     const newData = { ...partData[selectedPartType] };
     for (const key in newData) {
       newData[key] = '';
-      if (key == 'cpuIgpu') {
+      if (key === 'cpuIgpu') {
         newData[key] = false;
       }
     }
@@ -128,7 +127,7 @@ function List() {
 
   function toggleSelecting() {
     closeAllMenus();
-    setSelecting(isSelectingType === 'block' ? 'none' : 'block');
+    setSelectTypeMenuVisibility(selectTypeMenuVisibility === 'block' ? 'none' : 'block');
   }
 
   //Input states controller
@@ -152,54 +151,52 @@ function List() {
     closeAllMenus();
     clearInputs();
     setSelectedType(partType);
-    if (isAdding == 'none') {
-      setAdding('block');
-    } else {
-      setAdding('none');
-    }
+    setAddPartModalVisibility(addPartModalVisibility === 'none' ? 'block' : 'none');
   }
 
   //'Filter by' functions
   function changePartFilterVisibility() {
     closeAllMenus();
 
-    if (isFilteringPart == 'none') {
-      setPartFilterVisibility('block');
-      setFirstFilterVisible('none');
+    if (filterPartMenuVisibility === 'none') {
+      setFilterPartMenuVisibility('block');
+      setFirstFilterLabelVisibility('none');
     } else {
-      setPartFilterVisibility('none');
-      setFirstFilterVisible('block');
+      setFilterPartMenuVisibility('none');
+      setFirstFilterLabelVisibility('block');
     }
   }
 
   function selectFilterPart(filterPartType) {
-    setFilterPart(partFilterMenu[filterPartType]);
+    setfilterPartLabel(partFilterMenu[filterPartType]);
     let filteredList = [];
     if (filterPartType === 'all') {
       filteredList = fullPartList;
     } else {
       filteredList = fullPartList.filter(part => part.type === filterPartType);
     }
-    filteredList = sortByCriteria(filteredList, filterOrder);
+    filteredList = sortByCriteria(filteredList, filterOrderLabel);
     setInterfaceList(filteredList);
     changePartFilterVisibility();
   }
+
+  ///////////////////////////////////////
 
   //'Order by' functions
   function changeOrderFilterVisibility() {
     closeAllMenus();
 
-    if (isFilteringOrder == 'none') {
-      setOrderFilterVisibility('block');
-      setFirstOrderVisible('none');
+    if (filterOrderMenuVisibility === 'none') {
+      setfilterOrderMenuVisibility('block');
+      setfirstOrderLabelVisibility('none');
     } else {
-      setOrderFilterVisibility('none');
-      setFirstOrderVisible('block');
+      setfilterOrderMenuVisibility('none');
+      setfirstOrderLabelVisibility('block');
     }
   }
 
   function selectFilterOrder(filterOrderType) {
-    setFilterOrder(orderFilterMenu[filterOrderType]);
+    setFilterOrderLabel(orderFilterMenu[filterOrderType]);
     let filteredList = [...interfaceList];
 
     filteredList = sortByCriteria(filteredList, orderFilterMenu[filterOrderType]);
@@ -223,18 +220,19 @@ function List() {
         return list.sort((a, b) => a._id.localeCompare(b._id));
     }
   }
+  ///////////////////////////////////////
 
   async function closeAllMenus() {
-    if (isFilteringPart == 'block') {
-      setPartFilterVisibility('none');
-      setFirstFilterVisible('block');
+    if (filterPartMenuVisibility === 'block') {
+      setFilterPartMenuVisibility('none');
+      setFirstFilterLabelVisibility('block');
     }
-    if (isFilteringOrder == 'block') {
-      setOrderFilterVisibility('none');
-      setFirstOrderVisible('block');
+    if (filterOrderMenuVisibility === 'block') {
+      setfilterOrderMenuVisibility('none');
+      setfirstOrderLabelVisibility('block');
     }
-    if (isSelectingType == 'block') {
-      setSelecting('none');
+    if (selectTypeMenuVisibility === 'block') {
+      setSelectTypeMenuVisibility('none');
     }
 
     setHamburguerMenuOptionVisible(false);
@@ -287,7 +285,7 @@ function List() {
     const dataToSend = { type: selectedPartType, ...partTypeDataMap[selectedPartType] };
 
     try {
-      const response = await fetch(editingPartId ?
+      await fetch(editingPartId ?
         `http://localhost:3001/list/update/${editingPartId}`
         : 'http://localhost:3001/list/post', {
         method: editingPartId ? 'PUT' : 'POST',
@@ -299,7 +297,7 @@ function List() {
       setEditingPartId(null);
       getPartList();
       showModalAddPart();
-      if (isSelectingType == 'block') {
+      if (selectTypeMenuVisibility === 'block') {
         toggleSelecting();
       }
     } catch (err) {
@@ -343,154 +341,154 @@ function List() {
 
   return (
     <div>
-    <NavBar isHamburguerMenuOptionVisible = {isHamburguerMenuOptionVisible}/>
-    <div className={listStyle.mainContainer} onClick={closeAllMenus}>
-      <main>
-        <h1 className={listStyle.mainTitle}>{filterPart}</h1>
-        <div className={listStyle.partFilters}>
-          <div className={listStyle.gridSpacer}></div>
-          <FilterBox firstFilterLabel='Filtrar por'
-            onClick={changePartFilterVisibility}
-            firstFilterDisplayCondition={isFirstFilterVisible}
-            currentFilter={filterPart}
-            isFiltering={isFilteringPart}
-            filterMenu={partFilterMenu}
-            selectFilter={selectFilterPart}
-          />
-          <FilterBox firstFilterLabel='Ordenar por'
-            onClick={changeOrderFilterVisibility}
-            firstFilterDisplayCondition={isFirstOrderVisible}
-            currentFilter={filterOrder}
-            isFiltering={isFilteringOrder}
-            filterMenu={orderFilterMenu}
-            selectFilter={selectFilterOrder}
-          />
-          <div className={listStyle.gridSpacer}></div>
-        </div>
-        <div className={listStyle.partList}>
-          {interfaceList ? (
-            <>
-              {interfaceList.map((part, index) => (
-                <div key={part.id} className={listStyle.partInfo}>
-                  <div className={listStyle.partImage}>
-                    <img src={part['imageLink']} alt={part['name']} />
-                  </div>
-                  <div className={listStyle.partSpecs}>
-                    <h1>{part['name']}</h1>
-                    <p>Marca: {part['brand']}</p>
-                    {part['type'] === 'cpu' ? (
-                      <>
-                        <p>Lançamento: {part['launch']}</p>
-                        <p>Socket: {part['cpuSocket']}</p>
-                        <p>Geração: {part['cpuGeneration']}</p>
-                        <p>Núcleos: {part['cpuCores']}</p>
-                        <p>Threads: {part['cpuThreads']}</p>
-                        <p>Frequência: {part['cpuFrequency']}GHZ</p>
-                        <p>Preço: R$ {part['price']}</p>
-                        <p>Tem integrada: {part['cpuIgpu'] ? 'Sim' : 'Não'}</p>
-                        <SpecCircle performanceLabel='Performance:' performanceRating={part['cpuPerformance']} />
-                        <SpecCircle performanceLabel='Integrada (iGPU):' performanceRating={part['igpuPerformance']} />
-                      </>
-                    ) : part['type'] === 'gpu' ? (
-                      <>
-                        <p>Lançamento: {part['launch']}</p>
-                        <p>Geração: {part['gpuGeneration']}</p>
-                        <p>Núcleos: {part['gpuCores']}</p>
-                        <p>Memória: {part['gpuMemory']}GB</p>
-                        <p>Tipo de memória: {part['gpuMemoryType']}</p>
-                        <p>Interface da memória: {part['gpuMemoryBus']} bits</p>
-                        <p>Preço: R$ {part['price']}</p>
-                        <SpecCircle performanceLabel='Performance:' performanceRating={part['gpuPerformance']} />
-                      </>
-                    ) : part['type'] === 'mobo' ? (
-                      <>
-                        <p>Chipset: {part['moboChipset']}</p>
-                        <p>Socket compatível: {part['moboSocketCompatibility']}</p>
-                        <p>Tipo de RAM compatível: {part['moboRamCompatibility']}</p>
-                        <p>Slots de RAM: {part['moboSlots']}</p>
-                        <p>Preço: R$ {part['price']}</p>
-                      </>
-                    ) : part['type'] === 'ram' ? (
-                      <>
-                        <p>Frequência: {part['ramFrequency']}MHZ</p>
-                        <p>Capacidade: {part['ramCapacity']}GB</p>
-                        <p>Tipo da memória: {part['ramType']}</p>
-                        <p>Latência: {part['ramLatency']}</p>
-                        <p>Preço: R$ {part['price']}</p>
-                      </>
-                    ) : part['type'] === 'power' ? (
-                      <>
-                        <p>Watts: {part['powerWatts']}W</p>
-                        <p>Efficiência: {part['powerEfficiency']}</p>
-                        <p>Modular: {part['powerModular']}</p>
-                        <p>Preço: R$ {part['price']}</p>
-                      </>
-                    ) : part['type'] === 'ssd' ? (
-                      <>
-                        <p>Capacidade: {part['ssdCapacity']}GB</p>
-                        <p>Tipo do SSD: {part['ssdType']}</p>
-                        <p>Velocidade (Leitura): {part['ssdSpeed']}MB/s</p>
-                        <p>Preço: R$ {part['price']}</p>
-                      </>
-                    ) : part['type'] === 'case' ? (
-                      <>
-                        <p>Formato do Gabinete: {part['caseForm']}</p>
-                        <p>Suporte a fans: {part['caseFanSupport']}</p>
-                        <p>Suporte a Water Cooler: {part['caseWcSupport']}</p>
-                        <p>Preço: R$ {part['price']}</p>
-                      </>
-                    ) : null}
-                    <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
-                    <div className={listStyle.editDeleteButtons}>
-                      <button onClick={() => editPart(index)} className={listStyle.editButton}><img src={EditIcon} alt="Edit Icon" /></button>
-                      <button onClick={() => deletePart(part['_id'])} className={listStyle.deleteButton}><img src={DeleteIcon} alt="Delete Icon" /></button>
-                    </div>
-                    <StandartButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
-                  </div>
-                </div>
-              ))}
-            </>
-          ) : <></>}
-          <br></br>
-          <div className={listStyle.choosePartType} style={{ display: isSelectingType }}>
-            {Object.keys(partTypeDataMap).map((addPart, index) => (
-              <h3 key={index} className={listStyle.partType} onClick={() => showModalAddPart(addPart)}>
-                {addPart}
-              </h3>
-            ))}
+      <NavBar isHamburguerMenuOptionVisible={isHamburguerMenuOptionVisible} />
+      <div className={listStyle.mainContainer} onClick={closeAllMenus}>
+        <main>
+          <h1 className={listStyle.mainTitle}>{filterPartLabel}</h1>
+          <div className={listStyle.partFilters}>
+            <div className={listStyle.gridSpacer}></div>
+            <FilterBox firstFilterLabel='Filtrar por'
+              onClick={changePartFilterVisibility}
+              firstFilterDisplayCondition={firstFilterLabelVisibility}
+              currentFilter={filterPartLabel}
+              isFiltering={filterPartMenuVisibility}
+              filterMenu={partFilterMenu}
+              selectFilter={selectFilterPart}
+            />
+            <FilterBox firstFilterLabel='Ordenar por'
+              onClick={changeOrderFilterVisibility}
+              firstFilterDisplayCondition={firstOrderLabelVisibility}
+              currentFilter={filterOrderLabel}
+              isFiltering={filterOrderMenuVisibility}
+              filterMenu={orderFilterMenu}
+              selectFilter={selectFilterOrder}
+            />
+            <div className={listStyle.gridSpacer}></div>
           </div>
-          <CircleButton onClick={toggleSelecting} buttonIcon='+' />
-        </div>
-      </main>
-      <div style={{ display: isAdding }} className={listStyle.addPartContainer}>
-        {selectedPartType ?
-          <div className={listStyle.addPartModal}>
-            <div className={listStyle.addPartImg}>
-              <div className={listStyle.addPartImgBox}>
-                <img src={
-                  partTypeDataMap[selectedPartType]['imageLink']}></img>
+          <div className={listStyle.partList}>
+            {interfaceList ? (
+              <>
+                {interfaceList.map((part, index) => (
+                  <div key={part.id} className={listStyle.partInfo}>
+                    <div className={listStyle.partImage}>
+                      <img src={part['imageLink']} alt={part['name']} />
+                    </div>
+                    <div className={listStyle.partSpecs}>
+                      <h1>{part['name']}</h1>
+                      <p>Marca: {part['brand']}</p>
+                      {part['type'] === 'cpu' ? (
+                        <>
+                          <p>Lançamento: {part['launch']}</p>
+                          <p>Socket: {part['cpuSocket']}</p>
+                          <p>Geração: {part['cpuGeneration']}</p>
+                          <p>Núcleos: {part['cpuCores']}</p>
+                          <p>Threads: {part['cpuThreads']}</p>
+                          <p>Frequência: {part['cpuFrequency']}GHZ</p>
+                          <p>Preço: R$ {part['price']}</p>
+                          <p>Tem integrada: {part['cpuIgpu'] ? 'Sim' : 'Não'}</p>
+                          <SpecCircle performanceLabel='Performance:' performanceRating={part['cpuPerformance']} />
+                          <SpecCircle performanceLabel='Integrada (iGPU):' performanceRating={part['igpuPerformance']} />
+                        </>
+                      ) : part['type'] === 'gpu' ? (
+                        <>
+                          <p>Lançamento: {part['launch']}</p>
+                          <p>Geração: {part['gpuGeneration']}</p>
+                          <p>Núcleos: {part['gpuCores']}</p>
+                          <p>Memória: {part['gpuMemory']}GB</p>
+                          <p>Tipo de memória: {part['gpuMemoryType']}</p>
+                          <p>Interface da memória: {part['gpuMemoryBus']} bits</p>
+                          <p>Preço: R$ {part['price']}</p>
+                          <SpecCircle performanceLabel='Performance:' performanceRating={part['gpuPerformance']} />
+                        </>
+                      ) : part['type'] === 'mobo' ? (
+                        <>
+                          <p>Chipset: {part['moboChipset']}</p>
+                          <p>Socket compatível: {part['moboSocketCompatibility']}</p>
+                          <p>Tipo de RAM compatível: {part['moboRamCompatibility']}</p>
+                          <p>Slots de RAM: {part['moboSlots']}</p>
+                          <p>Preço: R$ {part['price']}</p>
+                        </>
+                      ) : part['type'] === 'ram' ? (
+                        <>
+                          <p>Frequência: {part['ramFrequency']}MHZ</p>
+                          <p>Capacidade: {part['ramCapacity']}GB</p>
+                          <p>Tipo da memória: {part['ramType']}</p>
+                          <p>Latência: {part['ramLatency']}</p>
+                          <p>Preço: R$ {part['price']}</p>
+                        </>
+                      ) : part['type'] === 'power' ? (
+                        <>
+                          <p>Watts: {part['powerWatts']}W</p>
+                          <p>Efficiência: {part['powerEfficiency']}</p>
+                          <p>Modular: {part['powerModular']}</p>
+                          <p>Preço: R$ {part['price']}</p>
+                        </>
+                      ) : part['type'] === 'ssd' ? (
+                        <>
+                          <p>Capacidade: {part['ssdCapacity']}GB</p>
+                          <p>Tipo do SSD: {part['ssdType']}</p>
+                          <p>Velocidade (Leitura): {part['ssdSpeed']}MB/s</p>
+                          <p>Preço: R$ {part['price']}</p>
+                        </>
+                      ) : part['type'] === 'case' ? (
+                        <>
+                          <p>Formato do Gabinete: {part['caseForm']}</p>
+                          <p>Suporte a fans: {part['caseFanSupport']}</p>
+                          <p>Suporte a Water Cooler: {part['caseWcSupport']}</p>
+                          <p>Preço: R$ {part['price']}</p>
+                        </>
+                      ) : null}
+                      <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
+                      <div className={listStyle.editDeleteButtons}>
+                        <button onClick={() => editPart(index)} className={listStyle.editButton}><img src={EditIcon} alt="Edit Icon" /></button>
+                        <button onClick={() => deletePart(part['_id'])} className={listStyle.deleteButton}><img src={DeleteIcon} alt="Delete Icon" /></button>
+                      </div>
+                      <StandartButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
+                    </div>
+                  </div>
+                ))}
+              </>
+            ) : <></>}
+            <br></br>
+            <div className={listStyle.choosePartType} style={{ display: selectTypeMenuVisibility }}>
+              {Object.keys(partTypeDataMap).map((addPart, index) => (
+                <h3 key={index} className={listStyle.partType} onClick={() => showModalAddPart(addPart)}>
+                  {addPart}
+                </h3>
+              ))}
+            </div>
+            <CircleButton onClick={toggleSelecting} buttonIcon='+' />
+          </div>
+        </main>
+        <div style={{ display: addPartModalVisibility }} className={listStyle.addPartContainer}>
+          {selectedPartType ?
+            <div className={listStyle.addPartModal}>
+              <div className={listStyle.addPartImg}>
+                <div className={listStyle.addPartImgBox}>
+                  <img src={
+                    partTypeDataMap[selectedPartType]['imageLink']} alt={'Imagem da peça que será adicionada ao sistema'}></img>
+                </div>
               </div>
-            </div>
-            <div className={listStyle.addPartInputs}>
-              {Object.keys(partTypeDataMap[selectedPartType]).map((key) =>
-                key != '_id' && key != 'type' && key != '__v' ?
-                  <>
-                    <label className={listStyle.inputLabel}>{key}:</label>
-                    <input
-                      type={key == 'cpuIgpu' ? 'checkbox' : 'text'}
-                      placeholder={key}
-                      key={key}
-                      name={key}
-                      onChange={(event) => handleChange(event)}
-                      checked={partTypeDataMap[selectedPartType][key]}
-                      value={partTypeDataMap[selectedPartType][key]}></input> </> : <></>)}
-            </div>
-            <div className={listStyle.saveButtonContainer}>
-              <StandartButton onClick={() => createOrEditPart()} buttonLabel='Salvar' />
-            </div>
-          </div> : <></>}
+              <div className={listStyle.addPartInputs}>
+                {Object.keys(partTypeDataMap[selectedPartType]).map((key) =>
+                  key !== '_id' && key !== 'type' && key !== '__v' ?
+                    <>
+                      <label className={listStyle.inputLabel}>{key}:</label>
+                      <input
+                        type={key === 'cpuIgpu' ? 'checkbox' : 'text'}
+                        placeholder={key}
+                        key={key}
+                        name={key}
+                        onChange={(event) => handleChange(event)}
+                        checked={partTypeDataMap[selectedPartType][key]}
+                        value={partTypeDataMap[selectedPartType][key]}></input> </> : <></>)}
+              </div>
+              <div className={listStyle.saveButtonContainer}>
+                <StandartButton onClick={() => createOrEditPart()} buttonLabel='Salvar' />
+              </div>
+            </div> : <></>}
+        </div>
       </div>
-    </div>
     </div>
   );
 }
