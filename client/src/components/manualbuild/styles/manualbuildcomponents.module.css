@@ -1,10 +1,15 @@
+.partSelectorName{
+    margin: 2% 5%;
+}
+
 .partPicker {
     padding: 1%;
     background-color: white;
     border-radius: 20px;
     display: grid;
-    grid-template-columns: 0.5fr 3fr 1fr;
-    height: min(max(180px), 42.5%);
+    grid-template-columns: 1fr 3fr 1fr;
+    height: min(max(fit-content), 70%);
+    margin: 0 5%;
 }
 
 .imgBox {
@@ -34,17 +39,12 @@
 .partPickerInput {
     border: 2px solid black;
     border-radius: 10px;
-    width: 45%;
-    min-width: 300px;
+    width: 80%;
     padding: 1%;
 }
 
 .inputResultBox {
     margin-top: 1%;
-    border-right: 2px solid black;
-    border-left: 2px solid black;
-    width: 85%;
-    min-width: 300px;
     position: relative;
     height: 100%;
 }
@@ -53,19 +53,17 @@
     margin: 0;
     background-color: white;
     border-top: 2px solid black;
-    border-bottom: 2px solid black;
+    border-right: 2px solid black;
+    border-left: 2px solid black;
     padding: 1%;
+    min-width: 300px;
+    font-size: medium;
     display: grid;
     grid-template-columns: 2fr 1fr;
     transition: all 0.5s;
 }
 
-.inputPicker:last-of-type {
-    border: none;
-}
-
-.inputPicker:first-of-type {
-    border-top: 2px solid black;
+.inputPicker:last-of-type{
     border-bottom: 2px solid black;
 }
 

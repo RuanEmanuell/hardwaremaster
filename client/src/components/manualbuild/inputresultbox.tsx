@@ -15,12 +15,12 @@ interface Part {
     gpuCores?: string,
     gpuMemory?: string,
     gpuMemoryType?: string,
-  }
+}
 
 interface Props {
     partList: Part[];
     selectPartInput: string;
-    selectPart: (part: Part, partType:string) => void;
+    selectPart: (part: Part) => void;
 }
 
 
@@ -30,7 +30,7 @@ const InputResultBox: React.FC<Props> = ({ partList, selectPartInput, selectPart
             <div>
                 {partList.filter(part =>
                     `${part['brand']} ${part['name']}`.toLowerCase().trim().includes(selectPartInput)).map(part =>
-                        <div className={mbComponentStyle.inputPicker} onClick={() => selectPart(part, part['type'])}>
+                        <div className={mbComponentStyle.inputPicker} onClick={() => selectPart(part)}>
                             <div className={mbComponentStyle.inputPickerNameAndImg}>
                                 <img src={part['imageLink']} className={mbComponentStyle.inputImg}></img>
                                 <h3>{part['brand']} {part['name']}</h3>

@@ -7,3 +7,15 @@
 .buildPrice {
     text-align: center;
 }
+
+.partSelectorsBox{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 100%;
+}
+
+@media screen and (max-width: 960px) {
+    .partSelectorsBox {
+        grid-template-columns: 1fr;
+    }
+}

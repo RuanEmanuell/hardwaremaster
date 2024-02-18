@@ -4,7 +4,6 @@ import InputResultBox from "./inputresultbox";
 import PartInfoBox from "./partinfobox";
 import PriceAndChangeButton from "./pricebutton";
 
-
 interface Part {
     type: string;
     name: string;
@@ -18,7 +17,7 @@ interface Part {
     gpuCores?: string,
     gpuMemory?: string,
     gpuMemoryType?: string,
-  }
+}
 
 interface Props {
     partName: string;
@@ -28,7 +27,7 @@ interface Props {
     inputPlaceHolder: string;
     selectPartInput: string;
     handleChange: (event: React.ChangeEvent<HTMLInputElement>, partType: string) => void;
-    selectPart: (part: Part, partType:string) => void;
+    selectPart: (part: Part) => void;
     partList: Part[];
     info1: string;
     info2: string;
@@ -39,9 +38,9 @@ interface Props {
 const PartSelectorBox: React.FC<Props> = ({ partName, selectedPart, partIcon, selectPartLabel, inputPlaceHolder, selectPartInput, handleChange, partList, info1, info2, info3, selectPart, resetSelectedPart }) => {
     return (
         <div>
-            <h2>{partName}</h2>
+            <h2 className={mbComponentStyle.partSelectorName}>{partName}</h2>
             <div className={mbComponentStyle.partPicker}>
-                <div className={mbComponentStyle.imgBox}>
+                <div className={mbComponentStyle.imgBox} style = {{display: selectPartInput !== '' && !selectedPart ? 'none' : 'flex'}}>
                     <img src={selectedPart ? selectedPart['imageLink'] : partIcon}></img>
                 </div>
                 <div className={mbComponentStyle.partNameAndInputBox}>
