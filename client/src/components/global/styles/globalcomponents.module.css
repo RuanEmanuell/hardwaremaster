@@ -63,7 +63,6 @@
 
 .navLogo h1 {
     margin: 0;
-    margin-left: 10%;
     margin-top: calc(2vh + 0.5vw);
     font-size: min(max(30px), calc(1.5vh + 1vw));
     text-transform: uppercase;
@@ -158,6 +157,9 @@
 
     .hamburguerMenuContainer {
         display: block;
+    }
+    .navLogo h1{
+        margin-left: 10%;
     }
 }
 

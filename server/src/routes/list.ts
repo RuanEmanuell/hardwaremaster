@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import mongoose from 'mongoose';
 import puppeteer from 'puppeteer';
-import Part from '../models/part.js';
-import db from '../database/connection.js';
+import Part from '../models/part.ts';
+import db from '../database/connection.ts';
 
 const listRouter = Router();
 
@@ -35,7 +35,7 @@ listRouter.put('/update/:id', async (req, res) => {
 listRouter.delete('/delete/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const deletedPart = await Part.findByIdAndDelete(id, req.body, { new: true });
+    const deletedPart = await Part.findByIdAndDelete(id, req.body);
     res.sendStatus(201);
   } catch (error) {
     console.log(error);
@@ -44,14 +44,18 @@ listRouter.delete('/delete/:id', async (req, res) => {
 
 listRouter.get('/currentprice/:id', async (req, res) => {
   const { id } = req.params;
-  const selectedPart = await db.collection('parts').findOne({ "_id": new mongoose.Types.ObjectId(id) });
+  const selectedPart: mongoose.mongo.WithId<mongoose.AnyObject> | null = await db.collection('parts').findOne({ "_id": new mongoose.Types.ObjectId(id) });
 
   const browserPromise = puppeteer.launch();
   const browser = await browserPromise;
 
-  let price = selectedPart['price'];
+  let price: string;
 
-  async function choosePrice(partLinks) {
+  if (selectedPart !== null) {
+    price = selectedPart['price'];
+  }
+
+  async function choosePrice(partLinks: Array<string>) {
     let currentPrice = price;
     const page = await browser.newPage();
 
@@ -61,21 +65,21 @@ listRouter.get('/currentprice/:id', async (req, res) => {
 
         let priceLink = '0.0';
 
-        
+
         if (await page.$('.sc-5492faee-2.ipHrwP.finalPrice')) {
-          priceLink = await page.$eval('.sc-5492faee-2.ipHrwP.finalPrice', (h4) => h4.innerText.substring(3));
+          priceLink = await page.$eval('.sc-5492faee-2.ipHrwP.finalPrice', (h4) => (h4 as HTMLElement).innerText.substring(3));
         } else if (await page.$('#valVista')) {
-          priceLink = await page.$eval('#valVista', (p) => p.innerText.substring(3));
+          priceLink = await page.$eval('#valVista', (p) => (p as HTMLElement).innerText.substring(3));
         } else if (await page.$('.jss272')) {
-          priceLink = await page.$eval('.jss272', (div) => div.innerText.substring(3));
+          priceLink = await page.$eval('.jss272', (div) => (div as HTMLElement).innerText.substring(3));
         } else if (await page.$('.jss267')) {
-          priceLink = await page.$eval('.jss267', (div) => div.innerText.substring(3));
+          priceLink = await page.$eval('.jss267', (div) => (div as HTMLElement).innerText.substring(3));
         } else if (await page.$('.jss266')) {
-          priceLink = await page.$eval('.jss266', (div) => div.innerText.substring(3));
+          priceLink = await page.$eval('.jss266', (div) => (div as HTMLElement).innerText.substring(3));
         } else if (await page.$('.a-offscreen')) {
-          priceLink = await page.$eval('.a-offscreen', (span) => span.innerText.substring(2));
+          priceLink = await page.$eval('.a-offscreen', (span) => (span as HTMLElement).innerText.substring(2));
         }
-        
+
         if (parseInt(priceLink) < parseInt(currentPrice) && parseInt(priceLink) > 10) {
           currentPrice = priceLink;
         }
@@ -85,12 +89,14 @@ listRouter.get('/currentprice/:id', async (req, res) => {
     return currentPrice;
   }
 
-  price = await choosePrice([selectedPart['shopLink'], selectedPart['shopLink2'], selectedPart['shopLink3']]);
+  if (selectedPart !== null) {
+    price = await choosePrice([selectedPart['shopLink'], selectedPart['shopLink2'], selectedPart['shopLink3']]);
 
-  if (price != selectedPart['price']) {
-    res.json({ preço: price });
-  } else {
-    console.log('Mesmo preço!');
+    if (price != selectedPart['price']) {
+      res.json({ preço: price });
+    } else {
+      console.log('Mesmo preço!');
+    }
   }
 });
 

@@ -55,6 +55,6 @@ const partSchema = new Schema({
     caseWcSupport: String
 })
 
-const Cpu = mongoose.model('Part', partSchema);
+const Part = mongoose.model('Part', partSchema);
 
-export default Cpu;
+export default Part;
