@@ -72,19 +72,18 @@ const ManualBuild: React.FC = () => {
     }else if(partType ==='gpu'){
       setSelectedGPU(part);
     }
-    setTotalBuildPrice(totalBuildPrice + parseFloat(part['price']))
+    setTotalBuildPrice(totalBuildPrice + parseFloat(part['price'].replace('.', '').replace(',', '.')))
   }
 
-  function resetSelectedPart(partType: string) {
-    if (partType === 'cpu') {
-      setTotalBuildPrice(totalBuildPrice - parseFloat(selectedCPU!['price']));
+  function resetSelectedPart(selectedPart: Part) {
+    if (selectedPart['type'] === 'cpu') {
       setSelectedCPU(undefined);
       setSelectCPUInput('');
-    } else if (partType === 'gpu') {
-      setTotalBuildPrice(totalBuildPrice - parseFloat(selectedGPU!['price']));
+    } else if (selectedPart['type'] === 'gpu') {
       setSelectedGPU(undefined);
       setSelectGPUInput('');
     }
+    setTotalBuildPrice(totalBuildPrice - parseFloat(selectedPart['price'].replace('.', '').replace(',', '.')));
   }
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>, partType: string) {
@@ -95,7 +94,6 @@ const ManualBuild: React.FC = () => {
       setSelectGPUInput(value);
     }
   }
-
 
   useEffect(() => {
     getPartList();
@@ -137,7 +135,7 @@ const ManualBuild: React.FC = () => {
             info3={selectedGPU ? `Tipo da memória: ${selectedGPU!['gpuMemoryType']}` : ''}
             resetSelectedPart={resetSelectedPart}
           />
-          <h2 className={mbStyle.buildPrice}>Preço total: R$ {totalBuildPrice.toFixed(3)}</h2>
+          <h2 className={mbStyle.buildPrice}>Preço total: R$ {totalBuildPrice.toString().replace('.', ',')}</h2>
         </main>
       </div>
     </div>

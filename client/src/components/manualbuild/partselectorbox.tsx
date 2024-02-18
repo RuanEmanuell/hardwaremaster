@@ -4,6 +4,7 @@ import InputResultBox from "./inputresultbox";
 import PartInfoBox from "./partinfobox";
 import PriceAndChangeButton from "./pricebutton";
 
+
 interface Part {
     type: string;
     name: string;
@@ -14,7 +15,10 @@ interface Part {
     cpuThreads?: string;
     cpuFrequency?: string;
     cpuSocket?: string;
-}
+    gpuCores?: string,
+    gpuMemory?: string,
+    gpuMemoryType?: string,
+  }
 
 interface Props {
     partName: string;
@@ -29,7 +33,7 @@ interface Props {
     info1: string;
     info2: string;
     info3: string;
-    resetSelectedPart: (partType: string) => void;
+    resetSelectedPart: (part: Part) => void;
 }
 
 const PartSelectorBox: React.FC<Props> = ({ partName, selectedPart, partIcon, selectPartLabel, inputPlaceHolder, selectPartInput, handleChange, partList, info1, info2, info3, selectPart, resetSelectedPart }) => {
@@ -66,7 +70,7 @@ const PartSelectorBox: React.FC<Props> = ({ partName, selectedPart, partIcon, se
                     {selectedPart ?
                         <PriceAndChangeButton
                             selectedPartPrice={selectedPart['price']}
-                            onChangePartClick={() => resetSelectedPart(selectedPart['type'])}
+                            onChangePartClick={() => resetSelectedPart(selectedPart)}
                         />
                         : <></>}
                 </div>

@@ -1,6 +1,7 @@
 import React from "react";
 import mbComponentStyle from './styles/manualbuildcomponents.module.css';
 
+
 interface Part {
     type: string;
     name: string;
@@ -11,7 +12,10 @@ interface Part {
     cpuThreads?: string;
     cpuFrequency?: string;
     cpuSocket?: string;
-}
+    gpuCores?: string,
+    gpuMemory?: string,
+    gpuMemoryType?: string,
+  }
 
 interface Props {
     partList: Part[];
