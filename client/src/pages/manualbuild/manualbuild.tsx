@@ -38,23 +38,19 @@ const ManualBuild: React.FC = () => {
     try {
       const response = await fetch('http://localhost:3001/list/parts');
       const data: Part[] = await response.json();
-      let temporaryCpuList: Cpu[] = [];
-      for (var i = 0; i < data.length; i++) {
-        if (data[i]['type'] === 'cpu') {
-          temporaryCpuList.push(
-            {
-              cpuName: data[i]['name'],
-              cpuBrand: data[i]['brand'],
-              cpuCores: data[i]['cpuCores'],
-              cpuFrequency: data[i]['cpuFrequency'],
-              cpuThreads: data[i]['cpuThreads'],
-              cpuPrice: data[i]['price'],
-              cpuImageLink: data[i]['imageLink'],
-              cpuSocket: data[i]['cpuSocket']
-            });
-        };
-      }
-      setCpuList(temporaryCpuList);
+      const filteredCpuList = data
+        .filter(item => item.type === 'cpu')
+        .map(item => ({
+          cpuName: item.name,
+          cpuBrand: item.brand,
+          cpuCores: item.cpuCores,
+          cpuFrequency: item.cpuFrequency,
+          cpuThreads: item.cpuThreads,
+          cpuPrice: item.price,
+          cpuImageLink: item.imageLink,
+          cpuSocket: item.cpuSocket
+        }));
+      setCpuList(filteredCpuList);
     } catch (err) {
       console.log(err);
     }
@@ -65,7 +61,7 @@ const ManualBuild: React.FC = () => {
     setTotalBuildPrice(totalBuildPrice + parseFloat(cpu['cpuPrice']))
   }
 
-  function resetSelectedCPU(){
+  function resetSelectedCPU() {
     setTotalBuildPrice(totalBuildPrice - parseFloat(selectedCPU!['cpuPrice']));
     setSelectedCPU(null);
     setSelectCpuInput('');
@@ -131,7 +127,7 @@ const ManualBuild: React.FC = () => {
                   <div className={mbStyle.buttonBox}>
                     <StandartButton
                       buttonLabel='Trocar peça'
-                      onClick = {() => resetSelectedCPU()}
+                      onClick={() => resetSelectedCPU()}
                     />
                   </div>
                 </div>
