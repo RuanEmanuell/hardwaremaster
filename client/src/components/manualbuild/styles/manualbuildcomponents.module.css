@@ -1,3 +1,44 @@
+.partPicker {
+    padding: 1%;
+    background-color: white;
+    border-radius: 20px;
+    display: grid;
+    grid-template-columns: 0.5fr 3fr 1fr;
+    height: min(max(180px), 42.5%);
+}
+
+.imgBox {
+    margin: 3vh 10%;
+    height: 60%;
+    max-height: 85px;
+    max-width: 120px;
+    width: 90%;
+    border: 2px solid black;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+}
+
+.imgBox img {
+    margin: auto;
+    height: fit-content;
+    width: 80%;
+    max-height: 70px;
+    max-width: 70px;
+}
+
+.partNameAndInputBox {
+    margin: auto 5%;
+}
+
+.partPickerInput {
+    border: 2px solid black;
+    border-radius: 10px;
+    width: 45%;
+    min-width: 300px;
+    padding: 1%;
+}
+
 .inputResultBox {
     margin-top: 1%;
     border-right: 2px solid black;
@@ -47,6 +88,10 @@
 
 .inputPrice {
     width: 100%;
+}
+
+.partInfoBox p, .priceBox p{
+    color: black;
 }
 
 .priceBox {
