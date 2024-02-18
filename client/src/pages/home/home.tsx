@@ -1,5 +1,4 @@
 import React from 'react';
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import homeStyle from './styles/home.module.css';
 import NavBar from '../../components/global/navbar';
@@ -15,11 +14,13 @@ const Home : React.FC = () => {
       <div className={homeStyle.homeBody}>
         <div className={homeStyle.mainContainer}>
           <main className={homeStyle.homeOptionsGrid}>
+          <Link to='/manualbuild'>
             <HomeOption
               icon={GpuIcon}
               optionDescription=' Já sabe o que você quer montar? Escolha cada componente e veja quanto a sua futura máquina vai custar!'
               buttonLabel='Montar PC customizado' 
               buttonBackgroundColor = '#0066FF'/>
+          </Link>
             <HomeOption
               icon={MotherboardIcon}
               optionDescription='Defina seu orçamento e preferências, e deixe que o nosso algoritmo decida o melhor PC possível para você!'
