@@ -12,7 +12,7 @@ const PriceAndChangeButton: React.FC<Props> = ({ selectedPartPrice, onChangePart
     <div>
       <div className={mbComponentStyle.priceBox}>
         <h3>Preço:</h3>
-        <p>R$ {selectedPartPrice} </p>
+        <h4>R$ {selectedPartPrice} </h4>
       </div>
       <div className={mbComponentStyle.buttonBox}>
         <StandartButton

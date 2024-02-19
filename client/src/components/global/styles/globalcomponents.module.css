@@ -35,6 +35,7 @@
 .navBarContainer {
     background-color: #DB5510;
     width: 100vw;
+    min-height: 25px;
     max-height: 100px;
     height: calc(2vw + 6vh);
     display: flex;
@@ -104,12 +105,10 @@
 .hamburguerMenu div {
     width: 100%;
     height: 100%;
-    display: flex;
-    justify-content: center;
 }
 
 .hamburguerMenu {
-    margin-top: calc(12px + 0.5vw);
+    margin-top: 10%;
     width: 30px;
     height: 30px;
     padding: 0 33%;
@@ -129,7 +128,7 @@
 
 .hamburguerMenuOptions {
     position: relative;
-    top: 1vh;
+    top: 5%;
     z-index: 2;
 }
 
@@ -154,7 +153,6 @@
     .navOption {
         display: none;
     }
-
     .hamburguerMenuContainer {
         display: block;
     }

@@ -8,7 +8,8 @@
     border-radius: 20px;
     display: grid;
     grid-template-columns: 1fr 3fr 1fr;
-    height: min(max(fit-content), 70%);
+    height: 50%;
+    max-height: fit-content;
     margin: 0 5%;
 }
 
@@ -33,7 +34,9 @@
 }
 
 .partNameAndInputBox {
+    max-width: 100%;
     margin: auto 5%;
+    padding-bottom: 5%;
 }
 
 .partPickerInput {
@@ -56,8 +59,8 @@
     border-right: 2px solid black;
     border-left: 2px solid black;
     padding: 1%;
-    min-width: 300px;
-    font-size: medium;
+    min-width: 250px;
+    font-size: small;
     display: grid;
     grid-template-columns: 2fr 1fr;
     transition: all 0.5s;
@@ -75,11 +78,11 @@
 
 .inputPickerNameAndImg {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 2fr 6fr;
 }
 
 .inputImg {
-    margin: auto 20%;
+    margin: auto 10%;
     width: min(max(50%), 50px);
     height: fit-content;
 }
@@ -88,8 +91,9 @@
     width: 100%;
 }
 
-.partInfoBox p, .priceBox p{
+.partInfoBox p, .priceBox h4{
     color: black;
+    font-size: small;
 }
 
 .priceBox {

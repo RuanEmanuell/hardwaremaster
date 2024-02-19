@@ -39,7 +39,7 @@ const PartSelectorBox: React.FC<Props> = ({ partName, selectedPart, partIcon, se
     return (
         <div>
             <h2 className={mbComponentStyle.partSelectorName}>{partName}</h2>
-            <div className={mbComponentStyle.partPicker}>
+            <div className={mbComponentStyle.partPicker} style={{height: selectPartInput !== '' && !selectedPart ? '130px' : 'fit-content', gridTemplateColumns: selectPartInput !== '' && !selectedPart ? '1fr' : '1fr 3fr 1fr'}}>
                 <div className={mbComponentStyle.imgBox} style = {{display: selectPartInput !== '' && !selectedPart ? 'none' : 'flex'}}>
                     <img src={selectedPart ? selectedPart['imageLink'] : partIcon}></img>
                 </div>
