@@ -33,7 +33,7 @@ const InputResultBox: React.FC<Props> = ({ partList, selectPartInput, selectPart
                         <div className={mbComponentStyle.inputPicker} onClick={() => selectPart(part)}>
                             <div className={mbComponentStyle.inputPickerNameAndImg}>
                                 <img src={part['imageLink']} className={mbComponentStyle.inputImg}></img>
-                                <h3>{part['brand']} {part['name']}</h3>
+                                <h3>{part['name']}</h3>
                             </div>
                             <h3 className={mbComponentStyle.inputPrice}>R$ {part['price']}</h3>
                         </div>

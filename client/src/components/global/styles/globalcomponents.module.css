@@ -174,5 +174,10 @@
     .hamburguerMenu {
         margin-top: calc(5px);
     }
-
+    .navBarContainer {
+        min-height: 50px;
+    }
+    .navLogo h1{
+        margin-top: 15%;
+    }
 }

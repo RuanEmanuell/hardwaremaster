@@ -14,6 +14,66 @@
     height: 100%;
 }
 
+.finishBuildBox{
+    height: 20%;
+    background-color: white;
+    display: grid;
+    grid-template-rows: 0.75fr 1fr;
+    margin: auto;
+    border-radius: 50px;
+    width: 90%;
+    max-height: 150px;
+    max-width: 500px;
+}
+
+.finishBuildBox h2{
+    color: black;
+}
+
+.buildButtonsBox{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    width: fit-content;
+}
+
+.buildButton{
+    margin: 2.5% 20%;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 60%;
+}
+
+.buildButton img{
+    width: 40%;
+    min-width: 25px;
+    max-width: 200px;
+}
+
+.copiedToTABox{
+    display: flex;
+    justify-content: center;
+}
+
+.copiedToTA{
+    font-size: small;
+    border-radius: 20px;
+    text-align: center;
+    justify-content: center;
+    height: fit-content;
+    color: white;
+    width: 50%;
+    max-width: 200px;
+    background-color: grey;
+    display: none;
+    position: fixed;
+    bottom: 0;
+    margin-bottom: 5%;
+    transition: 0.5s all;
+}
+
 @media screen and (max-width: 960px) {
     .partSelectorsBox {
         grid-template-columns: 1fr;
