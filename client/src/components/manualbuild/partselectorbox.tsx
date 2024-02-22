@@ -33,8 +33,10 @@ interface Part {
     ssdSpeed?: string,
     caseForm?: string,
     caseFanSupport?: string,
-    caseWcSupport?: string
+    caseWcSupport?: string,
+    partQuantity: number
   }
+  
 
 interface Props {
     partName: string;
@@ -49,6 +51,9 @@ interface Props {
     info1: string;
     info2: string;
     info3: string;
+    increasePartQuantity: (part: Part) => void;
+    decreasePartQuantity: (part: Part) => void;
+    partQuantity: number;
     resetSelectedPart: (part: Part) => void;
     selectedCpu?: Part;
     selectedGpu?: Part;
@@ -59,7 +64,12 @@ interface Props {
     selectedCase?: Part;
 }
 
-const PartSelectorBox: React.FC<Props> = ({ partName, selectedPart, partIcon, selectPartLabel, inputPlaceHolder, selectPartInput, handleChange, partList, info1, info2, info3, selectPart, resetSelectedPart, selectedCpu, selectedGpu, selectedMobo, selectedRam, selectedPower, selectedSsd, selectedCase }) => {
+const PartSelectorBox: React.FC<Props> = (
+    { partName, selectedPart, partIcon, selectPartLabel, inputPlaceHolder,
+         selectPartInput, handleChange, partList, info1, info2, info3, 
+         selectPart, decreasePartQuantity, increasePartQuantity, partQuantity, 
+         resetSelectedPart, selectedCpu,  selectedGpu, selectedMobo, selectedRam, 
+         selectedPower, selectedSsd, selectedCase }) => {
     return (
         <div className={mbComponentStyle.partPickerBox}>
             <h2 className={mbComponentStyle.partSelectorName}>{partName}</h2>
@@ -100,6 +110,10 @@ const PartSelectorBox: React.FC<Props> = ({ partName, selectedPart, partIcon, se
                     {selectedPart ?
                         <PriceAndChangeButton
                             selectedPartPrice={selectedPart['price']}
+                            selectedPartType = {selectedPart['type']}
+                            partQuantity={partQuantity}
+                            onIncreasePartQuantity={() => increasePartQuantity (selectedPart)}
+                            onDecreasePartQuantity={() => decreasePartQuantity (selectedPart)}
                             onChangePartClick={() => resetSelectedPart(selectedPart)}
                         />
                         : <></>}

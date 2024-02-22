@@ -37,7 +37,8 @@ interface Part {
   ssdSpeed?: string,
   caseForm?: string,
   caseFanSupport?: string,
-  caseWcSupport?: string
+  caseWcSupport?: string,
+  partQuantity: number
 }
 
 const ManualBuild: React.FC = () => {
@@ -97,6 +98,7 @@ const ManualBuild: React.FC = () => {
         caseForm: item.caseForm,
         caseFanSupport: item.caseFanSupport,
         caseWcSupport: item.caseWcSupport,
+        partQuantity: 1
       }));
 
       setPartList(filteredPartList);
@@ -105,49 +107,62 @@ const ManualBuild: React.FC = () => {
     }
   }
 
-  function selectPart(part: Part) {
+  function setNewPartValues(part: Part, newPartValue: any) {
     if (part['type'] === 'cpu') {
-      setSelectedCpu(part);
+      setSelectedCpu(newPartValue);
+      setSelectCpuInput('');
     } else if (part['type'] === 'gpu') {
-      setSelectedGpu(part);
+      setSelectedGpu(newPartValue);
+      setSelectGpuInput('');
     } else if (part['type'] === 'mobo') {
-      setSelectedMobo(part);
+      setSelectedMobo(newPartValue);
+      setSelectMoboInput('');
     } else if (part['type'] === 'ram') {
-      setSelectedRam(part);
+      setSelectedRam(newPartValue);
+      setSelectRamInput('');
     } else if (part['type'] === 'power') {
-      setSelectedPower(part);
+      setSelectedPower(newPartValue);
+      setSelectPowerInput('');
     } else if (part['type'] === 'ssd') {
-      setSelectedSsd(part);
+      setSelectedSsd(newPartValue);
+      setSelectSsdInput('');
     } else if (part['type'] === 'case') {
-      setSelectedCase(part);
+      setSelectedCase(newPartValue);
+      setSelectCaseInput('');
     }
+  }
 
+  function selectPart(part: Part) {
+    setNewPartValues(part, part);
     setTotalBuildPrice(totalBuildPrice + parseFloat(part['price'].replace('.', '').replace(',', '.')));
   }
 
-  function resetSelectedPart(part: Part) {
-    if (part['type'] === 'cpu') {
-      setSelectedCpu(undefined);
-      setSelectCpuInput('');
-    } else if (part['type'] === 'gpu') {
-      setSelectedGpu(undefined);
-      setSelectGpuInput('');
-    } else if (part['type'] === 'mobo') {
-      setSelectedMobo(undefined);
-      setSelectMoboInput('');
-    } else if (part['type'] === 'ram') {
-      setSelectedRam(undefined);
-      setSelectRamInput('');
-    } else if (part['type'] === 'power') {
-      setSelectedPower(undefined);
-      setSelectPowerInput('');
-    } else if (part['type'] === 'ssd') {
-      setSelectedSsd(undefined);
-      setSelectSsdInput('');
-    } else if (part['type'] === 'case') {
-      setSelectedCase(undefined);
-      setSelectCaseInput('');
+  function increasePartQuantity(part: Part) {
+    if(part.partQuantity < 4){
+    let newPartQuantity = part.partQuantity + 1;
+    let newPrice = (parseFloat(part['price'].replace('.', '').replace(',', '.')) + parseFloat(part['price'].replace('.', '').replace(',', '.')) / (newPartQuantity - 1)).toFixed(2).toString();
+    newPrice = newPrice.replace('.', ',');
+    let newPart = { ...part, partQuantity: newPartQuantity, price: newPrice }
+    setNewPartValues(part, newPart);
+    setTotalBuildPrice(totalBuildPrice + (parseFloat(newPrice) / newPartQuantity));
     }
+  }
+
+  function decreasePartQuantity(part: Part) {
+    if(part.partQuantity > 1){
+    let newPartQuantity = part.partQuantity - 1;
+    let newPrice = (parseFloat(part['price'].replace('.', '').replace(',', '.')) - parseFloat(part['price'].replace('.', '').replace(',', '.')) / (newPartQuantity + 1)).toFixed(2).toString();
+    newPrice = newPrice.replace('.', ',');
+    let newPart = { ...part, partQuantity: newPartQuantity, price: newPrice }
+    setNewPartValues(part, newPart);
+    setTotalBuildPrice(totalBuildPrice - (parseFloat(newPrice) / newPartQuantity));
+    }
+  }
+
+  function resetSelectedPart(part: Part) {
+    setNewPartValues(part, undefined);
+    console.log(parseFloat(part['price'].replace('.', '').replace(',', '.')))
+    console.log(totalBuildPrice);
     setTotalBuildPrice(totalBuildPrice - parseFloat(part['price'].replace('.', '').replace(',', '.')));
   }
 
@@ -194,9 +209,9 @@ const ManualBuild: React.FC = () => {
       buildText = `Processador: ${selectedCpu!['name']} - R$ ${selectedCpu!['price']} 
 Placa de vídeo: ${selectedGpu!['name']} - R$ ${selectedGpu!['price']}
 Placa mãe: ${selectedMobo!['name']} - R$ ${selectedMobo!['price']} 
-Ram: ${selectedRam!['name']} - R$ ${selectedRam!['price']}
+Ram: ${selectedRam!['name']} - R$ ${selectedRam!['price']} x ${selectedRam!['partQuantity']}
 Fonte de alimentação: ${selectedPower!['name']} - R$ ${selectedPower!['price']}
-SSD: ${selectedSsd!['name']} - R$ ${selectedSsd!['price']}
+SSD: ${selectedSsd!['name']} - R$ ${selectedSsd!['price']} x ${selectedSsd!['partQuantity']}
 Gabinete: ${selectedCase!['name']} - R$ ${selectedCase!['price']}
 \nPreço Total: R$ ${totalBuildPrice!.toFixed(2)} `
 
@@ -243,6 +258,9 @@ Gabinete: ${selectedCase!['name']} - R$ ${selectedCase!['price']}
               info1={selectedCpu ? `Núcleos: ${selectedCpu['cpuCores']}, Threads: ${selectedCpu['cpuThreads']}` : ''}
               info2={selectedCpu ? `Frequência: ${selectedCpu['cpuFrequency']} GHz` : ''}
               info3={selectedCpu ? `Socket: ${selectedCpu['cpuSocket']}` : ''}
+              partQuantity={selectedCpu ? selectedCpu['partQuantity'] : 0}
+              increasePartQuantity={increasePartQuantity}
+              decreasePartQuantity={decreasePartQuantity}
               resetSelectedPart={resetSelectedPart}
               selectedMobo={selectedMobo}
               selectedRam={selectedRam}
@@ -260,9 +278,13 @@ Gabinete: ${selectedCase!['name']} - R$ ${selectedCase!['price']}
               info1={selectedGpu ? `Núcleos: ${selectedGpu!['gpuCores']}` : ''}
               info2={selectedGpu ? `Memória: ${selectedGpu!['gpuMemory']}GB` : ''}
               info3={selectedGpu ? `Tipo da memória: ${selectedGpu!['gpuMemoryType']}` : ''}
+              partQuantity={selectedGpu ? selectedGpu['partQuantity'] : 0}
+              increasePartQuantity={increasePartQuantity}
+              decreasePartQuantity={decreasePartQuantity}
               resetSelectedPart={resetSelectedPart}
               selectedPower={selectedPower}
             />
+
             <PartSelectorBox
               partName='Placa-mãe'
               selectedPart={selectedMobo}
@@ -276,6 +298,9 @@ Gabinete: ${selectedCase!['name']} - R$ ${selectedCase!['price']}
               info1={selectedMobo ? `Chipset: ${selectedMobo['moboChipset']}` : ''}
               info2={selectedMobo ? `Compatibilidade de socket: ${selectedMobo['moboSocketCompatibility']}` : ''}
               info3={selectedMobo ? `Compatibilidade de RAM: ${selectedMobo['moboRamCompatibility']}` : ''}
+              partQuantity={selectedMobo ? selectedMobo['partQuantity'] : 0}
+              increasePartQuantity={increasePartQuantity}
+              decreasePartQuantity={decreasePartQuantity}
               resetSelectedPart={resetSelectedPart}
               selectedCpu={selectedCpu}
               selectedRam={selectedRam}
@@ -294,6 +319,9 @@ Gabinete: ${selectedCase!['name']} - R$ ${selectedCase!['price']}
               info1={selectedRam ? `Capacidade: ${selectedRam['ramCapacity']} GB` : ''}
               info2={selectedRam ? `Frequência: ${selectedRam['ramFrequency']} MHz` : ''}
               info3={selectedRam ? `Tipo: ${selectedRam['ramType']}` : ''}
+              partQuantity={selectedRam ? selectedRam['partQuantity'] : 0}
+              increasePartQuantity={increasePartQuantity}
+              decreasePartQuantity={decreasePartQuantity}
               resetSelectedPart={resetSelectedPart}
               selectedCpu={selectedCpu}
               selectedMobo={selectedMobo}
@@ -312,6 +340,9 @@ Gabinete: ${selectedCase!['name']} - R$ ${selectedCase!['price']}
               info1={selectedPower ? `Potência: ${selectedPower['powerWatts']} Watts` : ''}
               info2={selectedPower ? `Eficiência: ${selectedPower['powerEfficiency']}` : ''}
               info3={selectedPower ? `Modular: ${selectedPower['powerModular']}` : ''}
+              partQuantity={selectedPower ? selectedPower['partQuantity'] : 0}
+              increasePartQuantity={increasePartQuantity}
+              decreasePartQuantity={decreasePartQuantity}
               resetSelectedPart={resetSelectedPart}
               selectedGpu={selectedGpu}
             />
@@ -329,6 +360,9 @@ Gabinete: ${selectedCase!['name']} - R$ ${selectedCase!['price']}
               info1={selectedSsd ? `Capacidade: ${selectedSsd['ssdCapacity']} GB` : ''}
               info2={selectedSsd ? `Tipo: ${selectedSsd['ssdType']}` : ''}
               info3={selectedSsd ? `Velocidade (Leitura): ${selectedSsd['ssdSpeed']} MB/s` : ''}
+              partQuantity={selectedSsd ? selectedSsd['partQuantity'] : 0}
+              increasePartQuantity={increasePartQuantity}
+              decreasePartQuantity={decreasePartQuantity}
               resetSelectedPart={resetSelectedPart}
             />
 
@@ -345,6 +379,9 @@ Gabinete: ${selectedCase!['name']} - R$ ${selectedCase!['price']}
               info1={selectedCase ? `Formato: ${selectedCase['caseForm']}` : ''}
               info2={selectedCase ? `Suporte a fans: ${selectedCase['caseFanSupport']}` : ''}
               info3={selectedCase ? `Suporte a Water Cooler: ${selectedCase['caseWcSupport']}` : ''}
+              partQuantity={selectedCase ? selectedCase['partQuantity'] : 0}
+              increasePartQuantity={increasePartQuantity}
+              decreasePartQuantity={decreasePartQuantity}
               resetSelectedPart={resetSelectedPart}
             />
           </div>

@@ -98,6 +98,11 @@
     font-size: small;
 }
 
+.priceBox h4, .addQuantityBox h4{
+    margin: 0;
+}
+
+
 .priceBox {
     text-align: center;
 }
@@ -127,6 +132,35 @@
     margin: auto 0;
     width: 10%;
     height: fit-content;
+}
+
+.addQuantityBox{
+    margin: 15% 0 10% 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+
+}
+
+.addQuantityButton{
+    margin: 0;
+    width: 25%;
+    height: fit-content;
+    border-radius: 5px;
+}
+
+.addQuantityButton:hover{
+    cursor: pointer;
+}
+
+.disabledQuantityButton{
+    background-color: #757575;
+    color: rgb(0, 0, 0);
+}
+
+.disabledQuantityButton:hover{
+    cursor: default;
 }
 
 @media screen and (max-width: 480px) {

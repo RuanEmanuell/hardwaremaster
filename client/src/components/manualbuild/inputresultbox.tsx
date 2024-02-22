@@ -31,9 +31,10 @@ interface Part {
     ssdSpeed?: string,
     caseForm?: string,
     caseFanSupport?: string,
-    caseWcSupport?: string
-}
-
+    caseWcSupport?: string,
+    partQuantity: number
+  }
+  
 interface Props {
     partList: Part[];
     selectPartInput: string;
