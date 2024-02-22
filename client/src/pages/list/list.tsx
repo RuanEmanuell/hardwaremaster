@@ -28,6 +28,7 @@ interface PartData {
     cpuIgpu: boolean;
     cpuPerformance: string;
     igpuPerformance: string;
+    cpuRamType: string;
   };
   gpu?: {
     gpuGeneration: string;
@@ -36,6 +37,7 @@ interface PartData {
     gpuMemoryType: string;
     gpuMemoryBus: string;
     gpuPerformance: string;
+    gpuRecommendedPower: string;
   };
   mobo?: {
     moboChipset: string;
@@ -136,6 +138,7 @@ const List: React.FC<ListProps> = () => {
             cpuIgpu: '',
             cpuPerformance: '',
             igpuPerformance: '',
+            cpuRamType: ''
           }
         : type === 'gpu'
         ? {
@@ -145,37 +148,38 @@ const List: React.FC<ListProps> = () => {
             gpuMemoryType: '',
             gpuMemoryBus: '',
             gpuPerformance: '',
+            gpuRecommendedPower: ''
           }
         : type === 'mobo'
         ? {
             moboChipset: '',
             moboSocketCompatibility: '',
             moboRamCompatibility: '',
-            moboSlots: '',
+            moboSlots: ''
           }
         : type === 'ram'
         ? {
             ramFrequency: '',
             ramCapacity: '',
             ramType: '',
-            ramLatency: '',
+            ramLatency: ''
           }
         : type === 'power'
         ? {
             powerWatts: '',
             powerEfficiency: '',
-            powerModular: '',
+            powerModular: ''
           }
         : type === 'ssd'
         ? {
             ssdCapacity: '',
             ssdType: '',
-            ssdSpeed: '',
+            ssdSpeed: ''
           }
         : {
             caseForm: '',
             caseFanSupport: '',
-            caseWcSupport: '',
+            caseWcSupport: ''
           }),
     };
   }
@@ -454,8 +458,9 @@ const List: React.FC<ListProps> = () => {
                           <p>Núcleos: {part['cpuCores']}</p>
                           <p>Threads: {part['cpuThreads']}</p>
                           <p>Frequência: {part['cpuFrequency']}GHZ</p>
-                          <p>Preço: R$ {part['price']}</p>
                           <p>Tem integrada: {part['cpuIgpu']}</p>
+                          <p>Tipo de memória suportada: {part['cpuRamType']}</p>
+                          <p>Preço: R$ {part['price']}</p>
                           <SpecCircle performanceLabel='Performance:' performanceRating={part['cpuPerformance']} />
                           <SpecCircle performanceLabel='Integrada (iGPU):' performanceRating={part['igpuPerformance']} />
                         </>
@@ -467,6 +472,7 @@ const List: React.FC<ListProps> = () => {
                           <p>Memória: {part['gpuMemory']}GB</p>
                           <p>Tipo de memória: {part['gpuMemoryType']}</p>
                           <p>Interface da memória: {part['gpuMemoryBus']} bits</p>
+                          <p>Fonte recomendada: {part['gpuRecommendedPower']}W</p>
                           <p>Preço: R$ {part['price']}</p>
                           <SpecCircle performanceLabel='Performance:' performanceRating={part['gpuPerformance']} />
                         </>

@@ -22,8 +22,9 @@ const partSchema = new Schema({
     cpuThreads: Number,
     cpuFrequency: Number,
     cpuIgpu: String,
-    cpuPerformance:Number,
-    igpuPerformance:Number,
+    cpuPerformance: Number,
+    igpuPerformance: Number,
+    cpuRamType: String,
     //GPU only
     gpuCores: Number,
     gpuGeneration: String,
@@ -31,6 +32,7 @@ const partSchema = new Schema({
     gpuMemoryType: String,
     gpuMemoryBus: Number,
     gpuPerformance: Number,
+    gpuRecommendedPower: Number,
     //MOBO only
     moboChipset: String,
     moboSocketCompatibility: String,
