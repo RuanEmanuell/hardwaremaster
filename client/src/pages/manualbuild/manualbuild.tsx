@@ -105,39 +105,7 @@ const ManualBuild: React.FC = () => {
     }
   }
 
-  function checkPart(part: Part){
-    if (part['type'] === 'cpu') {
-      if(selectedMobo && selectedMobo['moboSocketCompatibility'] != part['cpuSocket']){
-        console.log('CPU e Placa mãe incompatíveis!');
-      }else if(selectedRam && !part['cpuRamType']!.includes(selectedRam['ramType']!) ){
-        console.log('CPU e RAM incompatíveis!');
-      }
-    } else if (part['type'] === 'gpu') {
-      if(selectedPower && selectedPower['powerWatts']! < part['gpuRecommendedPower']!){
-        console.log('GPU e Fonte incompatíveis');
-      }
-    }else if(part['type'] === 'mobo'){
-      if(selectedCpu && selectedCpu['cpuSocket'] != part['moboSocketCompatibility']){
-        console.log('Placa mãe e CPU incompatíveis!');
-      }else if(selectedRam && !part['moboRamCompatibility']!.includes(selectedRam['ramType']!) ){
-        console.log('Placa mãe e RAM incompatíveis!');
-      }
-    }else if(part['type'] === 'ram'){
-      if(selectedCpu && !selectedCpu['cpuRamType']!.includes(part['ramType']!)){
-        console.log('CPU e RAM incompatíveis!');
-      }else if(selectedMobo && !selectedMobo['moboRamCompatibility']!.includes(part['ramType']!) ){
-        console.log('RAM e placa mãe incompatíveis!');
-      }
-    }else if(part['type'] === 'power'){
-      if(selectedGpu && selectedGpu['gpuRecommendedPower']! > part['powerWatts']!){
-        console.log('Fonte e GPU incompatíveis!');
-      }
-    }
-  }
-
   function selectPart(part: Part) {
-    checkPart(part);
-
     if (part['type'] === 'cpu') {
       setSelectedCpu(part);
     } else if (part['type'] === 'gpu') {
@@ -153,7 +121,7 @@ const ManualBuild: React.FC = () => {
     } else if (part['type'] === 'case') {
       setSelectedCase(part);
     }
-    
+
     setTotalBuildPrice(totalBuildPrice + parseFloat(part['price'].replace('.', '').replace(',', '.')));
   }
 
@@ -276,6 +244,8 @@ Gabinete: ${selectedCase!['name']} - R$ ${selectedCase!['price']}
               info2={selectedCpu ? `Frequência: ${selectedCpu['cpuFrequency']} GHz` : ''}
               info3={selectedCpu ? `Socket: ${selectedCpu['cpuSocket']}` : ''}
               resetSelectedPart={resetSelectedPart}
+              selectedMobo={selectedMobo}
+              selectedRam={selectedRam}
             />
             <PartSelectorBox
               partName='Placa de vídeo'
@@ -291,6 +261,7 @@ Gabinete: ${selectedCase!['name']} - R$ ${selectedCase!['price']}
               info2={selectedGpu ? `Memória: ${selectedGpu!['gpuMemory']}GB` : ''}
               info3={selectedGpu ? `Tipo da memória: ${selectedGpu!['gpuMemoryType']}` : ''}
               resetSelectedPart={resetSelectedPart}
+              selectedPower={selectedPower}
             />
             <PartSelectorBox
               partName='Placa-mãe'
@@ -306,6 +277,8 @@ Gabinete: ${selectedCase!['name']} - R$ ${selectedCase!['price']}
               info2={selectedMobo ? `Compatibilidade de socket: ${selectedMobo['moboSocketCompatibility']}` : ''}
               info3={selectedMobo ? `Compatibilidade de RAM: ${selectedMobo['moboRamCompatibility']}` : ''}
               resetSelectedPart={resetSelectedPart}
+              selectedCpu={selectedCpu}
+              selectedRam={selectedRam}
             />
 
             <PartSelectorBox
@@ -322,6 +295,8 @@ Gabinete: ${selectedCase!['name']} - R$ ${selectedCase!['price']}
               info2={selectedRam ? `Frequência: ${selectedRam['ramFrequency']} MHz` : ''}
               info3={selectedRam ? `Tipo: ${selectedRam['ramType']}` : ''}
               resetSelectedPart={resetSelectedPart}
+              selectedCpu={selectedCpu}
+              selectedMobo={selectedMobo}
             />
 
             <PartSelectorBox
@@ -338,6 +313,7 @@ Gabinete: ${selectedCase!['name']} - R$ ${selectedCase!['price']}
               info2={selectedPower ? `Eficiência: ${selectedPower['powerEfficiency']}` : ''}
               info3={selectedPower ? `Modular: ${selectedPower['powerModular']}` : ''}
               resetSelectedPart={resetSelectedPart}
+              selectedGpu={selectedGpu}
             />
 
             <PartSelectorBox

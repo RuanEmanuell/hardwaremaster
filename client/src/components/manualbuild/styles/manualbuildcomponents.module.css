@@ -50,6 +50,7 @@
     margin-top: 1%;
     position: relative;
     height: 100%;
+    text-align: center;
 }
 
 .inputPicker {
@@ -85,6 +86,7 @@
     margin: auto 10%;
     width: min(max(50%), 50px);
     height: fit-content;
+    border-radius: 5px;
 }
 
 .inputPrice {
@@ -103,4 +105,32 @@
 .buttonBox {
     display: flex;
     justify-content: center;
+}
+
+.incompatiblePartBox{
+    justify-content: space-evenly;
+}
+
+.incompatiblePart{
+    background-color: grey;
+    color: black;
+    align-items: center;
+}
+
+.incompatiblePart:hover{
+    cursor: default;
+    background-color: grey;
+    color: black;
+}
+
+.incompatibleImg{
+    margin: auto 0;
+    width: 10%;
+    height: fit-content;
+}
+
+@media screen and (max-width: 480px) {
+    .incompatibleImg{
+        display: none;
+    }
 }

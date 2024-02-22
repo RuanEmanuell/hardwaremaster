@@ -14,10 +14,27 @@ interface Part {
     cpuThreads?: string;
     cpuFrequency?: string;
     cpuSocket?: string;
+    cpuRamType?: string;
     gpuCores?: string,
     gpuMemory?: string,
     gpuMemoryType?: string,
-}
+    gpuRecommendedPower?: string;
+    moboChipset?: string,
+    moboSocketCompatibility?: string,
+    moboRamCompatibility?: string,
+    ramFrequency?: string,
+    ramCapacity?: string,
+    ramType?: string,
+    powerWatts?: string,
+    powerEfficiency?: string,
+    powerModular?: string,
+    ssdCapacity?: string,
+    ssdType?: string,
+    ssdSpeed?: string,
+    caseForm?: string,
+    caseFanSupport?: string,
+    caseWcSupport?: string
+  }
 
 interface Props {
     partName: string;
@@ -33,9 +50,16 @@ interface Props {
     info2: string;
     info3: string;
     resetSelectedPart: (part: Part) => void;
+    selectedCpu?: Part;
+    selectedGpu?: Part;
+    selectedMobo?: Part;
+    selectedRam?: Part;
+    selectedPower?: Part;
+    selectedSsd?: Part;
+    selectedCase?: Part;
 }
 
-const PartSelectorBox: React.FC<Props> = ({ partName, selectedPart, partIcon, selectPartLabel, inputPlaceHolder, selectPartInput, handleChange, partList, info1, info2, info3, selectPart, resetSelectedPart }) => {
+const PartSelectorBox: React.FC<Props> = ({ partName, selectedPart, partIcon, selectPartLabel, inputPlaceHolder, selectPartInput, handleChange, partList, info1, info2, info3, selectPart, resetSelectedPart, selectedCpu, selectedGpu, selectedMobo, selectedRam, selectedPower, selectedSsd, selectedCase }) => {
     return (
         <div className={mbComponentStyle.partPickerBox}>
             <h2 className={mbComponentStyle.partSelectorName}>{partName}</h2>
@@ -56,6 +80,13 @@ const PartSelectorBox: React.FC<Props> = ({ partName, selectedPart, partIcon, se
                                     partList={partList}
                                     selectPartInput={selectPartInput.toLowerCase().trim()}
                                     selectPart={selectPart}
+                                    selectedCpu={selectedCpu}
+                                    selectedGpu={selectedGpu}
+                                    selectedMobo={selectedMobo}
+                                    selectedRam={selectedRam}
+                                    selectedPower={selectedPower}
+                                    selectedSsd={selectedSsd}
+                                    selectedCase={selectedCase}
                                 />
                                 : <></>} </div>
                         : <PartInfoBox
