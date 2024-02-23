@@ -7,11 +7,7 @@ import homeIcon from '../../images/home.png';
 import buildIcon from '../../images/build.png';
 import bookIcon from '../../images/book.png';
 
-interface Props {
-    isHamburguerMenuOptionVisible: boolean;
-}
-
-const NavBar : React.FC<Props> = ({isHamburguerMenuOptionVisible}) => {
+const NavBar : React.FC = () => {
     return (
         <nav className={globalComponentStyle.navBarContainer}>
             <div className={globalComponentStyle.navBar}>
@@ -36,7 +32,7 @@ const NavBar : React.FC<Props> = ({isHamburguerMenuOptionVisible}) => {
                         />
                     </Link>
                 </div>
-                <HamburguerMenu isHamburguerMenuOptionVisible={isHamburguerMenuOptionVisible} />
+                <HamburguerMenu />
             </div>
         </nav>
     )

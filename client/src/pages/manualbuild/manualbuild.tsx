@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import mbStyle from './styles/manualbuild.module.css';
 import NavBar from '../../components/global/navbar';
 import PartSelectorBox from '../../components/manualbuild/partselectorbox';
@@ -9,6 +9,7 @@ import ShareIcon from '../../images/share.png';
 import RestartIcon from '../../images/restart.png';
 import WhatsappIcon from '../../images/whatsapp.png';
 import CopyIcon from '../../images/copy.png'
+import { useDetectClickOutside } from 'react-detect-click-outside';
 
 interface Part {
   type: string;
@@ -221,10 +222,6 @@ const ManualBuild: React.FC = () => {
     setTotalBuildPrice(0);
   }
 
-  function showShareOptions() {
-    setShareMenuDisplay(shareMenu == 'none' ? 'block' : 'none');
-  }
-
   function shareText(option: string) {
     if (allPartsSelected && copiedToTA === 'none') {
       const buildText =
@@ -252,7 +249,37 @@ const ManualBuild: React.FC = () => {
           console.log(error);
         }
       }
+      closeShareMenu();
+    }
+  }
+
+  function showShareOptions() {
+    if(allPartsSelected){
+    setShareMenuDisplay(shareMenu == 'none' ? 'block' : 'none');
+    }
+  }
+
+  function closeShareMenu() {
+    if (shareMenu == 'block') {
       showShareOptions();
+    }
+  }
+
+  function clearInputs(partType: string){
+    if (partType === 'cpu') {
+      setSelectCpuInput('');
+    } else if (partType === 'gpu') {
+      setSelectGpuInput('');
+    } else if (partType === 'mobo') {
+      setSelectMoboInput('');
+    } else if (partType === 'ram') {
+      setSelectRamInput('');
+    } else if (partType === 'power') {
+      setSelectPowerInput('');
+    } else if (partType === 'ssd') {
+      setSelectSsdInput('');
+    } else if (partType === 'case') {
+      setSelectCaseInput('');
     }
   }
 
@@ -282,11 +309,14 @@ const ManualBuild: React.FC = () => {
     } else {
       setAllPartsSelected(false);
     }
-  }, [selectedCpu, selectedGpu, selectedMobo, selectedRam, selectedPower, selectedSsd, selectedCase])
+  }, [selectedCpu, selectedGpu, selectedMobo, selectedRam,
+    selectedPower, selectedSsd, selectedCase]);
+
+  const shareRef = useDetectClickOutside({ onTriggered: closeShareMenu });
 
   return (
     <div>
-      <NavBar isHamburguerMenuOptionVisible={true} />
+      <NavBar/>
       <div className={mbStyle.mainContainer}>
         <main>
           <h1 className={mbStyle.pageTitle}>Montagem Manual</h1>
@@ -309,6 +339,7 @@ const ManualBuild: React.FC = () => {
               resetSelectedPart={resetSelectedPart}
               selectedMobo={selectedMobo}
               selectedRam={selectedRam}
+              clearInputs={clearInputs}
             />
             <PartSelectorBox
               partName='Placa de vídeo'
@@ -327,6 +358,7 @@ const ManualBuild: React.FC = () => {
               decreasePartQuantity={decreasePartQuantity}
               resetSelectedPart={resetSelectedPart}
               selectedPower={selectedPower}
+              clearInputs={clearInputs}
             />
 
             <PartSelectorBox
@@ -347,6 +379,7 @@ const ManualBuild: React.FC = () => {
               resetSelectedPart={resetSelectedPart}
               selectedCpu={selectedCpu}
               selectedRam={selectedRam}
+              clearInputs={clearInputs}
             />
 
             <PartSelectorBox
@@ -367,6 +400,7 @@ const ManualBuild: React.FC = () => {
               resetSelectedPart={resetSelectedPart}
               selectedCpu={selectedCpu}
               selectedMobo={selectedMobo}
+              clearInputs={clearInputs}
             />
 
             <PartSelectorBox
@@ -386,6 +420,7 @@ const ManualBuild: React.FC = () => {
               decreasePartQuantity={decreasePartQuantity}
               resetSelectedPart={resetSelectedPart}
               selectedGpu={selectedGpu}
+              clearInputs={clearInputs}
             />
 
             <PartSelectorBox
@@ -404,6 +439,7 @@ const ManualBuild: React.FC = () => {
               increasePartQuantity={increasePartQuantity}
               decreasePartQuantity={decreasePartQuantity}
               resetSelectedPart={resetSelectedPart}
+              clearInputs={clearInputs}
             />
 
             <PartSelectorBox
@@ -422,9 +458,10 @@ const ManualBuild: React.FC = () => {
               increasePartQuantity={increasePartQuantity}
               decreasePartQuantity={decreasePartQuantity}
               resetSelectedPart={resetSelectedPart}
+              clearInputs={clearInputs}
             />
           </div>
-          <div className={mbStyle.finishBuildBox}>
+          <div className={mbStyle.finishBuildBox} ref={shareRef}>
             <h2 className={mbStyle.buildPrice}>Preço total: R$ {totalBuildPrice.toFixed(2).toString().replace('.', ',')}</h2>
             <div className={mbStyle.buildButtonsBox}>
               <button className={mbStyle.buildButton}
@@ -449,14 +486,14 @@ const ManualBuild: React.FC = () => {
             </div>
           </div>
           <div className={mbStyle.shareMenu} style={{ display: shareMenu }}>
-            <div onClick = {() => shareText('whatsapp')}>
-              <img src = {WhatsappIcon} className={mbStyle.shareOptionImg}></img>
+            <div onClick={() => shareText('whatsapp')}>
+              <img src={WhatsappIcon} className={mbStyle.shareOptionImg}></img>
               <p>Compartilhar via Whatsapp</p>
-              </div>
-              <div onClick = {() => shareText('copy')}>
-              <img src = {CopyIcon} className={mbStyle.shareOptionImg}></img>
+            </div>
+            <div onClick={() => shareText('copy')}>
+              <img src={CopyIcon} className={mbStyle.shareOptionImg}></img>
               <p>Copiar texto da montagem</p>
-              </div>
+            </div>
           </div>
         </main>
       </div>

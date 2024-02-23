@@ -142,12 +142,17 @@
     transition: 0.2s all;
 }
 
+.hamburguerMenuOption a {
+    color: black;
+}
+
 .hamburguerMenuOption:hover {
     cursor: pointer;
     color: white;
     background-color: black;
     padding: 5%;
 }
+
 
 @media screen and (max-width: 960px) {
     .navOption {

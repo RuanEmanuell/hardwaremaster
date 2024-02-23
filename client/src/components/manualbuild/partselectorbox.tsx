@@ -3,6 +3,7 @@ import mbComponentStyle from './styles/manualbuildcomponents.module.css';
 import InputResultBox from "./inputresultbox";
 import PartInfoBox from "./partinfobox";
 import PriceAndChangeButton from "./pricebutton";
+import { useDetectClickOutside } from "react-detect-click-outside";
 
 interface Part {
     type: string;
@@ -62,6 +63,7 @@ interface Props {
     selectedPower?: Part;
     selectedSsd?: Part;
     selectedCase?: Part;
+    clearInputs: (partType: string) => void;
 }
 
 const PartSelectorBox: React.FC<Props> = (
@@ -69,11 +71,17 @@ const PartSelectorBox: React.FC<Props> = (
         selectPartInput, handleChange, partList, info1, info2, info3,
         selectPart, decreasePartQuantity, increasePartQuantity,
         resetSelectedPart, selectedCpu, selectedGpu, selectedMobo, selectedRam,
-        selectedPower, selectedSsd, selectedCase }) => {
+        selectedPower, selectedSsd, selectedCase, clearInputs }) => {
+
+
+    const inputRef = useDetectClickOutside({ onTriggered: () => clearInputs(partList && partList[0] ? partList[0]['type'] : 'cpu') });
+
     return (
         <div className={mbComponentStyle.partPickerBox}>
             <h2 className={mbComponentStyle.partSelectorName}>{partName}</h2>
-            <div className={mbComponentStyle.partPicker} style={{ height: selectPartInput !== '' && !selectedPart ? '130px' : 'fit-content', gridTemplateColumns: selectPartInput !== '' && !selectedPart ? '1fr' : '1fr 3fr 1fr' }}>
+            <div className={mbComponentStyle.partPicker}
+                ref={inputRef}
+                style={{ height: selectPartInput !== '' && !selectedPart ? '130px' : 'fit-content', gridTemplateColumns: selectPartInput !== '' && !selectedPart ? '1fr' : '1fr 3fr 1fr' }}>
                 <div className={mbComponentStyle.imgBox} style={{ display: selectPartInput !== '' && !selectedPart ? 'none' : 'flex' }}>
                     <img src={selectedPart ? selectedPart['imageLink'] : partIcon}></img>
                 </div>

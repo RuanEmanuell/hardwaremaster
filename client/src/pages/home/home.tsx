@@ -10,7 +10,7 @@ import BookIcon from '../../images/bookhome.png';
 const Home : React.FC = () => {
   return (
     <div >
-      <NavBar isHamburguerMenuOptionVisible = {true}/>
+      <NavBar/>
       <div className={homeStyle.homeBody}>
         <div className={homeStyle.mainContainer}>
           <main className={homeStyle.homeOptionsGrid}>

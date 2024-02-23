@@ -103,12 +103,6 @@ const List: React.FC<ListProps> = () => {
   const [selectTypeMenuVisibility, setSelectTypeMenuVisibility] = useState<string>('none');
   const [addPartModalVisibility, setAddPartModalVisibility] = useState<string>('none');
   const [selectedPartType, setSelectedType] = useState<string>('cpu');
-  const [isHamburguerMenuOptionVisible, setHamburguerMenuOptionVisible] = useState<boolean>(true);
-
-  // Controller for navbar options visibility
-  useEffect(() => {
-    setHamburguerMenuOptionVisible(true);
-  }, [isHamburguerMenuOptionVisible]);
 
   // Showing infos on screen on page load
   useEffect(() => {
@@ -305,8 +299,6 @@ const List: React.FC<ListProps> = () => {
     if (selectTypeMenuVisibility === 'block') {
       setSelectTypeMenuVisibility('none');
     }
-
-    setHamburguerMenuOptionVisible(false);
   }
 
   // Visual objects for mapping and creating dynamic components
@@ -413,7 +405,7 @@ const List: React.FC<ListProps> = () => {
 
   return (
     <div>
-      <NavBar isHamburguerMenuOptionVisible={isHamburguerMenuOptionVisible} />
+      <NavBar/>
       <div className={listStyle.mainContainer} onClick={closeAllMenus}>
         <main>
           <h1 className={listStyle.mainTitle}>{filterPartLabel}</h1>
