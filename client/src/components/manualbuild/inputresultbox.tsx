@@ -71,7 +71,7 @@ const InputResultBox: React.FC<Props> = ({ partList, selectPartInput, selectPart
             }
         } else if (part['type'] === 'ram') {
             if (selectedCpu && !selectedCpu['cpuRamType']!.includes(part['ramType']!)) {
-                incompatiblePartsReason = 'CPU';
+                incompatiblePartsReason = 'Processador';
             } else if (selectedMobo && !selectedMobo['moboRamCompatibility']!.includes(part['ramType']!)) {
                 incompatiblePartsReason = 'Placa Mãe';
             }
