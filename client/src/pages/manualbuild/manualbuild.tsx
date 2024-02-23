@@ -7,6 +7,8 @@ import GpuIcon from '../../images/gpu.png';
 import SaveIcon from '../../images/save.png';
 import ShareIcon from '../../images/share.png';
 import RestartIcon from '../../images/restart.png';
+import WhatsappIcon from '../../images/whatsapp.png';
+import CopyIcon from '../../images/copy.png'
 
 interface Part {
   type: string;
@@ -60,8 +62,10 @@ const ManualBuild: React.FC = () => {
   const [selectedCase, setSelectedCase] = useState<Part | undefined>(undefined);
   const [selectCaseInput, setSelectCaseInput] = useState<string>('');
 
+  const [allPartsSelected, setAllPartsSelected] = useState<boolean>(false);
   const [totalBuildPrice, setTotalBuildPrice] = useState<number>(0);
 
+  const [shareMenu, setShareMenuDisplay] = useState<string>('none');
   const [copiedToTA, setCopiedDisplay] = useState<string>('none');
 
   async function getPartList() {
@@ -137,6 +141,16 @@ const ManualBuild: React.FC = () => {
   function selectPart(part: Part) {
     setNewPartValues(part, part);
     setTotalBuildPrice(totalBuildPrice + parseFloat(part['price'].replace('.', '').replace(',', '.')));
+    if (part['type'] === 'mobo' && selectedRam) {
+      if (parseInt(part['moboSlots']!) < selectedRam!['partQuantity']) {
+        let newRamQuantityAndPrice = {
+          ...selectedRam,
+          partQuantity: parseInt(part['moboSlots']!),
+          price: (parseFloat(selectedRam['price'].replace(',', '.')) / parseInt(part['moboSlots']!)).toFixed(2).toString().replace('.', ',')
+        }
+        setSelectedRam(newRamQuantityAndPrice);
+      }
+    }
   }
 
   function increasePartQuantity(part: Part) {
@@ -207,23 +221,42 @@ const ManualBuild: React.FC = () => {
     setTotalBuildPrice(0);
   }
 
-  function createBuildClipBoardText() {
-    let buildText: string = '';
-    if (copiedToTA === 'none') {
-      buildText = `Processador: ${selectedCpu!['name']} - R$ ${selectedCpu!['price']} 
-Placa de vídeo: ${selectedGpu!['name']} - R$ ${selectedGpu!['price']}
-Placa mãe: ${selectedMobo!['name']} - R$ ${selectedMobo!['price']} 
-Ram: ${selectedRam!['name']} - R$ ${selectedRam!['price']} x ${selectedRam!['partQuantity']}
-Fonte de alimentação: ${selectedPower!['name']} - R$ ${selectedPower!['price']}
-SSD: ${selectedSsd!['name']} - R$ ${selectedSsd!['price']} x ${selectedSsd!['partQuantity']}
-Gabinete: ${selectedCase!['name']} - R$ ${selectedCase!['price']}
-\nPreço Total: R$ ${totalBuildPrice!.toFixed(2)} `
-
-      setCopiedDisplay('flex');
-    }
-    return buildText;
+  function showShareOptions() {
+    setShareMenuDisplay(shareMenu == 'none' ? 'block' : 'none');
   }
 
+  function shareText(option: string) {
+    if (allPartsSelected && copiedToTA === 'none') {
+      const buildText =
+        `Processador: ${selectedCpu!['name']} - R$ ${selectedCpu!['price']}
+       \nPlaca de vídeo: ${selectedGpu!['name']} - R$ ${selectedGpu!['price']}
+       \nPlaca mãe: ${selectedMobo!['name']} - R$ ${selectedMobo!['price']} 
+       \nRam: ${selectedRam!['name']} x${selectedRam!['partQuantity']} - R$ ${selectedRam!['price']}
+       \nFonte de alimentação: ${selectedPower!['name']} - R$ ${selectedPower!['price']}
+       \nSSD: ${selectedSsd!['name']} x${selectedSsd!['partQuantity']} - R$ ${selectedSsd!['price']}
+       \nGabinete: ${selectedCase!['name']} - R$ ${selectedCase!['price']}
+       \n\nPreço Total: R$ ${totalBuildPrice.toFixed(2)}`;
+
+      if (option === 'copy') {
+        try {
+          navigator.clipboard.writeText(buildText);
+          setCopiedDisplay('flex');
+        } catch (error) {
+          console.log(error);
+        }
+      } else if (option === 'whatsapp') {
+        try {
+          const encodedText = encodeURIComponent(buildText);
+          window.open(`https://wa.me/?text=${encodedText}`, "_blank");
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      showShareOptions();
+    }
+  }
+
+  //Fetch API
   useEffect(() => {
     getPartList();
   }, []);
@@ -241,6 +274,15 @@ Gabinete: ${selectedCase!['name']} - R$ ${selectedCase!['price']}
       }
     }, 2000)
   }, [copiedToTA])
+
+  useEffect(() => {
+    if (selectedCpu && selectedGpu && selectedMobo && selectedRam
+      && selectedPower && selectedSsd && selectedCase) {
+      setAllPartsSelected(true);
+    } else {
+      setAllPartsSelected(false);
+    }
+  }, [selectedCpu, selectedGpu, selectedMobo, selectedRam, selectedPower, selectedSsd, selectedCase])
 
   return (
     <div>
@@ -385,12 +427,13 @@ Gabinete: ${selectedCase!['name']} - R$ ${selectedCase!['price']}
           <div className={mbStyle.finishBuildBox}>
             <h2 className={mbStyle.buildPrice}>Preço total: R$ {totalBuildPrice.toFixed(2).toString().replace('.', ',')}</h2>
             <div className={mbStyle.buildButtonsBox}>
-              <button className={mbStyle.buildButton} style={{ backgroundColor: '#0066FF' }}>
+              <button className={mbStyle.buildButton}
+                style={{ backgroundColor: allPartsSelected ? '#0066FF' : 'grey' }}>
                 <img src={SaveIcon} alt='Salvar'></img>
               </button>
               <button className={mbStyle.buildButton}
-                style={{ backgroundColor: '#00C22B' }}
-                onClick={() => navigator.clipboard.writeText(createBuildClipBoardText())}>
+                style={{ backgroundColor: allPartsSelected ? '#00C22B' : 'grey' }}
+                onClick={showShareOptions}>
                 <img src={ShareIcon} alt='Compartilhar'></img>
               </button>
               <button className={mbStyle.buildButton}
@@ -404,6 +447,16 @@ Gabinete: ${selectedCase!['name']} - R$ ${selectedCase!['price']}
             <div className={mbStyle.copiedToTA} style={{ display: copiedToTA }}>
               <h4>Copiado para a área de transferência</h4>
             </div>
+          </div>
+          <div className={mbStyle.shareMenu} style={{ display: shareMenu }}>
+            <div onClick = {() => shareText('whatsapp')}>
+              <img src = {WhatsappIcon} className={mbStyle.shareOptionImg}></img>
+              <p>Compartilhar via Whatsapp</p>
+              </div>
+              <div onClick = {() => shareText('copy')}>
+              <img src = {CopyIcon} className={mbStyle.shareOptionImg}></img>
+              <p>Copiar texto da montagem</p>
+              </div>
           </div>
         </main>
       </div>

@@ -47,14 +47,10 @@ interface Props {
 
 const PriceAndChangeButton: React.FC<Props> = ({ selectedPart, selectedMobo, onDecreasePartQuantity, onIncreasePartQuantity, onChangePartClick }) => {
   function defineMaxQuantity() {
-    let maxQuantity: number = 2;
+    let maxQuantity: number = 4;
     if (selectedPart['type'] === 'ram') {
       if (selectedMobo && selectedMobo['moboSlots']) {
         maxQuantity = parseInt(selectedMobo['moboSlots']);
-        if (selectedPart['partQuantity'] > maxQuantity) {
-          selectedPart['partQuantity'] = maxQuantity;
-          selectedPart['price'] = (parseFloat(selectedPart['price'].replace('.', '').replace(',', '.')) / maxQuantity).toString();
-        }
       }
     }
     return maxQuantity;

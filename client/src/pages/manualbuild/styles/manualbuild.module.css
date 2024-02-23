@@ -8,13 +8,13 @@
     text-align: center;
 }
 
-.partSelectorsBox{
+.partSelectorsBox {
     display: grid;
     grid-template-columns: 1fr 1fr;
     height: 100%;
 }
 
-.finishBuildBox{
+.finishBuildBox {
     height: 20%;
     background-color: white;
     display: grid;
@@ -26,17 +26,17 @@
     max-width: 500px;
 }
 
-.finishBuildBox h2{
+.finishBuildBox h2 {
     color: black;
 }
 
-.buildButtonsBox{
+.buildButtonsBox {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     width: fit-content;
 }
 
-.buildButton{
+.buildButton {
     margin: 2.5% 20%;
     border-radius: 20px;
     display: flex;
@@ -44,20 +44,21 @@
     align-items: center;
     flex-direction: column;
     height: 60%;
+    transition: all 0.5s;
 }
 
-.buildButton img{
+.buildButton img {
     width: 40%;
     min-width: 25px;
     max-width: 200px;
 }
 
-.copiedToTABox{
+.copiedToTABox {
     display: flex;
     justify-content: center;
 }
 
-.copiedToTA{
+.copiedToTA {
     font-size: small;
     border-radius: 20px;
     text-align: center;
@@ -72,6 +73,40 @@
     bottom: 0;
     margin-bottom: 5%;
     transition: 0.5s all;
+}
+
+.shareMenu {
+    position: relative;
+    left: 37.5%;
+    bottom: min(max(200px), 12.5%);
+    background-color: white;
+    width: 25%;
+    color: black;
+    font-weight: bold;
+}
+
+.shareMenu div {
+    padding: 2%;
+    border: 2px solid black;
+    transition: 0.5s all;
+    display: flex;
+    justify-content: space-around;
+}
+
+.shareMenu div:first-of-type {
+    border-bottom: 0;
+}
+
+.shareMenu div:hover {
+    cursor: pointer;
+    background-color: black;
+    color: white;
+}
+
+.shareOptionImg{
+    width: 10%;
+    height: fit-content;
+    margin: auto 0;
 }
 
 @media screen and (max-width: 960px) {
