@@ -11,6 +11,9 @@ import WhatsappIcon from '../../images/whatsapp.png';
 import CopyIcon from '../../images/copy.png'
 import GoogleIcon from '../../images/google.png'
 import { useDetectClickOutside } from 'react-detect-click-outside';
+import { auth } from '../../firebase.config'
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+
 
 interface Part {
   type: string;
@@ -69,6 +72,8 @@ const ManualBuild: React.FC = () => {
 
   const [shareMenu, setShareMenuDisplay] = useState<string>('none');
   const [copiedToTA, setCopiedDisplay] = useState<string>('none');
+  
+  const shareRef = useDetectClickOutside({ onTriggered: closeShareMenu });
 
   async function getPartList() {
     try {
@@ -313,7 +318,31 @@ const ManualBuild: React.FC = () => {
   }, [selectedCpu, selectedGpu, selectedMobo, selectedRam,
     selectedPower, selectedSsd, selectedCase]);
 
-  const shareRef = useDetectClickOutside({ onTriggered: closeShareMenu });
+  
+  const loginRef = useDetectClickOutside({ onTriggered: () => showLoginMenu() });
+
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [loginMenuDisplay, setLoginMenuDisplay] = useState<string>("none");
+  const [isSaveButtonPressed, setSaveButtonPressed] = useState<boolean>(false);
+
+  async function loginUser(event: React.FormEvent) {
+    event.preventDefault();
+    try {
+      const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      alert(err);
+    }
+  }
+
+  async function showLoginMenu(){
+    if(loginMenuDisplay === 'flex' && isSaveButtonPressed === false){
+      setLoginMenuDisplay('none');
+    }else if(isSaveButtonPressed === true){
+      setLoginMenuDisplay('flex');
+      setSaveButtonPressed(false);
+    }
+  }
 
   return (
     <div>
@@ -466,7 +495,8 @@ const ManualBuild: React.FC = () => {
             <h2 className={mbStyle.buildPrice}>Preço total: R$ {totalBuildPrice.toFixed(2).toString().replace('.', ',')}</h2>
             <div className={mbStyle.buildButtonsBox}>
               <button className={mbStyle.buildButton}
-                style={{ backgroundColor: allPartsSelected ? '#0066FF' : 'grey' }}>
+                style={{ backgroundColor: allPartsSelected ? '#0066FF' : 'grey' }}
+                onClick={() => {setSaveButtonPressed(true); showLoginMenu()}}>
                 <img src={SaveIcon} alt='Salvar'></img>
               </button>
               <button className={mbStyle.buildButton}
@@ -496,19 +526,27 @@ const ManualBuild: React.FC = () => {
               <p>Copiar texto da montagem</p>
             </div>
           </div>
-          <div className={mbStyle.loginScreen}>
-            <form className={mbStyle.loginBox}>
+          <div className={mbStyle.loginScreen} style = {{display: loginMenuDisplay}}>
+            <form className={mbStyle.loginBox} onSubmit={loginUser} ref = {loginRef}>
               <div>
-                <h1>HardwareMaster</h1>
-                <input placeholder='Digite seu email...'></input>
-                <input placeholder='Digite sua senha...'></input>
-                <p>Esqueci minha senha</p>
+                <h1 className={mbStyle.loginLogo}>HardwareMaster</h1>
+                <input
+                  className={mbStyle.loginInput}
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder='Digite seu email...'></input>
+                <input
+                  className={mbStyle.loginInput}
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  placeholder='Digite sua senha...'></input>
+                <p className={mbStyle.forgotPassword}>Esqueci minha senha</p>
                 <span className={mbStyle.loginButtonsContainers}>
-                  <button><h4>Fazer Login</h4></button>
-                  <p>Não tem uma conta? Criar uma conta...</p>
+                  <button className={mbStyle.loginButton} type="submit"><h4>Fazer Login</h4></button>
+                  <p className={mbStyle.createAccount}>Não tem uma conta? Criar uma conta...</p>
                 </span>
                 <span className={mbStyle.googleButtonContainer}>
-                  <button>
+                  <button className={mbStyle.googleButton}>
                     <img src={GoogleIcon}></img>
                     <h4>Entrar com Google</h4>
                   </button>
