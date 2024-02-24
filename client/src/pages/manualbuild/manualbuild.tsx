@@ -9,6 +9,7 @@ import ShareIcon from '../../images/share.png';
 import RestartIcon from '../../images/restart.png';
 import WhatsappIcon from '../../images/whatsapp.png';
 import CopyIcon from '../../images/copy.png'
+import GoogleIcon from '../../images/google.png'
 import { useDetectClickOutside } from 'react-detect-click-outside';
 
 interface Part {
@@ -254,8 +255,8 @@ const ManualBuild: React.FC = () => {
   }
 
   function showShareOptions() {
-    if(allPartsSelected){
-    setShareMenuDisplay(shareMenu == 'none' ? 'block' : 'none');
+    if (allPartsSelected) {
+      setShareMenuDisplay(shareMenu == 'none' ? 'block' : 'none');
     }
   }
 
@@ -265,7 +266,7 @@ const ManualBuild: React.FC = () => {
     }
   }
 
-  function clearInputs(partType: string){
+  function clearInputs(partType: string) {
     if (partType === 'cpu') {
       setSelectCpuInput('');
     } else if (partType === 'gpu') {
@@ -316,7 +317,7 @@ const ManualBuild: React.FC = () => {
 
   return (
     <div>
-      <NavBar/>
+      <NavBar />
       <div className={mbStyle.mainContainer}>
         <main>
           <h1 className={mbStyle.pageTitle}>Montagem Manual</h1>
@@ -494,6 +495,26 @@ const ManualBuild: React.FC = () => {
               <img src={CopyIcon} className={mbStyle.shareOptionImg}></img>
               <p>Copiar texto da montagem</p>
             </div>
+          </div>
+          <div className={mbStyle.loginScreen}>
+            <form className={mbStyle.loginBox}>
+              <div>
+                <h1>HardwareMaster</h1>
+                <input placeholder='Digite seu email...'></input>
+                <input placeholder='Digite sua senha...'></input>
+                <p>Esqueci minha senha</p>
+                <span className={mbStyle.loginButtonsContainers}>
+                  <button><h4>Fazer Login</h4></button>
+                  <p>Não tem uma conta? Criar uma conta...</p>
+                </span>
+                <span className={mbStyle.googleButtonContainer}>
+                  <button>
+                    <img src={GoogleIcon}></img>
+                    <h4>Entrar com Google</h4>
+                  </button>
+                </span>
+              </div>
+            </form>
           </div>
         </main>
       </div>
