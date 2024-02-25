@@ -18,7 +18,7 @@
     max-height: 800px;
     width: 50%;
     min-width: 400px;
-    max-width: 600px;
+    max-width: 500px;
     border-radius: 25px;
     display: flex;
     justify-content: center;
@@ -47,16 +47,17 @@
     border-bottom: none;
 }
 
-.loginBox p {
+p {
     transition: 0.2s all;
 }
 
-.loginBox p:hover {
+p:hover {
     cursor: pointer;
     color: white;
 }
 
 .forgotPassword {
+    margin-top: 2%;
     text-align: right;
 }
 
@@ -132,7 +133,19 @@
     color: black;
 }
 
+.passwordCheckError{
+    text-align: center;
+    color: red;
+    font-size: small;
+    margin: 2% 0% 5% 0;
+}
+
+.passwordCheckError:hover{
+    cursor: default;
+    color: red;
+}
 
 .showPasswordButton:hover {
+    color: rgb(53, 53, 53);
     cursor: pointer;
 }
