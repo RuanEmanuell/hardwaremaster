@@ -13,7 +13,7 @@ import RestartIcon from '../../images/restart.png';
 import WhatsappIcon from '../../images/whatsapp.png';
 import CopyIcon from '../../images/copy.png'
 import { useDetectClickOutside } from 'react-detect-click-outside';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase.config';
 
 interface Part {
@@ -332,18 +332,16 @@ const ManualBuild: React.FC = () => {
 
   const loginRef = useDetectClickOutside({ onTriggered: () => showLoginMenu() });
 
-  async function loginUser(event: React.FormEvent, email: string, password: string) {
-    event.preventDefault();
+  async function loginUser(email: string, password: string) {
     try {
-      const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredentials = await signInWithEmailAndPassword(auth, email, password);
       console.log(userCredentials.user);
     } catch (err) {
       alert(err);
     }
   }
 
-  async function createUser(event: React.FormEvent, email: string, password: string) {
-    event.preventDefault();
+  async function createUser(email: string, password: string) {
     try {
       const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
       console.log(userCredentials.user);
@@ -548,8 +546,14 @@ const ManualBuild: React.FC = () => {
             </div>
           </div>
           <div className={loginComponentStyle.loginScreen} style={{ display: loginMenuDisplay }}>
-            <form className={loginComponentStyle.loginBox} onSubmit={isCreatingAccount ? (event) => loginUser(event, '1', '2') : (event) => createUser(event, '1', '2')} ref={loginRef}>
-                {isCreatingAccount ? <CreateAccountMenu onHasAccountClick={changeCreatingAccount} /> : <LoginMenu onCreateAccountClick={changeCreatingAccount} />}
+            <form className={loginComponentStyle.loginBox} ref={loginRef}>
+                {isCreatingAccount ? 
+                <CreateAccountMenu 
+                onCreateUserClick={createUser}
+                onHasAccountClick={changeCreatingAccount} /> : 
+                <LoginMenu 
+                onLoginUserClick={loginUser}
+                onCreateAccountClick={changeCreatingAccount} />}
             </form>
           </div>
         </main>
