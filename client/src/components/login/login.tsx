@@ -5,9 +5,10 @@ import GoogleIcon from '../../images/google.png';
 interface Props {
     onCreateAccountClick: (event: React.MouseEvent) => void;
     onLoginUserClick: (email: string, password: string) => void;
+    onGoogleUserClick: () => void;
 }
 
-const LoginMenu: React.FC<Props> = ({ onCreateAccountClick, onLoginUserClick }) => {
+const LoginMenu: React.FC<Props> = ({ onCreateAccountClick, onLoginUserClick, onGoogleUserClick }) => {
 
     const [email, setEmail] = useState<string>("");
     const [emailCheckError, setEmailCheckError] = useState<boolean>(false);
@@ -38,6 +39,7 @@ const LoginMenu: React.FC<Props> = ({ onCreateAccountClick, onLoginUserClick }) 
         setEmailCheckError(emailCheck);
         return emailCheck;
     }
+
     function handleLoginUserClick() {
         let emailOk = checkEmail();
         let passwordOk = checkPassword();
@@ -45,6 +47,10 @@ const LoginMenu: React.FC<Props> = ({ onCreateAccountClick, onLoginUserClick }) 
         if (!emailOk && !passwordOk) {
             onLoginUserClick(email, password);
         }
+    }
+
+    function handleGoogleLoginClick(){
+        onGoogleUserClick();
     }
 
     return (
@@ -74,11 +80,12 @@ const LoginMenu: React.FC<Props> = ({ onCreateAccountClick, onLoginUserClick }) 
                 <span className={loginComponentStyle.loginButtonsContainers}>
                     <button className={loginComponentStyle.loginButton} type="button" onClick={handleLoginUserClick}><h4>Fazer Login</h4></button>
                     <p className={loginComponentStyle.createAccount}
-                        onClick={onCreateAccountClick}
-                    >Não tem uma conta? Criar uma conta...</p>
+                        onClick={onCreateAccountClick}>Não tem uma conta? Criar uma conta...</p>
                 </span>
                 <span className={loginComponentStyle.googleButtonContainer}>
-                    <button className={loginComponentStyle.googleButton} type='button'>
+                    <button className={loginComponentStyle.googleButton} 
+                    type='button'
+                    onClick = {handleGoogleLoginClick}>
                         <img src={GoogleIcon}></img>
                         <h4>Entrar com Google</h4>
                     </button>

@@ -5,6 +5,7 @@ import GoogleIcon from '../../images/google.png'
 interface Props {
   onHasAccountClick: (event: React.MouseEvent) => void;
   onCreateUserClick: (email: string, password: string) => void;
+  onGoogleUserClick: () => void;
 }
 
 const CreateAccountMenu: React.FC<Props> = ({ onHasAccountClick, onCreateUserClick }) => {
@@ -107,7 +108,7 @@ const CreateAccountMenu: React.FC<Props> = ({ onHasAccountClick, onCreateUserCli
       <span className={loginComponentStyle.googleButtonContainer}>
         <button className={loginComponentStyle.googleButton} type="button">
           <img src={GoogleIcon}></img>
-          <h4>Criar com Google</h4>
+          <h4>Entrar com Google</h4>
         </button>
       </span>
     </div>

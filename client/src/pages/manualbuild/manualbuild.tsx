@@ -13,8 +13,8 @@ import RestartIcon from '../../images/restart.png';
 import WhatsappIcon from '../../images/whatsapp.png';
 import CopyIcon from '../../images/copy.png'
 import { useDetectClickOutside } from 'react-detect-click-outside';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebase.config';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { auth, googleProvider } from '../../../src/confidential/firebase.config';
 
 interface Part {
   type: string;
@@ -350,6 +350,16 @@ const ManualBuild: React.FC = () => {
     }
   }
 
+  async function loginGoogle(){
+    try{
+      const  result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      console.log(user);
+    }catch(err){
+      alert(err);
+    }
+  }
+
   function showLoginMenu() {
     if (loginMenuDisplay === 'flex' && isSaveButtonPressed === false) {
       setLoginMenuDisplay('none');
@@ -550,9 +560,11 @@ const ManualBuild: React.FC = () => {
                 {isCreatingAccount ? 
                 <CreateAccountMenu 
                 onCreateUserClick={createUser}
+                onGoogleUserClick={loginGoogle}
                 onHasAccountClick={changeCreatingAccount} /> : 
                 <LoginMenu 
                 onLoginUserClick={loginUser}
+                onGoogleUserClick={loginGoogle}
                 onCreateAccountClick={changeCreatingAccount} />}
             </form>
           </div>
