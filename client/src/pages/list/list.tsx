@@ -7,6 +7,7 @@ import FilterBox from '../../components/list/filter';
 import SpecCircle from '../../components/list/speccircle';
 import StandartButton from '../../components/global/standartbutton';
 import CircleButton from '../../components/global/circlebutton';
+import { useDetectClickOutside } from 'react-detect-click-outside';
 
 interface PartData {
   name: string;
@@ -104,6 +105,8 @@ const List: React.FC<ListProps> = () => {
   const [addPartModalVisibility, setAddPartModalVisibility] = useState<string>('none');
   const [selectedPartType, setSelectedType] = useState<string>('cpu');
 
+  const selectTypeRef = useDetectClickOutside({ onTriggered: closeSelectTypeMenu });
+
   // Showing infos on screen on page load
   useEffect(() => {
     getPartList();
@@ -124,18 +127,18 @@ const List: React.FC<ListProps> = () => {
       price: '',
       ...(type === 'cpu'
         ? {
-            cpuSocket: '',
-            cpuGeneration: '',
-            cpuCores: '',
-            cpuThreads: '',
-            cpuFrequency: '',
-            cpuIgpu: '',
-            cpuPerformance: '',
-            igpuPerformance: '',
-            cpuRamType: ''
-          }
+          cpuSocket: '',
+          cpuGeneration: '',
+          cpuCores: '',
+          cpuThreads: '',
+          cpuFrequency: '',
+          cpuIgpu: '',
+          cpuPerformance: '',
+          igpuPerformance: '',
+          cpuRamType: ''
+        }
         : type === 'gpu'
-        ? {
+          ? {
             gpuGeneration: '',
             gpuCores: '',
             gpuMemory: '',
@@ -144,54 +147,50 @@ const List: React.FC<ListProps> = () => {
             gpuPerformance: '',
             gpuRecommendedPower: ''
           }
-        : type === 'mobo'
-        ? {
-            moboChipset: '',
-            moboSocketCompatibility: '',
-            moboRamCompatibility: '',
-            moboSlots: ''
-          }
-        : type === 'ram'
-        ? {
-            ramFrequency: '',
-            ramCapacity: '',
-            ramType: '',
-            ramLatency: ''
-          }
-        : type === 'power'
-        ? {
-            powerWatts: '',
-            powerEfficiency: '',
-            powerModular: ''
-          }
-        : type === 'ssd'
-        ? {
-            ssdCapacity: '',
-            ssdType: '',
-            ssdSpeed: ''
-          }
-        : {
-            caseForm: '',
-            caseFanSupport: '',
-            caseWcSupport: ''
-          }),
+          : type === 'mobo'
+            ? {
+              moboChipset: '',
+              moboSocketCompatibility: '',
+              moboRamCompatibility: '',
+              moboSlots: ''
+            }
+            : type === 'ram'
+              ? {
+                ramFrequency: '',
+                ramCapacity: '',
+                ramType: '',
+                ramLatency: ''
+              }
+              : type === 'power'
+                ? {
+                  powerWatts: '',
+                  powerEfficiency: '',
+                  powerModular: ''
+                }
+                : type === 'ssd'
+                  ? {
+                    ssdCapacity: '',
+                    ssdType: '',
+                    ssdSpeed: ''
+                  }
+                  : {
+                    caseForm: '',
+                    caseFanSupport: '',
+                    caseWcSupport: ''
+                  }),
     };
   }
 
   function clearInputs() {
     const newData = { ...(partData[selectedPartType] as any) };
-  
+
     for (const key in newData) {
       newData[key] = '';
     }
-  
+
     setPartData({ ...partData, [selectedPartType]: newData });
   }
-  
-  function toggleSelecting() {
-    closeAllMenus();
-    setSelectTypeMenuVisibility(selectTypeMenuVisibility === 'block' ? 'none' : 'block');
-  }
+
 
   // Input states controller
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -210,7 +209,6 @@ const List: React.FC<ListProps> = () => {
 
   // Showing modal form for adding or editing part
   function showModalAddPart(partType: string) {
-    closeAllMenus();
     clearInputs();
     if (partType !== '') {
       setSelectedType(partType);
@@ -219,16 +217,14 @@ const List: React.FC<ListProps> = () => {
   }
 
   // 'Filter by' functions
-  function changePartFilterVisibility() {
-    closeAllMenus();
+  function showPartFilterMenu(){
+    setFilterPartMenuVisibility('block');
+    setFirstFilterLabelVisibility('none');
+  }
 
-    if (filterPartMenuVisibility === 'none') {
-      setFilterPartMenuVisibility('block');
-      setFirstFilterLabelVisibility('none');
-    } else {
-      setFilterPartMenuVisibility('none');
-      setFirstFilterLabelVisibility('block');
-    }
+  function closePartFilterMenu(){
+    setFilterPartMenuVisibility('none');
+    setFirstFilterLabelVisibility('block');
   }
 
   function selectFilterPart(filterPartType: string) {
@@ -241,20 +237,18 @@ const List: React.FC<ListProps> = () => {
     }
     filteredList = sortByCriteria(filteredList, filterOrderLabel);
     setInterfaceList(filteredList);
-    changePartFilterVisibility();
+    closePartFilterMenu();
   }
 
   // 'Order by' functions
-  function changeOrderFilterVisibility() {
-    closeAllMenus();
+  function showPartOrderMenu(){
+    setFilterOrderMenuVisibility('block');
+    setFirstOrderLabelVisibility('none');
+  }
 
-    if (filterOrderMenuVisibility === 'none') {
-      setFilterOrderMenuVisibility('block');
-      setFirstOrderLabelVisibility('none');
-    } else {
-      setFilterOrderMenuVisibility('none');
-      setFirstOrderLabelVisibility('block');
-    }
+  function closePartOrderMenu(){
+    setFilterOrderMenuVisibility('none');
+    setFirstOrderLabelVisibility('block');
   }
 
   function selectFilterOrder(filterOrderType: string) {
@@ -263,7 +257,7 @@ const List: React.FC<ListProps> = () => {
 
     filteredList = sortByCriteria(filteredList, orderFilterMenu[filterOrderType]);
     setInterfaceList(filteredList);
-    changeOrderFilterVisibility();
+    closePartOrderMenu();
   }
 
   function sortByCriteria(list: Part[], criteria: string): Part[] {
@@ -287,19 +281,14 @@ const List: React.FC<ListProps> = () => {
     }
   }
 
-  async function closeAllMenus() {
-    if (filterPartMenuVisibility === 'block') {
-      setFilterPartMenuVisibility('none');
-      setFirstFilterLabelVisibility('block');
-    }
-    if (filterOrderMenuVisibility === 'block') {
-      setFilterOrderMenuVisibility('none');
-      setFirstOrderLabelVisibility('block');
-    }
-    if (selectTypeMenuVisibility === 'block') {
-      setSelectTypeMenuVisibility('none');
-    }
+  function showSelectTypeMenu(){
+    setSelectTypeMenuVisibility('block');
   }
+
+  function closeSelectTypeMenu(){
+    setSelectTypeMenuVisibility('none');
+  }
+
 
   // Visual objects for mapping and creating dynamic components
   const partTypeDataMap: { [key: string]: PartData } = {
@@ -364,7 +353,7 @@ const List: React.FC<ListProps> = () => {
       getPartList();
       showModalAddPart('');
       if (selectTypeMenuVisibility === 'block') {
-        toggleSelecting();
+        closeSelectTypeMenu();
       }
     } catch (err) {
       console.log(err);
@@ -405,29 +394,31 @@ const List: React.FC<ListProps> = () => {
 
   return (
     <div>
-      <NavBar/>
-      <div className={listStyle.mainContainer} onClick={closeAllMenus}>
+      <NavBar />
+      <div className={listStyle.mainContainer}>
         <main>
           <h1 className={listStyle.mainTitle}>{filterPartLabel}</h1>
           <div className={listStyle.partFilters}>
             <div className={listStyle.gridSpacer}></div>
             <FilterBox
               firstFilterLabel='Filtrar por'
-              onClick={changePartFilterVisibility}
+              onClick={showPartFilterMenu}
               firstFilterDisplayCondition={firstFilterLabelVisibility}
               currentFilter={filterPartLabel}
               isFiltering={filterPartMenuVisibility}
               filterMenu={partFilterMenu}
               selectFilter={selectFilterPart}
+              onClickOutside={closePartFilterMenu}
             />
             <FilterBox
               firstFilterLabel='Ordenar por'
-              onClick={changeOrderFilterVisibility}
+              onClick={showPartOrderMenu}
               firstFilterDisplayCondition={firstOrderLabelVisibility}
               currentFilter={filterOrderLabel}
               isFiltering={filterOrderMenuVisibility}
               filterMenu={orderFilterMenu}
               selectFilter={selectFilterOrder}
+              onClickOutside={closePartOrderMenu}
             />
             <div className={listStyle.gridSpacer}></div>
           </div>
@@ -518,14 +509,16 @@ const List: React.FC<ListProps> = () => {
               </>
             ) : <></>}
             <br></br>
-            <div className={listStyle.choosePartType} style={{ display: selectTypeMenuVisibility }}>
-              {Object.keys(partTypeDataMap).map((addPart, index) => (
-                <h3 key={index} className={listStyle.partType} onClick={() => showModalAddPart(addPart)}>
-                  {addPart}
-                </h3>
-              ))}
+            <div ref={selectTypeRef}>
+              <div className={listStyle.choosePartType} style={{ display: selectTypeMenuVisibility }}>
+                {Object.keys(partTypeDataMap).map((addPart, index) => (
+                  <h3 key={index} className={listStyle.partType} onClick={() => showModalAddPart(addPart)}>
+                    {addPart}
+                  </h3>
+                ))}
+              </div>
+              <CircleButton onClick={showSelectTypeMenu} buttonIcon='+' />
             </div>
-            <CircleButton onClick={toggleSelecting} buttonIcon='+' />
           </div>
         </main>
         <div style={{ display: addPartModalVisibility }} className={listStyle.addPartContainer}>

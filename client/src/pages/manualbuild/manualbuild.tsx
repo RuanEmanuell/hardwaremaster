@@ -9,8 +9,6 @@ import RestartIcon from '../../images/restart.png';
 import WhatsappIcon from '../../images/whatsapp.png';
 import CopyIcon from '../../images/copy.png'
 import { useDetectClickOutside } from 'react-detect-click-outside';
-import { createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { auth, googleProvider } from '../../../src/confidential/firebase.config';
 import PartSelectorBox from '../../components/manualbuild/partselectorbox';
 
 interface Part {
@@ -322,52 +320,6 @@ const ManualBuild: React.FC = () => {
       setSaveButtonPressed(false);
     }
   }, [isSaveButtonPressed]);
-
-  const [currentMenu, setCurrentMenu] = useState<number>(0);
-
-  async function loginUser(email: string, password: string) {
-    try {
-      const userCredentials = await signInWithEmailAndPassword(auth, email, password);
-      console.log(userCredentials.user);
-    } catch (err) {
-      alert(err);
-    }
-  }
-
-  async function createUser(email: string, password: string) {
-    try {
-      const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
-      console.log(userCredentials.user);
-    } catch (err) {
-      alert(err);
-    }
-  }
-
-  async function loginGoogle() {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-      console.log(user);
-    } catch (err) {
-      alert(err);
-    }
-  }
-
-  async function resetPassword(email: string) {
-    try {
-      const result = await sendPasswordResetEmail(auth, email);
-      alert("Email enviado com sucesso! Cheque sua caixa de spam!");
-      setCurrentMenu(0);
-    } catch (err) {
-      console.log(err);
-      alert(err);
-    }
-  }
-
-  function changeCurrentMenu(event: React.MouseEvent, index: number) {
-    event.stopPropagation();
-    setCurrentMenu(index);
-  }
 
   return (
     <div>

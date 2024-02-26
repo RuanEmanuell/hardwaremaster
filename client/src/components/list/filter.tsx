@@ -1,5 +1,6 @@
 import React from 'react';
 import listComponentStyle from './styles/listcomponents.module.css';
+import { useDetectClickOutside } from 'react-detect-click-outside';
 
 interface Props {
   firstFilterLabel: string;
@@ -9,6 +10,7 @@ interface Props {
   selectFilter: (filter: string) => void;
   onClick?: () => void; 
   firstFilterDisplayCondition?: string; 
+  onClickOutside: () => void; 
 }
 
 const FilterBox: React.FC<Props> = ({
@@ -18,11 +20,13 @@ const FilterBox: React.FC<Props> = ({
   filterMenu,
   selectFilter,
   onClick, 
-  firstFilterDisplayCondition
+  firstFilterDisplayCondition,
+  onClickOutside
 }) => {
+  const filterRef = useDetectClickOutside({ onTriggered: onClickOutside });
   return (
-    <div className={listComponentStyle.partFilterBox}>
-      <label>{firstFilterLabel}</label>
+    <div className={listComponentStyle.partFilterBox} ref = {filterRef}>
+      <label >{firstFilterLabel}</label>
       <div
         className={`${listComponentStyle.partType} ${listComponentStyle.partFilter}`}
         onClick={onClick} 

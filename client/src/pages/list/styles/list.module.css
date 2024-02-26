@@ -40,6 +40,15 @@ button {
     height: 65%;
 }
 
+.partInfo p {
+    color: black;
+}
+
+.partInfo p:hover {
+    cursor: auto;
+    color: black;
+}
+
 .partImage {
     background-color: white;
     width: 100%;
