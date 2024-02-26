@@ -62,12 +62,30 @@ const Login: React.FC<Props> = ({ }) => {
 
   async function loginGoogle() {
     try {
-      await signInWithPopup(auth, googleProvider);
+      const newUser = await signInWithPopup(auth, googleProvider);
+      const response = await fetch('http://localhost:3001/users/users');
+      const users: any[] = await response.json();
+
+      if (!users.find(user => user.email === newUser!.user!.email!)) {
+        const saveUserToDB = await fetch(
+          'http://localhost:3001/users/post', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'user',
+            email: newUser.user.email,
+            name: newUser.user.displayName,
+            photo: ''
+          })
+        }
+        )
+      }
       navigate('/list');
     } catch (err) {
       alert(err);
     }
   }
+
 
   return (
     <div className={loginComponentStyle.loginScreen}>

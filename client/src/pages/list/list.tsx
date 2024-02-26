@@ -112,15 +112,10 @@ const List: React.FC<ListProps> = () => {
 
   const [crudButtonsVisibile, setCrudButtonsVisibility] = useState<boolean>(false);
 
-  useEffect(() => {
-    if(currentUser?.email === 'ruanvitorcom540@gmail.com'){
-      setCrudButtonsVisibility(true);
-    }
-  }, [])
-
   // Showing infos on screen on page load
   useEffect(() => {
     getPartList();
+    getUsersList();
   }, []);
 
   // Setting inputs for add part modal based on type
@@ -333,6 +328,20 @@ const List: React.FC<ListProps> = () => {
   };
 
   // CRUD functions
+  async function getUsersList() {
+    try {
+      const response = await fetch('http://localhost:3001/users/users');
+      const users: any[] = await response.json();
+
+      if(currentUser){
+      if (users.find(user => user.email === currentUser?.email && user.type !== 'user')) {
+        setCrudButtonsVisibility(true);
+      }
+    }
+    } catch (err) {
+      console.log(err);
+    }
+  }
   async function getPartList() {
     try {
       const response = await fetch('http://localhost:3001/list/parts');

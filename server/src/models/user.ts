@@ -4,10 +4,10 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
     //General info
+    type: String,
     email: String,
     name: String,
     photo: String,
-    builds: String
 })
 
 const User = mongoose.model('User', userSchema);
