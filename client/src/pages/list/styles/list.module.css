@@ -73,6 +73,7 @@ button {
     width: 100%;
     min-width: 170px;
     text-align: center;
+    padding-bottom: 1%;
 }
 
 .partSpecs h1 {

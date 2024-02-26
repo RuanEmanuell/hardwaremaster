@@ -8,6 +8,7 @@ import SpecCircle from '../../components/list/speccircle';
 import StandartButton from '../../components/global/standartbutton';
 import CircleButton from '../../components/global/circlebutton';
 import { useDetectClickOutside } from 'react-detect-click-outside';
+import { useAuth } from '../../utils/auth';
 
 interface PartData {
   name: string;
@@ -392,6 +393,16 @@ const List: React.FC<ListProps> = () => {
     }
   };
 
+  const { currentUser } = useAuth();
+
+  const [crudButtonsVisibile, setCrudButtonsVisibility] = useState<boolean>(false);
+
+  useEffect(() => {
+    if(currentUser?.email === 'ruanvitorcom540@gmail.com'){
+      setCrudButtonsVisibility(true);
+    }
+  }, [])
+
   return (
     <div>
       <NavBar />
@@ -497,6 +508,7 @@ const List: React.FC<ListProps> = () => {
                           <p>Preço: R$ {part['price']}</p>
                         </>
                       ) : null}
+                      <div style = {{display: crudButtonsVisibile ? 'block' : 'none'}}>
                       <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
                       <div className={listStyle.editDeleteButtons}>
                         <button onClick={() => editPart(index)} className={listStyle.editButton}><img src={EditIcon} alt="Edit Icon" /></button>
@@ -504,12 +516,13 @@ const List: React.FC<ListProps> = () => {
                       </div>
                       <StandartButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
                     </div>
+                    </div>
                   </div>
                 ))}
               </>
             ) : <></>}
             <br></br>
-            <div ref={selectTypeRef}>
+            <div ref={selectTypeRef} style = {{display: crudButtonsVisibile ? 'block' : 'none'}}>
               <div className={listStyle.choosePartType} style={{ display: selectTypeMenuVisibility }}>
                 {Object.keys(partTypeDataMap).map((addPart, index) => (
                   <h3 key={index} className={listStyle.partType} onClick={() => showModalAddPart(addPart)}>

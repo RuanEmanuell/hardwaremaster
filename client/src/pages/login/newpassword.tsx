@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import loginComponentStyle from './styles/login.module.css';
-import NavBar from '../../components/global/navbar';
 import { auth } from '../../confidential/firebase.config';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { confirmPasswordReset } from 'firebase/auth';
 import queryString from 'query-string';
 
@@ -20,7 +19,7 @@ const CreateNewPassword: React.FC<Props> = ({ }) => {
   const queryParams = queryString.parse(location.search);
 
   const oobCode = queryParams.oobCode as string;
-  
+
   const navigate = useNavigate();
 
   function checkPassword() {
@@ -54,32 +53,29 @@ const CreateNewPassword: React.FC<Props> = ({ }) => {
 
 
   return (
-    <>
-      <NavBar />
-      <div className={loginComponentStyle.loginScreen}>
-        <form className={loginComponentStyle.loginBox}>
-          <div>
-            <h1 className={loginComponentStyle.loginLogo}>HardwareMaster</h1>
-            <span className={loginComponentStyle.passwordInputAndEyeButtonBox}>
-              <input
-                className={`${loginComponentStyle.loginInput} ${loginComponentStyle.passwordInput}`}
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                type={!showPassword ? "password" : "text"}
-                placeholder='Digite sua nova senha...'>
-              </input>
-              <h4 className={loginComponentStyle.showPasswordButton} onClick={() => setShowPassword(!showPassword)}>👁</h4>
-            </span>
-            <p className={loginComponentStyle.passwordCheckError}
-              style={{ display: passwordCheckError ? 'block' : 'none' }}>{passwordCheckMessage}</p>
-            <br></br>
-            <span className={loginComponentStyle.loginButtonsContainers}>
-              <button className={loginComponentStyle.loginButton} type="button" onClick={handleCreateNewPasswordClick}><h4>Criar nova senha</h4></button>
-            </span>
-          </div>
-        </form>
-      </div>
-    </>
+    <div className={loginComponentStyle.loginScreen}>
+      <form className={loginComponentStyle.loginBox}>
+        <div>
+          <h1 className={loginComponentStyle.loginLogo}>HardwareMaster</h1>
+          <span className={loginComponentStyle.passwordInputAndEyeButtonBox}>
+            <input
+              className={`${loginComponentStyle.loginInput} ${loginComponentStyle.passwordInput}`}
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              type={!showPassword ? "password" : "text"}
+              placeholder='Digite sua nova senha...'>
+            </input>
+            <h4 className={loginComponentStyle.showPasswordButton} onClick={() => setShowPassword(!showPassword)}>👁</h4>
+          </span>
+          <p className={loginComponentStyle.passwordCheckError}
+            style={{ display: passwordCheckError ? 'block' : 'none' }}>{passwordCheckMessage}</p>
+          <br></br>
+          <span className={loginComponentStyle.loginButtonsContainers}>
+            <button className={loginComponentStyle.loginButton} type="button" onClick={handleCreateNewPasswordClick}><h4>Criar nova senha</h4></button>
+          </span>
+        </div>
+      </form>
+    </div>
   )
 }
 

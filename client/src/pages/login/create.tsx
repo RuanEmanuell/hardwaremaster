@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import loginComponentStyle from './styles/login.module.css';
 import GoogleIcon from '../../images/google.png'
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../confidential/firebase.config';
 import { Link } from 'react-router-dom';
-import NavBar from '../../components/global/navbar';
 
 interface Props {
 
@@ -78,8 +77,6 @@ const CreateAccount: React.FC<Props> = ({ }) => {
   }
 
   return (
-    <>
-    <NavBar/>
     <div className={loginComponentStyle.loginScreen}>
       <form className={loginComponentStyle.loginBox}>
     <div>
@@ -130,7 +127,6 @@ const CreateAccount: React.FC<Props> = ({ }) => {
     </div>
     </form>
     </div>
-    </>
   )
 }
 

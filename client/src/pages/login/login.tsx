@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { createContext, useState } from 'react';
 import loginComponentStyle from './styles/login.module.css';
 import GoogleIcon from '../../images/google.png';
-import { createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../../../src/confidential/firebase.config';
 import { Link } from 'react-router-dom';
-import NavBar from '../../components/global/navbar';
 
 interface Props {
 
 }
 
 const Login: React.FC<Props> = ({ }) => {
-
   const [email, setEmail] = useState<string>("");
   const [emailCheckError, setEmailCheckError] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
@@ -71,8 +69,6 @@ const Login: React.FC<Props> = ({ }) => {
   }
 
   return (
-    <>
-    <NavBar/>
     <div className={loginComponentStyle.loginScreen}>
       <form className={loginComponentStyle.loginBox}>
         <div>
@@ -116,7 +112,6 @@ const Login: React.FC<Props> = ({ }) => {
         </div>
       </form>
     </div>
-    </>
   )
 }
 
