@@ -10,6 +10,8 @@ import WhatsappIcon from '../../images/whatsapp.png';
 import CopyIcon from '../../images/copy.png'
 import { useDetectClickOutside } from 'react-detect-click-outside';
 import PartSelectorBox from '../../components/manualbuild/partselectorbox';
+import { useAuth } from '../../utils/auth';
+import { useNavigate } from 'react-router-dom';
 
 interface Part {
   type: string;
@@ -70,8 +72,11 @@ const ManualBuild: React.FC = () => {
   const [copiedToTA, setCopiedDisplay] = useState<string>('none');
 
   const shareRef = useDetectClickOutside({ onTriggered: closeShareMenu });
-  const [isSaveButtonPressed, setSaveButtonPressed] = useState<boolean>(false);
 
+  const { currentUser } = useAuth();
+
+  const navigate = useNavigate();
+  
   async function getPartList() {
     try {
       const response = await fetch('http://localhost:3001/list/parts');
@@ -315,11 +320,16 @@ const ManualBuild: React.FC = () => {
   }, [selectedCpu, selectedGpu, selectedMobo, selectedRam,
     selectedPower, selectedSsd, selectedCase]);
 
-  useEffect(() => {
-    if (isSaveButtonPressed === true) {
-      setSaveButtonPressed(false);
+function SaveBuild(){
+  //Remover os dois ! aqui depois, só pra teste
+  if(!allPartsSelected){
+    if(!currentUser){
+
+    }else{
+      navigate('/login');
     }
-  }, [isSaveButtonPressed]);
+  }
+}
 
   return (
     <div>
@@ -473,7 +483,7 @@ const ManualBuild: React.FC = () => {
             <div className={mbStyle.buildButtonsBox}>
               <button className={mbStyle.buildButton}
                 style={{ backgroundColor: allPartsSelected ? '#0066FF' : 'grey' }}
-                onClick={() => { setSaveButtonPressed(true); }}>
+                onClick={SaveBuild}>
                 <img src={SaveIcon} alt='Salvar'></img>
               </button>
               <button className={mbStyle.buildButton}

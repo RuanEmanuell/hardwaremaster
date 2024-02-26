@@ -108,6 +108,16 @@ const List: React.FC<ListProps> = () => {
 
   const selectTypeRef = useDetectClickOutside({ onTriggered: closeSelectTypeMenu });
 
+  const { currentUser } = useAuth();
+
+  const [crudButtonsVisibile, setCrudButtonsVisibility] = useState<boolean>(false);
+
+  useEffect(() => {
+    if(currentUser?.email === 'ruanvitorcom540@gmail.com'){
+      setCrudButtonsVisibility(true);
+    }
+  }, [])
+
   // Showing infos on screen on page load
   useEffect(() => {
     getPartList();
@@ -393,16 +403,6 @@ const List: React.FC<ListProps> = () => {
     }
   };
 
-  const { currentUser } = useAuth();
-
-  const [crudButtonsVisibile, setCrudButtonsVisibility] = useState<boolean>(false);
-
-  useEffect(() => {
-    if(currentUser?.email === 'ruanvitorcom540@gmail.com'){
-      setCrudButtonsVisibility(true);
-    }
-  }, [])
-
   return (
     <div>
       <NavBar />
@@ -508,8 +508,9 @@ const List: React.FC<ListProps> = () => {
                           <p>Preço: R$ {part['price']}</p>
                         </>
                       ) : null}
-                      <div style = {{display: crudButtonsVisibile ? 'block' : 'none'}}>
+
                       <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
+                      <div style = {{display: crudButtonsVisibile ? 'block' : 'none'}}>
                       <div className={listStyle.editDeleteButtons}>
                         <button onClick={() => editPart(index)} className={listStyle.editButton}><img src={EditIcon} alt="Edit Icon" /></button>
                         <button onClick={() => deletePart(part['_id'])} className={listStyle.deleteButton}><img src={DeleteIcon} alt="Delete Icon" /></button>

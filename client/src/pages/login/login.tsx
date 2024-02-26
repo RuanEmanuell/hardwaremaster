@@ -3,7 +3,7 @@ import loginComponentStyle from './styles/login.module.css';
 import GoogleIcon from '../../images/google.png';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../../../src/confidential/firebase.config';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface Props {
 
@@ -16,6 +16,8 @@ const Login: React.FC<Props> = ({ }) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [passwordCheckError, setPasswordCheckError] = useState<boolean>(false);
   const [passwordCheckMessage, setPasswordCheckMessage] = useState<string>("");
+
+  const navigate = useNavigate();
 
   function checkPassword() {
     let passwordCheck = false;
@@ -51,8 +53,8 @@ const Login: React.FC<Props> = ({ }) => {
 
   async function loginUser(email: string, password: string) {
     try {
-      const userCredentials = await signInWithEmailAndPassword(auth, email, password);
-      console.log(userCredentials.user);
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate('/list');
     } catch (err) {
       alert(err);
     }
@@ -60,9 +62,8 @@ const Login: React.FC<Props> = ({ }) => {
 
   async function loginGoogle() {
     try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-      console.log(user);
+      await signInWithPopup(auth, googleProvider);
+      navigate('/list');
     } catch (err) {
       alert(err);
     }

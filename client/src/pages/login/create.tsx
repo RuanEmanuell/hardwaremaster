@@ -3,7 +3,7 @@ import loginComponentStyle from './styles/login.module.css';
 import GoogleIcon from '../../images/google.png'
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../confidential/firebase.config';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface Props {
 
@@ -23,6 +23,8 @@ const CreateAccount: React.FC<Props> = ({ }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
   const [confirmPasswordCheckError, setConfirmPasswordCheckError] = useState<boolean>(false);
 
+  const navigate = useNavigate();
+  
   function checkPassword() {
     let passwordCheck = false;
 
@@ -69,8 +71,8 @@ const CreateAccount: React.FC<Props> = ({ }) => {
 
   async function createUser(email: string, password: string) {
     try {
-      const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
-      console.log(userCredentials.user);
+      await createUserWithEmailAndPassword(auth, email, password);
+      navigate('/list');
     } catch (err) {
       alert(err);
     }
