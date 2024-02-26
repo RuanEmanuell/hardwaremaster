@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import listRouter from './routes/list.ts';
 import db from './database/connection.ts';
+import userRouter from './routes/users.ts';
 
 const app = express();
 const port = 3001;
@@ -16,6 +17,8 @@ db.once('open', () => {
 });
 
 app.use('/list', listRouter);
+
+app.use('/users', userRouter);
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);

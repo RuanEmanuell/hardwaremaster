@@ -71,7 +71,14 @@ const CreateAccount: React.FC<Props> = ({ }) => {
 
   async function createUser(email: string, password: string) {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const newUser = await createUserWithEmailAndPassword(auth, email, password);
+      await fetch(
+        'http://localhost:3001/users/post', {
+          method: 'POST',
+          headers : {'Content-Type' : 'application/json'},
+          body: JSON.stringify({email: newUser.user.email, name: 'test', photo: '.', builds: '.'})
+        }
+      )
       navigate('/list');
     } catch (err) {
       alert(err);

@@ -15,17 +15,17 @@ listRouter.post('/post', async (req, res) => {
   try {
     const newPart = new Part(req.body);
     await newPart.save();
-    res.sendStatus(201)
+    res.sendStatus(201);
   } catch (err) {
     console.log(err);
-    res.sendStatus(500)
+    res.sendStatus(500);
   }
 });
 
 listRouter.put('/update/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const updatedPart = await Part.findByIdAndUpdate(id, req.body);
+    await Part.findByIdAndUpdate(id, req.body);
     res.sendStatus(201);
   } catch (error) {
     console.log(error);
@@ -35,7 +35,7 @@ listRouter.put('/update/:id', async (req, res) => {
 listRouter.delete('/delete/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const deletedPart = await Part.findByIdAndDelete(id, req.body);
+    await Part.findByIdAndDelete(id, req.body);
     res.sendStatus(201);
   } catch (error) {
     console.log(error);
