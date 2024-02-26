@@ -21,11 +21,13 @@ const Home : React.FC = () => {
               buttonLabel='Montar PC customizado' 
               buttonBackgroundColor = '#0066FF'/>
           </Link>
+          <Link to = '/login'>
             <HomeOption
               icon={MotherboardIcon}
               optionDescription='Defina seu orçamento e preferências, e deixe que o nosso algoritmo decida o melhor PC possível para você!'
               buttonLabel='Encontre seu PC ideal' 
               buttonBackgroundColor = '#DB5510'/>
+              </Link>
             <Link to='/list'>
               <HomeOption
                 icon={BookIcon}

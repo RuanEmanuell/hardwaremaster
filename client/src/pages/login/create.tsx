@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import loginComponentStyle from './styles/login.module.css';
 import GoogleIcon from '../../images/google.png'
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../confidential/firebase.config';
+import { Link } from 'react-router-dom';
+import NavBar from '../../components/global/navbar';
 
 interface Props {
-  onHasAccountClick: (event: React.MouseEvent) => void;
-  onCreateUserClick: (email: string, password: string) => void;
-  onGoogleUserClick: () => void;
+
 }
 
-const CreateAccountMenu: React.FC<Props> = ({ onHasAccountClick, onCreateUserClick }) => {
+const CreateAccount: React.FC<Props> = ({ }) => {
 
   const [email, setEmail] = useState<string>("");
   const [emailCheckError, setEmailCheckError] = useState<boolean>(false);
@@ -58,16 +60,28 @@ const CreateAccountMenu: React.FC<Props> = ({ onHasAccountClick, onCreateUserCli
   }
 
   function handleCreateUserClick() {
-    let emailOk = checkEmail();
-    let passwordOk = checkPassword();
-    let confirmPasswordOk = checkConfirmPassword();
-    console.log(emailOk, passwordOk, confirmPasswordOk);
-    if (!emailOk && !passwordOk && !confirmPasswordOk) {
-      onCreateUserClick(email, password);
+    let emailinvalid = checkEmail();
+    let passwordinvalid = checkPassword();
+    let confirmPasswordinvalid = checkConfirmPassword();
+    if (!emailinvalid && !passwordinvalid && !confirmPasswordinvalid) {
+      createUser(email, password);
+    }
+  }
+
+  async function createUser(email: string, password: string) {
+    try {
+      const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+      console.log(userCredentials.user);
+    } catch (err) {
+      alert(err);
     }
   }
 
   return (
+    <>
+    <NavBar/>
+    <div className={loginComponentStyle.loginScreen}>
+      <form className={loginComponentStyle.loginBox}>
     <div>
       <h1 className={loginComponentStyle.loginLogo}>HardwareMaster</h1>
       <input
@@ -103,7 +117,9 @@ const CreateAccountMenu: React.FC<Props> = ({ onHasAccountClick, onCreateUserCli
       <br></br>
       <span className={loginComponentStyle.loginButtonsContainers}>
         <button className={loginComponentStyle.loginButton} type="button" onClick={handleCreateUserClick}><h4>Criar conta</h4></button>
-        <p className={loginComponentStyle.createAccount} onClick={onHasAccountClick}>Já tem uma conta? Fazer login...</p>
+        <Link to = '/login'>
+        <p className={loginComponentStyle.createAccount}>Já tem uma conta? Fazer login...</p>
+        </Link>
       </span>
       <span className={loginComponentStyle.googleButtonContainer}>
         <button className={loginComponentStyle.googleButton} type="button">
@@ -112,7 +128,10 @@ const CreateAccountMenu: React.FC<Props> = ({ onHasAccountClick, onCreateUserCli
         </button>
       </span>
     </div>
+    </form>
+    </div>
+    </>
   )
 }
 
-export default CreateAccountMenu;
+export default CreateAccount;

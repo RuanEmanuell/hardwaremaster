@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import mbStyle from './styles/manualbuild.module.css';
 import NavBar from '../../components/global/navbar';
-import PartSelectorBox from '../../components/manualbuild/partselectorbox';
-import loginComponentStyle from '../../components/login/styles/login.module.css';
-import LoginMenu from '../../components/login/login';
-import CreateAccountMenu from '../../components/login/create';
 import CpuIcon from '../../images/cpu.png';
 import GpuIcon from '../../images/gpu.png';
 import SaveIcon from '../../images/save.png';
@@ -13,8 +9,9 @@ import RestartIcon from '../../images/restart.png';
 import WhatsappIcon from '../../images/whatsapp.png';
 import CopyIcon from '../../images/copy.png'
 import { useDetectClickOutside } from 'react-detect-click-outside';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../../../src/confidential/firebase.config';
+import PartSelectorBox from '../../components/manualbuild/partselectorbox';
 
 interface Part {
   type: string;
@@ -75,6 +72,7 @@ const ManualBuild: React.FC = () => {
   const [copiedToTA, setCopiedDisplay] = useState<string>('none');
 
   const shareRef = useDetectClickOutside({ onTriggered: closeShareMenu });
+  const [isSaveButtonPressed, setSaveButtonPressed] = useState<boolean>(false);
 
   async function getPartList() {
     try {
@@ -319,18 +317,13 @@ const ManualBuild: React.FC = () => {
   }, [selectedCpu, selectedGpu, selectedMobo, selectedRam,
     selectedPower, selectedSsd, selectedCase]);
 
-  const [isSaveButtonPressed, setSaveButtonPressed] = useState<boolean>(false);
-  const [isCreatingAccount, setCreatingAccount] = useState<boolean>(false);
-
   useEffect(() => {
     if (isSaveButtonPressed === true) {
       setSaveButtonPressed(false);
     }
-  }, [isSaveButtonPressed])
+  }, [isSaveButtonPressed]);
 
-  const [loginMenuDisplay, setLoginMenuDisplay] = useState<string>("flex");
-
-  const loginRef = useDetectClickOutside({ onTriggered: () => showLoginMenu() });
+  const [currentMenu, setCurrentMenu] = useState<number>(0);
 
   async function loginUser(email: string, password: string) {
     try {
@@ -350,27 +343,30 @@ const ManualBuild: React.FC = () => {
     }
   }
 
-  async function loginGoogle(){
-    try{
-      const  result = await signInWithPopup(auth, googleProvider);
+  async function loginGoogle() {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
       console.log(user);
-    }catch(err){
+    } catch (err) {
       alert(err);
     }
   }
 
-  function showLoginMenu() {
-    if (loginMenuDisplay === 'flex' && isSaveButtonPressed === false) {
-      setLoginMenuDisplay('none');
-    } else if (isSaveButtonPressed === true) {
-      setLoginMenuDisplay('flex');
+  async function resetPassword(email: string) {
+    try {
+      const result = await sendPasswordResetEmail(auth, email);
+      alert("Email enviado com sucesso! Cheque sua caixa de spam!");
+      setCurrentMenu(0);
+    } catch (err) {
+      console.log(err);
+      alert(err);
     }
   }
 
-  function changeCreatingAccount(event:React.MouseEvent) {
+  function changeCurrentMenu(event: React.MouseEvent, index: number) {
     event.stopPropagation();
-    setCreatingAccount(!isCreatingAccount);
+    setCurrentMenu(index);
   }
 
   return (
@@ -554,19 +550,6 @@ const ManualBuild: React.FC = () => {
               <img src={CopyIcon} className={mbStyle.shareOptionImg}></img>
               <p>Copiar texto da montagem</p>
             </div>
-          </div>
-          <div className={loginComponentStyle.loginScreen} style={{ display: loginMenuDisplay }}>
-            <form className={loginComponentStyle.loginBox} ref={loginRef}>
-                {isCreatingAccount ? 
-                <CreateAccountMenu 
-                onCreateUserClick={createUser}
-                onGoogleUserClick={loginGoogle}
-                onHasAccountClick={changeCreatingAccount} /> : 
-                <LoginMenu 
-                onLoginUserClick={loginUser}
-                onGoogleUserClick={loginGoogle}
-                onCreateAccountClick={changeCreatingAccount} />}
-            </form>
           </div>
         </main>
       </div>

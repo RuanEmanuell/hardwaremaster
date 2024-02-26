@@ -47,8 +47,10 @@
     border-bottom: none;
 }
 
-p {
+p, a {
     transition: 0.2s all;
+    color: #DB5510;
+    text-decoration: none;
 }
 
 p:hover {

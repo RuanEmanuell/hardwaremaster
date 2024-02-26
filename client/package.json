@@ -9,6 +9,7 @@
     "@types/react": "^18.2.56",
     "@types/react-dom": "^18.2.19",
     "firebase": "^10.8.0",
+    "query-string": "^8.2.0",
     "react": "^18.2.0",
     "react-detect-click-outside": "^1.1.7",
     "react-dom": "^18.2.0",
