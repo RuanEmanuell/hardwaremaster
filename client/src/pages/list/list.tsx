@@ -342,6 +342,7 @@ const List: React.FC<ListProps> = () => {
       console.log(err);
     }
   }
+  
   async function getPartList() {
     try {
       const response = await fetch('http://localhost:3001/list/parts');

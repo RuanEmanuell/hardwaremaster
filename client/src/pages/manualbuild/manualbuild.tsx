@@ -12,8 +12,11 @@ import { useDetectClickOutside } from 'react-detect-click-outside';
 import PartSelectorBox from '../../components/manualbuild/partselectorbox';
 import { useAuth } from '../../utils/auth';
 import { useNavigate } from 'react-router-dom';
+import SaveBuildPart from '../../components/manualbuild/savepart';
+import StandartButton from '../../components/global/standartbutton';
 
 interface Part {
+  _id?: String,
   type: string;
   name: string;
   brand: string;
@@ -68,6 +71,10 @@ const ManualBuild: React.FC = () => {
   const [allPartsSelected, setAllPartsSelected] = useState<boolean>(false);
   const [totalBuildPrice, setTotalBuildPrice] = useState<number>(0);
 
+  const [saveMenu, setSaveMenuDisplay] = useState<string>('none');
+
+  const saveRef = useDetectClickOutside({ onTriggered: closeSaveMenu });
+
   const [shareMenu, setShareMenuDisplay] = useState<string>('none');
   const [copiedToTA, setCopiedDisplay] = useState<string>('none');
 
@@ -76,13 +83,14 @@ const ManualBuild: React.FC = () => {
   const { currentUser } = useAuth();
 
   const navigate = useNavigate();
-  
+
   async function getPartList() {
     try {
       const response = await fetch('http://localhost:3001/list/parts');
       const data: Part[] = await response.json();
 
       const filteredPartList = data.map(item => ({
+        _id: item._id,
         type: item.type,
         name: item.name,
         brand: item.brand,
@@ -320,16 +328,71 @@ const ManualBuild: React.FC = () => {
   }, [selectedCpu, selectedGpu, selectedMobo, selectedRam,
     selectedPower, selectedSsd, selectedCase]);
 
-function SaveBuild(){
-  //Remover os dois ! aqui depois, só pra teste
-  if(!allPartsSelected){
-    if(!currentUser){
+  function openSaveMenu() {
+    setTimeout(() => {
+      setSaveMenuDisplay('flex');
+    }, 1);
+  }
 
-    }else{
-      navigate('/login');
+  function closeSaveMenu() {
+    if (saveMenu === 'flex') {
+      setSaveMenuDisplay('none');
     }
   }
-}
+
+  function showSaveBuildMenu() {
+    if (allPartsSelected) {
+      if (currentUser) {
+        openSaveMenu();
+      } else {
+        navigate('/login');
+      }
+    }
+  }
+
+  async function saveBuild() {
+    let buildUserId = await getUserId();
+    try{
+      const newBuild = await fetch(
+        'http://localhost:3001/builds/post', ({
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:JSON.stringify(
+          {
+           userId : buildUserId,
+           cpuId: selectedCpu?._id, 
+           gpuId: selectedGpu?._id, 
+           moboId: selectedMobo?._id, 
+           ramId: selectedRam?._id, 
+           powerId: selectedPower?._id, 
+           ssdId: selectedSsd?._id, 
+           caseId: selectedCase?._id
+          })
+
+        }))
+    }catch(err){
+      console.log(err);
+    }
+  }
+
+  async function getUserId() {
+    let userId;
+    try {
+      const response = await fetch('http://localhost:3001/users/users');
+      const users: any[] = await response.json();
+      for(let i in users){
+        if(users[i].email === currentUser?.email){
+          userId = users[i]._id;
+        }
+      }
+    }
+    catch (err) {
+      console.log(err);
+    }
+    return userId;
+  }
+  
+
 
   return (
     <div>
@@ -483,7 +546,7 @@ function SaveBuild(){
             <div className={mbStyle.buildButtonsBox}>
               <button className={mbStyle.buildButton}
                 style={{ backgroundColor: allPartsSelected ? '#0066FF' : 'grey' }}
-                onClick={SaveBuild}>
+                onClick={showSaveBuildMenu}>
                 <img src={SaveIcon} alt='Salvar'></img>
               </button>
               <button className={mbStyle.buildButton}
@@ -511,6 +574,47 @@ function SaveBuild(){
             <div onClick={() => shareText('copy')}>
               <img src={CopyIcon} className={mbStyle.shareOptionImg}></img>
               <p>Copiar texto da montagem</p>
+            </div>
+          </div>
+          <div className={mbStyle.saveScreen} style={{ display: saveMenu }}>
+            <div className={mbStyle.saveBox} ref={saveRef}>
+              <h1>Deseja salvar essa build?</h1>
+              <SaveBuildPart
+                partLabel='Processador'
+                selectedPart={selectedCpu!}
+              />
+              <SaveBuildPart
+                partLabel='Placa de vídeo'
+                selectedPart={selectedGpu!}
+              />
+              <SaveBuildPart
+                partLabel='Placa mãe'
+                selectedPart={selectedMobo!}
+              />
+              <SaveBuildPart
+                partLabel='RAM'
+                selectedPart={selectedRam!}
+              />
+              <SaveBuildPart
+                partLabel='Fonte'
+                selectedPart={selectedPower!}
+              />
+              <SaveBuildPart
+                partLabel='SSD'
+                selectedPart={selectedSsd!}
+              />
+              <SaveBuildPart
+                partLabel='Gabinete'
+                selectedPart={selectedCase!}
+              />
+              <StandartButton
+                buttonLabel='Salvar'
+                onClick={saveBuild}
+              />
+              <StandartButton
+                buttonLabel='Cancelar'
+                onClick={closeSaveMenu}
+              />
             </div>
           </div>
         </main>

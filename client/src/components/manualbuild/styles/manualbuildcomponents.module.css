@@ -1,5 +1,5 @@
 .partSelectorName{
-    margin: 2% 5%;
+    margin: 1% 5%;
 }
 
 .partPicker {
@@ -163,6 +163,32 @@
 
 .disabledQuantityButton:hover{
     cursor: default;
+}
+
+.buildPartLabel{
+    text-align: start;
+    margin: 2% 5%;
+}
+
+.saveBuildPart{
+    background-color: white;
+    border-radius: 25px;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    width: 90%;
+    margin: auto;
+    padding: 0.5%;
+}
+
+.saveBuildPart h3{
+    margin: auto 0;
+}
+
+.saveBuildPart img{
+    margin: auto 10%;
+    width: 25%;
+    min-width: 30px;
+    height: fit-content;
 }
 
 @media screen and (max-width: 480px) {

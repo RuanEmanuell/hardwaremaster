@@ -33,7 +33,7 @@ interface Part {
     caseFanSupport?: string,
     caseWcSupport?: string,
     partQuantity: number
-  }
+}
   
 interface Props {
     partList: Part[];

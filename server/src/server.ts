@@ -1,9 +1,10 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import listRouter from './routes/list.ts';
 import db from './database/connection.ts';
+import listRouter from './routes/list.ts';
 import userRouter from './routes/users.ts';
+import buildRouter from './routes/builds.ts';
 
 const app = express();
 const port = 3001;
@@ -19,6 +20,8 @@ db.once('open', () => {
 app.use('/list', listRouter);
 
 app.use('/users', userRouter);
+
+app.use('/builds', buildRouter);
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
