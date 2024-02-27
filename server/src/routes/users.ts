@@ -6,8 +6,12 @@ import db from '../database/connection';
 const userRouter = Router();
 
 userRouter.get('/users', async (req, res) => {
-  const users =  await db.collection('users').find({}).toArray();
-  res.json(users);
+  try{
+    const users = await db.collection('users').find({}).toArray();
+    res.json(users);
+  }catch(err){
+    console.log(err);
+  }
 })
 
 userRouter.post('/post', async (req, res) => {

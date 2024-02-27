@@ -351,7 +351,6 @@ const ManualBuild: React.FC = () => {
   }
 
   async function saveBuild() {
-    let buildUserId = await getUserId();
     try{
       const newBuild = await fetch(
         'http://localhost:3001/builds/post', ({
@@ -359,7 +358,7 @@ const ManualBuild: React.FC = () => {
           headers: { 'Content-Type': 'application/json' },
           body:JSON.stringify(
           {
-           userId : buildUserId,
+           userId : currentUser?.uid,
            cpuId: selectedCpu?._id, 
            gpuId: selectedGpu?._id, 
            moboId: selectedMobo?._id, 
@@ -368,31 +367,12 @@ const ManualBuild: React.FC = () => {
            ssdId: selectedSsd?._id, 
            caseId: selectedCase?._id
           })
-
-        }))
+        }));
+      navigate('/profile');
     }catch(err){
       console.log(err);
     }
   }
-
-  async function getUserId() {
-    let userId;
-    try {
-      const response = await fetch('http://localhost:3001/users/users');
-      const users: any[] = await response.json();
-      for(let i in users){
-        if(users[i].email === currentUser?.email){
-          userId = users[i]._id;
-        }
-      }
-    }
-    catch (err) {
-      console.log(err);
-    }
-    return userId;
-  }
-  
-
 
   return (
     <div>

@@ -5,6 +5,15 @@ import Build from '../models/build.ts';
 
 const buildRouter = Router();
 
+buildRouter.get('/builds', async (req, res) => {
+  try{
+    const builds = await db.collection('builds').find({}).toArray();
+    res.json(builds);
+  }catch(err){
+    console.log(err);
+  }
+});
+
 buildRouter.post('/post', async (req, res) => {
   try {
     const newBuild = new Build(req.body);

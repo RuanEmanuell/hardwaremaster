@@ -7,8 +7,12 @@ import db from '../database/connection.ts';
 const listRouter = Router();
 
 listRouter.get('/parts', async (req, res) => {
-  const parts = await db.collection('parts').find({}).toArray();
-  res.json(parts);
+  try{
+    const parts = await db.collection('parts').find({}).toArray();
+    res.json(parts);
+  }catch(err){
+    console.log(err);
+  }
 });
 
 listRouter.post('/post', async (req, res) => {

@@ -95,15 +95,15 @@
     width: 100%;
 }
 
-.partInfoBox p, .priceBox h4{
+.partInfoBox p, .priceBox h4, .partInfoBox p:hover{
     color: black;
     font-size: small;
+    cursor: default;
 }
 
 .priceBox h4, .addQuantityBox h4{
     margin: 0;
 }
-
 
 .priceBox {
     text-align: center;

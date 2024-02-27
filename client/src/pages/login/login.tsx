@@ -66,12 +66,13 @@ const Login: React.FC<Props> = ({ }) => {
       const response = await fetch('http://localhost:3001/users/users');
       const users: any[] = await response.json();
 
-      if (!users.find(user => user.email === newUser!.user!.email!)) {
+      if (!users.find(user => user._id === newUser!.user!.uid!)) {
         const saveUserToDB = await fetch(
           'http://localhost:3001/users/post', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            _id: newUser.user.uid,
             type: 'user',
             email: newUser.user.email,
             name: newUser.user.displayName,

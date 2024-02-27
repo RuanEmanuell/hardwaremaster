@@ -102,20 +102,21 @@
 
 .shareMenu div:hover {
     cursor: pointer;
-    background-color: black;
-    color: white;
+    background-color: rgb(104, 104, 104);
+
+    p{
+        color: white;
+    }
+}
+
+.shareMenu p{
+    color: black;
 }
 
 .shareOptionImg {
     width: 10%;
     height: fit-content;
     margin: auto 5%;
-}
-
-@media screen and (max-width: 960px) {
-    .partSelectorsBox {
-        grid-template-columns: 1fr;
-    }
 }
 
 .saveScreen{
@@ -157,4 +158,10 @@
 
 .saveBox button:last-of-type:hover{
     background-color: black;
+}
+
+@media screen and (max-width: 960px) {
+    .partSelectorsBox {
+        grid-template-columns: 1fr;
+    }
 }
