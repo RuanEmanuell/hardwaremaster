@@ -1,18 +1,22 @@
 import {Router} from 'express';
-import mongoose from 'mongoose';
+import {Types} from 'mongoose';
 import User from '../models/user';
 import db from '../database/connection';
 
-const userRouter = Router();
+const {ObjectId} = Types;
 
-userRouter.get('/users', async (req, res) => {
-  try{
-    const users = await db.collection('users').find({}).toArray();
-    res.json(users);
-  }catch(err){
-    console.log(err);
+const userRouter = Router()
+
+userRouter.get('/:authId', async (req, res) => {
+  try {
+    const authId = req.params.authId;
+    const user = await db.collection('users').findOne({ authId: authId});
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
   }
-})
+});
 
 userRouter.post('/post', async (req, res) => {
   try {

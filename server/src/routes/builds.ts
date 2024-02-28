@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import mongoose from 'mongoose';
+import { Types } from 'mongoose';
 import db from '../database/connection.ts';
 import Build from '../models/build.ts';
-import { Types } from 'mongoose';
-const { ObjectId } = Types;
+
+const {ObjectId} = Types;
 
 const buildRouter = Router();
 
@@ -14,6 +14,7 @@ buildRouter.get('/users/:userId', async (req, res) => {
     res.json(builds);
   }catch(err){
     console.log(err);
+    res.sendStatus(500);
   }
 });
 
@@ -24,6 +25,7 @@ buildRouter.get('/:buildId', async (req, res) => {
     res.json(build);
   }catch(err){
     console.log(err);
+    res.sendStatus(500);
   }
 });
 
@@ -45,6 +47,7 @@ buildRouter.delete('/delete/:buildId', async(req, res) => {
     res.sendStatus(201);
   } catch (err) {
     console.log(err);
+    res.sendStatus(500);
   }
 })
 

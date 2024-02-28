@@ -115,8 +115,11 @@ const List: React.FC<ListProps> = () => {
   // Showing infos on screen on page load
   useEffect(() => {
     getPartList();
-    getUsersList();
   }, []);
+
+  useEffect(() => {
+    getUserType();
+  }, [currentUser]);
 
   // Setting inputs for add part modal based on type
   function getInitialPartData(type: string): PartData {
@@ -328,13 +331,13 @@ const List: React.FC<ListProps> = () => {
   };
 
   // CRUD functions
-  async function getUsersList() {
+  async function getUserType() {
     try {
-      const response = await fetch('http://localhost:3001/users/users');
-      const users: any[] = await response.json();
-
       if(currentUser){
-      if (users.find(user => user.email === currentUser?.email && user.type !== 'user')) {
+      const userId = currentUser.uid;
+      const response = await fetch(`http://localhost:3001/users/${userId}`);
+      const user = await response.json();
+      if (user.type === 'admin') {
         setCrudButtonsVisibility(true);
       }
     }

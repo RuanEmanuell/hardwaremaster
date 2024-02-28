@@ -12,6 +12,7 @@ listRouter.get('/parts', async (req, res) => {
     res.json(parts);
   }catch(err){
     console.log(err);
+    res.sendStatus(500);
   }
 });
 

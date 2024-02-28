@@ -59,16 +59,17 @@ const Login: React.FC = () => {
   async function loginGoogle() {
     try {
       const newUser = await signInWithPopup(auth, googleProvider);
-      const response = await fetch('http://localhost:3001/users/users');
-      const users: any[] = await response.json();
+      const authId = newUser.user.uid;
+      const response = await fetch(`http://localhost:3001/users/${authId}`);
+      const user = await response.json();
 
-      if (!users.find(user => user._id === newUser!.user!.uid!)) {
+      if (!user) {
         const saveUserToDB = await fetch(
           'http://localhost:3001/users/post', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            _id: newUser.user.uid,
+            authId: newUser.user.uid,
             type: 'user',
             email: newUser.user.email,
             name: newUser.user.displayName,
@@ -77,12 +78,11 @@ const Login: React.FC = () => {
         }
         )
       }
-      navigate('/list');
+    navigate('/list');
     } catch (err) {
       alert(err);
     }
   }
-
 
   return (
     <div className={loginComponentStyle.loginScreen}>
