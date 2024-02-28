@@ -26,8 +26,8 @@ listRouter.post('/post', async (req, res) => {
   }
 });
 
-listRouter.put('/update/:id', async (req, res) => {
-  const { id } = req.params;
+listRouter.put('/update/:partId', async (req, res) => {
+  const id = req.params.partId;
   try {
     await Part.findByIdAndUpdate(id, req.body);
     res.sendStatus(201);
@@ -36,8 +36,8 @@ listRouter.put('/update/:id', async (req, res) => {
   }
 });
 
-listRouter.delete('/delete/:id', async (req, res) => {
-  const { id } = req.params;
+listRouter.delete('/delete/:partId', async (req, res) => {
+  const id = req.params.partId;
   try {
     await Part.findByIdAndDelete(id, req.body);
     res.sendStatus(201);
@@ -46,8 +46,8 @@ listRouter.delete('/delete/:id', async (req, res) => {
   }
 });
 
-listRouter.get('/currentprice/:id', async (req, res) => {
-  const { id } = req.params;
+listRouter.get('/currentprice/:partId', async (req, res) => {
+  const id = req.params.partId;
   const selectedPart: mongoose.mongo.WithId<mongoose.AnyObject> | null = await db.collection('parts').findOne({ "_id": new mongoose.Types.ObjectId(id) });
 
   const browserPromise = puppeteer.launch();

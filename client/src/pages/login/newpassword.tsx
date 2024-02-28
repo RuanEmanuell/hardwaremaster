@@ -5,19 +5,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { confirmPasswordReset } from 'firebase/auth';
 import queryString from 'query-string';
 
-interface Props {
-
-}
-
-const CreateNewPassword: React.FC<Props> = ({ }) => {
+const CreateNewPassword: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [passwordCheckError, setPasswordCheckError] = useState<boolean>(false);
   const [passwordCheckMessage, setPasswordCheckMessage] = useState<string>("");
+  
   const location = useLocation();
-
   const queryParams = queryString.parse(location.search);
-
   const oobCode = queryParams.oobCode as string;
 
   const navigate = useNavigate();

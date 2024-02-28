@@ -5,11 +5,7 @@ import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../../../src/confidential/firebase.config';
 import { Link, useNavigate } from 'react-router-dom';
 
-interface Props {
-
-}
-
-const Login: React.FC<Props> = ({ }) => {
+const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [emailCheckError, setEmailCheckError] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");

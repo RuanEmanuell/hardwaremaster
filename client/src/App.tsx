@@ -16,7 +16,7 @@ const App: React.FC = () => {
       <Router>
         <Routes>
           <Route path='/' Component={Home}></Route>
-          <Route path='/manualbuild' Component={ManualBuild}></Route>
+          <Route path='/manualbuild/' Component={ManualBuild}></Route>
           <Route path='/profile' Component={Profile}></Route>
           <Route path='/login' Component={Login}></Route>
           <Route path='/login/createaccount' Component={CreateAccount}></Route>

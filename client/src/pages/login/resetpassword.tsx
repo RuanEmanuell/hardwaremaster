@@ -5,11 +5,7 @@ import { auth } from '../../confidential/firebase.config';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
-interface Props {
-
-}
-
-const ResetPassword: React.FC<Props> = ({ }) => {
+const ResetPassword: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [emailCheckError, setEmailCheckError] = useState<boolean>(false);
 

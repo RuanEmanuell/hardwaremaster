@@ -11,9 +11,10 @@ import CopyIcon from '../../images/copy.png'
 import { useDetectClickOutside } from 'react-detect-click-outside';
 import PartSelectorBox from '../../components/manualbuild/partselectorbox';
 import { useAuth } from '../../utils/auth';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import SaveBuildPart from '../../components/manualbuild/savepart';
 import StandartButton from '../../components/global/standartbutton';
+import queryString from 'query-string';
 
 interface Part {
   _id?: String,
@@ -83,6 +84,10 @@ const ManualBuild: React.FC = () => {
   const { currentUser } = useAuth();
 
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const queryParams = queryString.parse(location.search);
+  const buildId = queryParams.buildId as string;
 
   async function getPartList() {
     try {
@@ -327,6 +332,21 @@ const ManualBuild: React.FC = () => {
     }
   }, [selectedCpu, selectedGpu, selectedMobo, selectedRam,
     selectedPower, selectedSsd, selectedCase]);
+
+  async function getEditBuildParts(){
+    const result = await fetch(`http://localhost:3001/builds/${buildId}`);
+    const build = await result.json();
+    for(let buildPart in build){
+      console.log(build[buildPart]);
+      console.log(partList.filter(part => part._id === build[buildPart]));
+    }
+  }
+
+  useEffect(() => {
+    if(buildId != undefined){
+      getEditBuildParts();
+    }
+  }, []);
 
   function openSaveMenu() {
     setTimeout(() => {
