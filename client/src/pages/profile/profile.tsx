@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import profileStyle from './styles/profile.module.css';
 import { useAuth } from '../../utils/auth';
+import NavBar from '../../components/global/navbar';
 
 const Profile: React.FC = () => {
   const { currentUser } = useAuth();
@@ -39,30 +40,36 @@ const Profile: React.FC = () => {
   }, [userBuilds]);
 
   return (
-    <main style = {{display: 'grid', gridTemplateColumns: '1fr 1fr'}}>
+    <div>
+    <NavBar/>
+    <div className = {profileStyle.profileScreen}>
+    <main>
+      <div className={profileStyle.buildsContainer}>
       {userBuilds?.map
         ((build, index) => (
-          <div style = 
-          {{ border: '2px solid red', margin: '5% 0'}}>
-            <h2>Build {index+1}</h2>
-            <div style = {{display: 'grid', gridTemplateColumns: '1fr 1fr'}}>
-            {userParts?.filter
-              (part => (part._id === (
-                part.type === 'cpu' ? build.cpuId :
-                  part.type === 'gpu' ? build.gpuId :
-                    part.type === 'mobo' ? build.moboId
-                      : part.type === 'ram' ? build.ramId
-                      : part.type === 'power' ? build.powerId
-                      : part.type === 'ssd' ? build.ssdId
-                      : build.caseId))).map
-              (part => 
-                <div>
-                  <img src = {part.imageLink} style = {{width: '10%'}}></img>
-                  <h3>{part.name}</h3>
-                  <h3>R$ {part.price}</h3>
+          <div className={profileStyle.buildBox}>
+            <h2 className={profileStyle.buildLabel}>Build {index + 1}</h2>
+            <div className = {profileStyle.partBox}>
+              {userParts?.filter
+                (part => (part._id === (
+                  part.type === 'cpu' ? build.cpuId :
+                    part.type === 'gpu' ? build.gpuId :
+                      part.type === 'mobo' ? build.moboId
+                        : part.type === 'ram' ? build.ramId
+                          : part.type === 'power' ? build.powerId
+                            : part.type === 'ssd' ? build.ssdId
+                              : build.caseId))).map
+                (part =>
+                  <div className={profileStyle.partSpecsBox}>
+                    <img className={profileStyle.partSpecsImg} src={part.imageLink}></img>
+                    <h4>{part.name}</h4>
+                    <h4>R$ {part.price}</h4>
+                  </div>
+                )}</div></div>))}
                 </div>
-              )}</div></div>))}
     </main>
+    </div>
+    </div>
   )
 }
 
