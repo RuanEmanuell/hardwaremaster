@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import profileStyle from './styles/profile.module.css';
 import { useAuth } from '../../utils/auth';
 import NavBar from '../../components/global/navbar';
@@ -31,8 +31,11 @@ interface Part {
 
 const Profile: React.FC = () => {
   const { currentUser } = useAuth();
-  const [userBuilds, setUserBuildList] = useState<any[] | undefined>(undefined);
-  const [userParts, setUserPartList] = useState<any[] | undefined>(undefined);
+  const [userBuilds, setUserBuildList] = useState<Build[] | undefined>(undefined);
+  const [userParts, setUserPartList] = useState<Part[] | undefined>(undefined);
+
+  const [selectedBuildId, setSelectedBuildId] = useState<String>('');
+  const deleteBuildRef = useRef<HTMLDialogElement>(null);
 
   const navigate = useNavigate();
 
@@ -62,16 +65,26 @@ const Profile: React.FC = () => {
     navigate(`/manualbuild?buildId=${buildId}`);
   }
 
-  async function deleteBuild(buildId: string){
+  async function deleteBuild(){
     try {
-      await fetch(`http://localhost:3001/builds/delete/${buildId}`, {
+      await fetch(`http://localhost:3001/builds/delete/${selectedBuildId}`, {
         method: 'DELETE',
         headers: {'Content-type' : 'application/json'}
       });
       getUserBuildList();
+      closeDeleteBuildMenu();
     } catch (err) {
       console.log(err);
     }
+  }
+
+  function showDeleteBuildMenu(buildId: string){
+    setSelectedBuildId(buildId);
+    deleteBuildRef.current!.showModal();
+  }
+
+  function closeDeleteBuildMenu(){
+    deleteBuildRef.current!.close();
   }
 
   useEffect(() => {
@@ -96,7 +109,7 @@ const Profile: React.FC = () => {
                     <div className={profileStyle.buildButtons}>
                       <div>
                         <img src={EditIcon} onClick = {() => editBuild(build._id)}></img>
-                        <img src={DeleteIcon} onClick = {() => deleteBuild(build._id)}></img>
+                        <img src={DeleteIcon} onClick = {() => showDeleteBuildMenu(build._id)}></img>
                       </div>
                     </div>
                   </div>
@@ -121,6 +134,12 @@ const Profile: React.FC = () => {
                       )}</div>
                 </div>))}
           </div>
+          <dialog ref = {deleteBuildRef}>
+            <div>
+              <h1>Deseja deletar essa build?</h1>
+              <button onClick = {deleteBuild}>Sim</button>
+            </div>
+          </dialog>
         </main>
       </div>
     </div>

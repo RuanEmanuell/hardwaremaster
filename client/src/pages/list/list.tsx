@@ -400,7 +400,6 @@ const List: React.FC<ListProps> = () => {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
       });
-
       clearInputs();
       getPartList();
     } catch (err) {
