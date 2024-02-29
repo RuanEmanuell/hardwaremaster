@@ -5,29 +5,12 @@ import NavBar from '../../components/global/navbar';
 import EditIcon from '../../images/edit.png';
 import DeleteIcon from '../../images/delete.png';
 import { useNavigate } from 'react-router-dom';
-
-interface Build{
-  _id: string;
-  userId: string;
-  cpuId: string;
-  gpuId: string;
-  moboId: string;
-  ramId: string;
-  powerId: string;
-  ssdId: string;
-  caseId: string;
-}
-
-interface Part {
-  _id: string;
-  type: string;
-  name: string;
-  brand: string;
-  price: string;
-  imageLink: string;
-  partQuantity: number
-}
-
+import StandartButton from '../../components/global/standartbutton';
+import Part from '../../utils/part';
+import Build from '../../utils/build';
+import ProfileBuildPart from '../../components/profile/profilebp';
+import PartBox from '../../components/profile/partbox';
+import BuildBox from '../../components/profile/buildbox';
 
 const Profile: React.FC = () => {
   const { currentUser } = useAuth();
@@ -61,15 +44,15 @@ const Profile: React.FC = () => {
     }
   }
 
-  async function editBuild(buildId: string){
+  async function editBuild(buildId: string) {
     navigate(`/manualbuild?buildId=${buildId}`);
   }
 
-  async function deleteBuild(){
+  async function deleteBuild() {
     try {
       await fetch(`http://localhost:3001/builds/delete/${selectedBuildId}`, {
         method: 'DELETE',
-        headers: {'Content-type' : 'application/json'}
+        headers: { 'Content-type': 'application/json' }
       });
       getUserBuildList();
       closeDeleteBuildMenu();
@@ -78,12 +61,12 @@ const Profile: React.FC = () => {
     }
   }
 
-  function showDeleteBuildMenu(buildId: string){
+  function showDeleteBuildMenu(buildId: string) {
     setSelectedBuildId(buildId);
     deleteBuildRef.current!.showModal();
   }
 
-  function closeDeleteBuildMenu(){
+  function closeDeleteBuildMenu() {
     deleteBuildRef.current!.close();
   }
 
@@ -103,41 +86,29 @@ const Profile: React.FC = () => {
           <div className={profileStyle.buildsContainer}>
             {userBuilds?.map
               ((build: Build, index) => (
-                <div className={profileStyle.buildBox} key = {index}>
-                  <div className={profileStyle.buildInfoAndButtons}>
-                    <h2 className={profileStyle.buildLabel}>Build {index + 1}</h2>
-                    <div className={profileStyle.buildButtons}>
-                      <div>
-                        <img src={EditIcon} onClick = {() => editBuild(build._id)}></img>
-                        <img src={DeleteIcon} onClick = {() => showDeleteBuildMenu(build._id)}></img>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={profileStyle.partBox}>
-                    {userParts?.filter
-                      ((part:Part, index) => (part._id === (
-                        part.type === 'cpu' ? build.cpuId :
-                          part.type === 'gpu' ? build.gpuId :
-                            part.type === 'mobo' ? build.moboId
-                              : part.type === 'ram' ? build.ramId
-                                : part.type === 'power' ? build.powerId
-                                  : part.type === 'ssd' ? build.ssdId
-                                    : build.caseId))).map
-                      (part =>
-                        <div className={profileStyle.partSpecsBox} key = {part.name}>
-                          <div className={profileStyle.partSpecsImg}>
-                            <img src={part.imageLink}></img>
-                          </div>
-                          <h4>{part.name}</h4>
-                          <h4>R$ {part.price}</h4>
-                        </div>
-                      )}</div>
-                </div>))}
+                <BuildBox
+                build={build}
+                index={index}
+                parts={userParts!}
+                onEditBuildClick={editBuild}
+                onShowDeleteBuildMenuClick={showDeleteBuildMenu}
+                />))}
           </div>
-          <dialog ref = {deleteBuildRef}>
-            <div>
-              <h1>Deseja deletar essa build?</h1>
-              <button onClick = {deleteBuild}>Sim</button>
+          <dialog ref={deleteBuildRef}>
+            <div className={profileStyle.deleteBuildMenuBackground}>
+              <div className={profileStyle.deleteBuildMenu}>
+                <h1>Deseja apagar essa build?</h1>
+                <StandartButton
+                  buttonLabel='Apagar'
+                  onClick={deleteBuild}
+                  backgroundColor='green'
+                />
+                <StandartButton
+                  buttonLabel='Cancelar'
+                  onClick={closeDeleteBuildMenu}
+                  backgroundColor='red'
+                />
+              </div>
             </div>
           </dialog>
         </main>

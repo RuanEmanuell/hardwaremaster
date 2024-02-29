@@ -8,70 +8,38 @@
   grid-template-columns: 1fr 1fr;
 }
 
-.buildBox{
-  margin: 2.5%;
+dialog{
+  background-color: rgba(0, 0, 0, 0.829);
+  width: 100%;
+  height: 100%;
 }
 
-.buildInfoAndButtons{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-.buildButtons{
+.deleteBuildMenuBackground{
+  width: 100%;
+  height: 100%;
   display: flex;
-  justify-content: end;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
 }
 
-.buildButtons div{
-  width: 50%;
-  display: flex;
-}
-
-.buildButtons img{
-  margin: auto 5%;
-  padding: 5%;
-  width: 33%;
-  height: fit-content;
-}
-
-
-.buildLabel{
-  text-align: end;
-}
-
-.partBox{
-  padding: 2%;
-  background-color: rgb(20, 20, 20);
-  border-radius: 20px;
-}
-
-.partSpecsBox{
-  display: grid;
-  grid-template-columns: 1fr 3fr 1fr;
-  padding: 1%;
-  margin: 5% 0;
+.deleteBuildMenu{
+  width: 60%;
+  height: 25%;
+  min-width: 300px;
+  max-width: 600px;
+  min-height: 200px;
+  color: #DB5510;
   background-color: #252525;
   border-radius: 20px;
-  text-align: center;
 }
 
-.partSpecsBox h4{
-  align-self: center;
+.deleteBuildMenu button{
+  font-size: larger;
+  margin: 2%;
 }
 
-.partSpecsImg{
-  background-color: white;
-  margin: auto 5%;
-  border-radius: 10px;
-  width: 60%;
-  height: fit-content;
-}
 
-.partSpecsImg img{
-  margin: 10%;
-  width: 75%;
-  height: fit-content;
-}
 
 @media screen and (max-width: 960px) {
   .buildsContainer{

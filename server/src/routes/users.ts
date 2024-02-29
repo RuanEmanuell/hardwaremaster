@@ -1,9 +1,6 @@
 import {Router} from 'express';
-import {Types} from 'mongoose';
 import User from '../models/user';
 import db from '../database/connection';
-
-const {ObjectId} = Types;
 
 const userRouter = Router()
 

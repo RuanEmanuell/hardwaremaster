@@ -149,15 +149,6 @@
 .saveBox button{
     font-size: larger;
     margin-right: 2%;
-    background-color: green;
-}
-
-.saveBox button:last-of-type{
-    background-color: red;
-}
-
-.saveBox button:last-of-type:hover{
-    background-color: black;
 }
 
 .saveBox h1{

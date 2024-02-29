@@ -15,41 +15,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import SaveBuildPart from '../../components/manualbuild/savepart';
 import StandartButton from '../../components/global/standartbutton';
 import queryString from 'query-string';
-
-interface Part {
-  _id?: String,
-  type: string;
-  name: string;
-  brand: string;
-  price: string;
-  imageLink: string;
-  cpuCores?: string;
-  cpuThreads?: string;
-  cpuFrequency?: string;
-  cpuSocket?: string;
-  cpuRamType?: string;
-  gpuCores?: string,
-  gpuMemory?: string,
-  gpuMemoryType?: string,
-  gpuRecommendedPower?: string;
-  moboChipset?: string,
-  moboSocketCompatibility?: string,
-  moboRamCompatibility?: string,
-  moboSlots?: string,
-  ramFrequency?: string,
-  ramCapacity?: string,
-  ramType?: string,
-  powerWatts?: string,
-  powerEfficiency?: string,
-  powerModular?: string,
-  ssdCapacity?: string,
-  ssdType?: string,
-  ssdSpeed?: string,
-  caseForm?: string,
-  caseFanSupport?: string,
-  caseWcSupport?: string,
-  partQuantity: number
-}
+import Part from '../../utils/part';
 
 const ManualBuild: React.FC = () => {
   const [partList, setPartList] = useState<Part[]>([]);
@@ -606,10 +572,12 @@ const ManualBuild: React.FC = () => {
                 <StandartButton
                   buttonLabel='Salvar'
                   onClick={saveBuild}
+                  backgroundColor='green'
                 />
                 <StandartButton
                   buttonLabel='Cancelar'
                   onClick={closeModal}
+                  backgroundColor='red'
                 />
               </div>
             </div>

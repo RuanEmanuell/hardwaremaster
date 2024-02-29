@@ -1,12 +1,6 @@
 import React from 'react';
 import mbComponentStyle from './styles/manualbuildcomponents.module.css';
-
-interface Part {
-  name: string;
-  brand: string;
-  price: string;
-  imageLink: string;
-}
+import Part from '../../utils/part';
 
 interface Props {
   partLabel: string;
