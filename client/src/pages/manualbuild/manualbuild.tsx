@@ -125,7 +125,7 @@ const ManualBuild: React.FC = () => {
     }
   }
 
-  function fixPrice(price: string){
+  function fixPrice(price: string) {
     return parseFloat(price.replace('.', '').replace(',', '.'));
   }
 
@@ -273,25 +273,13 @@ const ManualBuild: React.FC = () => {
     }
   }
 
-  //Fetch API
-  useEffect(() => {
-    getPartList();
-  }, []);
-
-
-  useEffect(() => {
-    if (buildId) {
-      getUserBuildPartList();
-    }
-  }, [currentUser]);
-
   async function getUserBuildPartList() {
     try {
       const response = await fetch(`http://localhost:3001/builds/users/${currentUser?.uid}`);
       const allUserBuilds: Build[] = await response.json();
       const temporarySelectedBuild = allUserBuilds.find(build => build._id === buildId);
-      
-      if (temporarySelectedBuild) {
+
+      if (temporarySelectedBuild && partList.length > 0) {
         const temporarySelectedCpu = partList.find(part => part._id === temporarySelectedBuild.cpuId);
         const temporarySelectedGpu = partList.find(part => part._id === temporarySelectedBuild.gpuId);
         const temporarySelectedMobo = partList.find(part => part._id === temporarySelectedBuild.moboId);
@@ -299,16 +287,17 @@ const ManualBuild: React.FC = () => {
         const temporarySelectedPower = partList.find(part => part._id === temporarySelectedBuild.powerId);
         const temporarySelectedSsd = partList.find(part => part._id === temporarySelectedBuild.ssdId);
         const temporarySelectedCase = partList.find(part => part._id === temporarySelectedBuild.caseId);
-        
+
 
         let temporaryBuildPrice =
-        fixPrice(temporarySelectedCpu!.price) +
-        fixPrice(temporarySelectedGpu!.price) +
-        fixPrice(temporarySelectedMobo!.price) +
-        fixPrice(temporarySelectedRam!.price) +
-        fixPrice(temporarySelectedPower!.price) +
-        fixPrice(temporarySelectedSsd!.price) +
-        fixPrice(temporarySelectedCase!.price);
+          fixPrice(temporarySelectedCpu!.price) +
+          fixPrice(temporarySelectedGpu!.price) +
+          fixPrice(temporarySelectedMobo!.price) +
+          fixPrice(temporarySelectedRam!.price) +
+          fixPrice(temporarySelectedPower!.price) +
+          fixPrice(temporarySelectedSsd!.price) +
+          fixPrice(temporarySelectedCase!.price);
+
 
         setSelectedCpu(temporarySelectedCpu);
         setSelectedGpu(temporarySelectedGpu);
@@ -323,6 +312,18 @@ const ManualBuild: React.FC = () => {
       console.log(err);
     }
   }
+
+  //Fetch API
+  useEffect(() => {
+    getPartList();
+  }, []);
+
+
+  useEffect(() => {
+    if (buildId) {
+      getUserBuildPartList();
+    }
+  }, [partList, currentUser]);
 
   useEffect(() => {
     if (totalBuildPrice < 0) {
@@ -366,23 +367,23 @@ const ManualBuild: React.FC = () => {
   async function saveBuild() {
     try {
       await fetch(
-        buildId ? 
-        `http://localhost:3001/builds/update/${buildId}` :
-        'http://localhost:3001/builds/post', ({
-          method: buildId ? 'PUT' : 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(
-            {
-              userId: currentUser?.uid,
-              cpuId: selectedCpu?._id,
-              gpuId: selectedGpu?._id,
-              moboId: selectedMobo?._id,
-              ramId: selectedRam?._id,
-              powerId: selectedPower?._id,
-              ssdId: selectedSsd?._id,
-              caseId: selectedCase?._id
-            })
-        }));
+        buildId ?
+          `http://localhost:3001/builds/update/${buildId}` :
+          'http://localhost:3001/builds/post', ({
+            method: buildId ? 'PUT' : 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(
+              {
+                userId: currentUser?.uid,
+                cpuId: selectedCpu?._id,
+                gpuId: selectedGpu?._id,
+                moboId: selectedMobo?._id,
+                ramId: selectedRam?._id,
+                powerId: selectedPower?._id,
+                ssdId: selectedSsd?._id,
+                caseId: selectedCase?._id
+              })
+          }));
       navigate('/profile');
     } catch (err) {
       console.log(err);

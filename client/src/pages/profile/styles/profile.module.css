@@ -6,6 +6,7 @@
 .buildsContainer{
   display: grid;
   grid-template-columns: 1fr 1fr;
+  min-width: 250px;
 }
 
 dialog{
@@ -40,8 +41,7 @@ dialog{
 }
 
 
-
-@media screen and (max-width: 960px) {
+@media screen and (max-width: 720px) {
   .buildsContainer{
     grid-template-columns: 1fr;
   }

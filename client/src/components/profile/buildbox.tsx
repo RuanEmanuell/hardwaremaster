@@ -17,16 +17,13 @@ interface Props {
 const BuildBox: React.FC<Props> = ({ build, index, parts, onEditBuildClick, onShowDeleteBuildMenuClick }) => {
   const [buildPrice, setBuildPrice] = useState<string>('0');
 
-  let temporaryBuildPrice = 0;
+  let temporaryBuildPrice : number = 0;
 
   function calculateBuildPrice(partPrice: string){
-    temporaryBuildPrice = temporaryBuildPrice + parseFloat(partPrice.replace('.', '').replace(',', '.'));
+    temporaryBuildPrice += parseFloat(partPrice.replace('.', '').replace(',', '.'));
+    setBuildPrice(temporaryBuildPrice.toFixed(2));
   }
 
-  useEffect(() => {
-    setBuildPrice(temporaryBuildPrice.toFixed(2));
-  }, [temporaryBuildPrice])
-  
   return (
     <div className={profileComponentStyle.buildBox} key={index}>
       <div className={profileComponentStyle.buildInfoAndButtons}>
