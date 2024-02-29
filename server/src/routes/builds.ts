@@ -38,10 +38,21 @@ buildRouter.post('/post', async (req, res) => {
     console.log(err);
     res.sendStatus(500);
   }
-}) 
+});
+
+buildRouter.put('/update/:buildId', async (req, res) => {
+  const buildId = req.params.buildId;
+  try {
+    await Build.findByIdAndUpdate(buildId, req.body);
+    res.sendStatus(201);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
 
 buildRouter.delete('/delete/:buildId', async(req, res) => {
-  const buildId = req.params.buildId
+  const buildId = req.params.buildId;
   try {
     await Build.findByIdAndDelete(buildId, req.body);
     res.sendStatus(201);
@@ -49,6 +60,6 @@ buildRouter.delete('/delete/:buildId', async(req, res) => {
     console.log(err);
     res.sendStatus(500);
   }
-})
+});
 
 export default buildRouter;

@@ -16,6 +16,7 @@ import SaveBuildPart from '../../components/manualbuild/savepart';
 import StandartButton from '../../components/global/standartbutton';
 import queryString from 'query-string';
 import Part from '../../utils/part';
+import Build from '../../utils/build';
 
 const ManualBuild: React.FC = () => {
   const [partList, setPartList] = useState<Part[]>([]);
@@ -124,15 +125,19 @@ const ManualBuild: React.FC = () => {
     }
   }
 
+  function fixPrice(price: string){
+    return parseFloat(price.replace('.', '').replace(',', '.'));
+  }
+
   function selectPart(part: Part) {
     setNewPartValues(part, part);
-    setTotalBuildPrice(totalBuildPrice + parseFloat(part['price'].replace('.', '').replace(',', '.')));
+    setTotalBuildPrice(totalBuildPrice + fixPrice(part['price']));
     if (part['type'] === 'mobo' && selectedRam) {
       if (parseInt(part['moboSlots']!) < selectedRam!['partQuantity']) {
         let newRamQuantityAndPrice = {
           ...selectedRam,
           partQuantity: parseInt(part['moboSlots']!),
-          price: (parseFloat(selectedRam['price'].replace(',', '.')) / parseInt(part['moboSlots']!)).toFixed(2).toString().replace('.', ',')
+          price: (parseFloat(selectedRam['price'].replace(',', '.')) / selectedRam['partQuantity'] * parseInt(part['moboSlots']!)).toFixed(2).toString().replace('.', ',')
         }
         setSelectedRam(newRamQuantityAndPrice);
       }
@@ -146,7 +151,7 @@ const ManualBuild: React.FC = () => {
     }
     if (part.partQuantity < maxNumber) {
       let newPartQuantity = part.partQuantity + 1;
-      let newPrice = (parseFloat(part['price'].replace('.', '').replace(',', '.')) + parseFloat(part['price'].replace('.', '').replace(',', '.')) / (newPartQuantity - 1)).toFixed(2).toString();
+      let newPrice = (fixPrice(part['price']) + fixPrice(part['price']) / (newPartQuantity - 1)).toFixed(2).toString();
       newPrice = newPrice.replace('.', ',');
       let newPart = { ...part, partQuantity: newPartQuantity, price: newPrice }
       setNewPartValues(part, newPart);
@@ -157,7 +162,7 @@ const ManualBuild: React.FC = () => {
   function decreasePartQuantity(part: Part) {
     if (part.partQuantity > 1) {
       let newPartQuantity = part.partQuantity - 1;
-      let newPrice = (parseFloat(part['price'].replace('.', '').replace(',', '.')) - parseFloat(part['price'].replace('.', '').replace(',', '.')) / (newPartQuantity + 1)).toFixed(2).toString();
+      let newPrice = (fixPrice(part['price']) - (fixPrice(part['price']) / part.partQuantity)).toFixed(2).toString();
       newPrice = newPrice.replace('.', ',');
       let newPart = { ...part, partQuantity: newPartQuantity, price: newPrice }
       setNewPartValues(part, newPart);
@@ -167,7 +172,7 @@ const ManualBuild: React.FC = () => {
 
   function resetSelectedPart(part: Part) {
     setNewPartValues(part, undefined);
-    setTotalBuildPrice(totalBuildPrice - parseFloat(part['price'].replace('.', '').replace(',', '.')));
+    setTotalBuildPrice(totalBuildPrice - fixPrice(part['price']));
   }
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>, partType: string) {
@@ -273,6 +278,52 @@ const ManualBuild: React.FC = () => {
     getPartList();
   }, []);
 
+
+  useEffect(() => {
+    if (buildId) {
+      getUserBuildPartList();
+    }
+  }, [currentUser]);
+
+  async function getUserBuildPartList() {
+    try {
+      const response = await fetch(`http://localhost:3001/builds/users/${currentUser?.uid}`);
+      const allUserBuilds: Build[] = await response.json();
+      const temporarySelectedBuild = allUserBuilds.find(build => build._id === buildId);
+      
+      if (temporarySelectedBuild) {
+        const temporarySelectedCpu = partList.find(part => part._id === temporarySelectedBuild.cpuId);
+        const temporarySelectedGpu = partList.find(part => part._id === temporarySelectedBuild.gpuId);
+        const temporarySelectedMobo = partList.find(part => part._id === temporarySelectedBuild.moboId);
+        const temporarySelectedRam = partList.find(part => part._id === temporarySelectedBuild.ramId);
+        const temporarySelectedPower = partList.find(part => part._id === temporarySelectedBuild.powerId);
+        const temporarySelectedSsd = partList.find(part => part._id === temporarySelectedBuild.ssdId);
+        const temporarySelectedCase = partList.find(part => part._id === temporarySelectedBuild.caseId);
+        
+
+        let temporaryBuildPrice =
+        fixPrice(temporarySelectedCpu!.price) +
+        fixPrice(temporarySelectedGpu!.price) +
+        fixPrice(temporarySelectedMobo!.price) +
+        fixPrice(temporarySelectedRam!.price) +
+        fixPrice(temporarySelectedPower!.price) +
+        fixPrice(temporarySelectedSsd!.price) +
+        fixPrice(temporarySelectedCase!.price);
+
+        setSelectedCpu(temporarySelectedCpu);
+        setSelectedGpu(temporarySelectedGpu);
+        setSelectedMobo(temporarySelectedMobo);
+        setSelectedRam(temporarySelectedRam);
+        setSelectedPower(temporarySelectedPower);
+        setSelectedSsd(temporarySelectedSsd);
+        setSelectedCase(temporarySelectedCase);
+        setTotalBuildPrice(temporaryBuildPrice);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   useEffect(() => {
     if (totalBuildPrice < 0) {
       setTotalBuildPrice(0);
@@ -297,33 +348,14 @@ const ManualBuild: React.FC = () => {
   }, [selectedCpu, selectedGpu, selectedMobo, selectedRam,
     selectedPower, selectedSsd, selectedCase]);
 
-  async function getEditBuildParts() {
-    const result = await fetch(`http://localhost:3001/builds/${buildId}`);
-    const build = await result.json();
-    for (let buildPart in build) {
-      console.log(build[buildPart]);
-      console.log(partList.filter(part => part._id === build[buildPart]));
-    }
-  }
-
-  useEffect(() => {
-    if (buildId != undefined) {
-      getEditBuildParts();
-    }
-  }, []);
-
-  function showSaveBuildMenu() {
+  function openModal() {
     if (allPartsSelected) {
       if (currentUser) {
-        openModal();
+        saveRef.current!.showModal();
       } else {
         navigate('/login');
       }
     }
-  }
-
-  function openModal() {
-    saveRef.current!.showModal();
   };
 
   function closeModal() {
@@ -333,9 +365,11 @@ const ManualBuild: React.FC = () => {
 
   async function saveBuild() {
     try {
-      const newBuild = await fetch(
+      await fetch(
+        buildId ? 
+        `http://localhost:3001/builds/update/${buildId}` :
         'http://localhost:3001/builds/post', ({
-          method: 'POST',
+          method: buildId ? 'PUT' : 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(
             {

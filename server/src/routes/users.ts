@@ -24,6 +24,6 @@ userRouter.post('/post', async (req, res) => {
     console.log(err);
     res.sendStatus(500);
   }
-})
+});
 
 export default userRouter;
