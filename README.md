@@ -17,4 +17,5 @@ Still under development.
     
 ### Here are some images of the project running:
 
-![ezgif-7-ce56214882](https://github.com/RuanEmanuell/hardwaremaster/assets/113607857/ca5eac57-59d7-4f53-b5e9-8371e820dc8b)
+![Screenshot_714](https://github.com/RuanEmanuell/hardwaremaster/assets/113607857/b9039349-85eb-43b7-9560-0eb8aa488875)
+![Screenshot_715](https://github.com/RuanEmanuell/hardwaremaster/assets/113607857/fbd4a424-4f68-4de9-88b0-8f677404b2b6)
