@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import NavBar from '../../components/global/navbar';
 import listStyle from './styles/list.module.css';
 import EditIcon from '../../images/edit.png';
@@ -103,7 +103,6 @@ const List: React.FC<ListProps> = () => {
   const [firstOrderLabelVisibility, setFirstOrderLabelVisibility] = useState<string>('block');
   const [filterOrderMenuVisibility, setFilterOrderMenuVisibility] = useState<string>('none');
   const [selectTypeMenuVisibility, setSelectTypeMenuVisibility] = useState<string>('none');
-  const [addPartModalVisibility, setAddPartModalVisibility] = useState<string>('none');
   const [selectedPartType, setSelectedType] = useState<string>('cpu');
 
   const selectTypeRef = useDetectClickOutside({ onTriggered: closeSelectTypeMenu });
@@ -111,6 +110,8 @@ const List: React.FC<ListProps> = () => {
   const { currentUser } = useAuth();
 
   const [crudButtonsVisibile, setCrudButtonsVisibility] = useState<boolean>(false);
+
+  const addPartRef = useRef<HTMLDialogElement>(null);
 
   // Showing infos on screen on page load
   useEffect(() => {
@@ -222,16 +223,16 @@ const List: React.FC<ListProps> = () => {
     if (partType !== '') {
       setSelectedType(partType);
     }
-    setAddPartModalVisibility(addPartModalVisibility === 'none' ? 'block' : 'none');
+    openModal();
   }
 
   // 'Filter by' functions
-  function showPartFilterMenu(){
+  function showPartFilterMenu() {
     setFilterPartMenuVisibility('block');
     setFirstFilterLabelVisibility('none');
   }
 
-  function closePartFilterMenu(){
+  function closePartFilterMenu() {
     setFilterPartMenuVisibility('none');
     setFirstFilterLabelVisibility('block');
   }
@@ -250,12 +251,12 @@ const List: React.FC<ListProps> = () => {
   }
 
   // 'Order by' functions
-  function showPartOrderMenu(){
+  function showPartOrderMenu() {
     setFilterOrderMenuVisibility('block');
     setFirstOrderLabelVisibility('none');
   }
 
-  function closePartOrderMenu(){
+  function closePartOrderMenu() {
     setFilterOrderMenuVisibility('none');
     setFirstOrderLabelVisibility('block');
   }
@@ -290,13 +291,21 @@ const List: React.FC<ListProps> = () => {
     }
   }
 
-  function showSelectTypeMenu(){
+  function showSelectTypeMenu() {
     setSelectTypeMenuVisibility('block');
   }
 
-  function closeSelectTypeMenu(){
+  function closeSelectTypeMenu() {
     setSelectTypeMenuVisibility('none');
   }
+
+  function openModal() {
+    addPartRef.current!.showModal(); 
+  };
+
+  function closeModal ()  {
+    addPartRef.current!.close(); 
+  };
 
 
   // Visual objects for mapping and creating dynamic components
@@ -333,19 +342,19 @@ const List: React.FC<ListProps> = () => {
   // CRUD functions
   async function getUserType() {
     try {
-      if(currentUser){
-      const userId = currentUser.uid;
-      const response = await fetch(`http://localhost:3001/users/${userId}`);
-      const user = await response.json();
-      if (user.type === 'admin') {
-        setCrudButtonsVisibility(true);
+      if (currentUser) {
+        const userId = currentUser.uid;
+        const response = await fetch(`http://localhost:3001/users/${userId}`);
+        const user = await response.json();
+        if (user.type === 'admin') {
+          setCrudButtonsVisibility(true);
+        }
       }
-    }
     } catch (err) {
       console.log(err);
     }
   }
-  
+
   async function getPartList() {
     try {
       const response = await fetch('http://localhost:3001/list/parts');
@@ -376,6 +385,7 @@ const List: React.FC<ListProps> = () => {
       setEditingPartId(null);
       getPartList();
       showModalAddPart('');
+      closeModal();
       if (selectTypeMenuVisibility === 'block') {
         closeSelectTypeMenu();
       }
@@ -523,20 +533,20 @@ const List: React.FC<ListProps> = () => {
                       ) : null}
 
                       <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
-                      <div style = {{display: crudButtonsVisibile ? 'block' : 'none'}}>
-                      <div className={listStyle.editDeleteButtons}>
-                        <button onClick={() => editPart(index)} className={listStyle.editButton}><img src={EditIcon} alt="Edit Icon" /></button>
-                        <button onClick={() => deletePart(part['_id'])} className={listStyle.deleteButton}><img src={DeleteIcon} alt="Delete Icon" /></button>
+                      <div style={{ display: crudButtonsVisibile ? 'block' : 'none' }}>
+                        <div className={listStyle.editDeleteButtons}>
+                          <button onClick={() => editPart(index)} className={listStyle.editButton}><img src={EditIcon} alt="Edit Icon" /></button>
+                          <button onClick={() => deletePart(part['_id'])} className={listStyle.deleteButton}><img src={DeleteIcon} alt="Delete Icon" /></button>
+                        </div>
+                        <StandartButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
                       </div>
-                      <StandartButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
-                    </div>
                     </div>
                   </div>
                 ))}
               </>
             ) : <></>}
             <br></br>
-            <div ref={selectTypeRef} style = {{display: crudButtonsVisibile ? 'block' : 'none'}}>
+            <div ref={selectTypeRef} style={{ display: crudButtonsVisibile ? 'block' : 'none' }}>
               <div className={listStyle.choosePartType} style={{ display: selectTypeMenuVisibility }}>
                 {Object.keys(partTypeDataMap).map((addPart, index) => (
                   <h3 key={index} className={listStyle.partType} onClick={() => showModalAddPart(addPart)}>
@@ -548,44 +558,46 @@ const List: React.FC<ListProps> = () => {
             </div>
           </div>
         </main>
-        <div style={{ display: addPartModalVisibility }} className={listStyle.addPartContainer}>
-          {selectedPartType ? (
-            <div className={listStyle.addPartModal}>
-              <div className={listStyle.addPartImg}>
-                <div className={listStyle.addPartImgBox}>
-                  <img
-                    src={partTypeDataMap[selectedPartType]['imageLink']}
-                    alt={'Imagem da peça que será adicionada ao sistema'}
-                  ></img>
+        <dialog ref = {addPartRef}>
+          <div className={listStyle.addPartContainer}>
+            {selectedPartType ? (
+              <div className={listStyle.addPartModal}>
+                <div className={listStyle.addPartImg}>
+                  <div className={listStyle.addPartImgBox}>
+                    <img
+                      src={partTypeDataMap[selectedPartType]['imageLink']}
+                      alt={'Imagem da peça que será adicionada ao sistema'}
+                    ></img>
+                  </div>
+                </div>
+                <div className={listStyle.addPartInputs}>
+                  {Object.keys(partTypeDataMap[selectedPartType]).map((key) =>
+                    key !== '_id' && key !== 'type' && key !== '__v' ? (
+                      <>
+                        <label className={listStyle.inputLabel}>{key}:</label>
+                        <input
+                          type='text'
+                          placeholder={key}
+                          key={key}
+                          name={key}
+                          onChange={(event) => handleChange(event)}
+                          value={(partTypeDataMap[selectedPartType] as any)[key]}
+                        ></input>{' '}
+                      </>
+                    ) : (
+                      <></>
+                    )
+                  )}
+                </div>
+                <div className={listStyle.saveButtonContainer}>
+                  <StandartButton onClick={() => createOrEditPart()} buttonLabel='Salvar' />
                 </div>
               </div>
-              <div className={listStyle.addPartInputs}>
-                {Object.keys(partTypeDataMap[selectedPartType]).map((key) =>
-                  key !== '_id' && key !== 'type' && key !== '__v' ? (
-                    <>
-                      <label className={listStyle.inputLabel}>{key}:</label>
-                      <input
-                        type='text'
-                        placeholder={key}
-                        key={key}
-                        name={key}
-                        onChange={(event) => handleChange(event)}
-                        value={(partTypeDataMap[selectedPartType] as any)[key]}
-                      ></input>{' '}
-                    </>
-                  ) : (
-                    <></>
-                  )
-                )}
-              </div>
-              <div className={listStyle.saveButtonContainer}>
-                <StandartButton onClick={() => createOrEditPart()} buttonLabel='Salvar' />
-              </div>
-            </div>
-          ) : (
-            <></>
-          )}
-        </div>
+            ) : (
+              <></>
+            )}
+          </div>
+        </dialog>
       </div>
     </div>
   );

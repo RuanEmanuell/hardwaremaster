@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import mbStyle from './styles/manualbuild.module.css';
 import NavBar from '../../components/global/navbar';
 import CpuIcon from '../../images/cpu.png';
@@ -72,14 +72,12 @@ const ManualBuild: React.FC = () => {
   const [allPartsSelected, setAllPartsSelected] = useState<boolean>(false);
   const [totalBuildPrice, setTotalBuildPrice] = useState<number>(0);
 
-  const [saveMenu, setSaveMenuDisplay] = useState<string>('none');
-
-  const saveRef = useDetectClickOutside({ onTriggered: closeSaveMenu });
-
   const [shareMenu, setShareMenuDisplay] = useState<string>('none');
   const [copiedToTA, setCopiedDisplay] = useState<string>('none');
 
   const shareRef = useDetectClickOutside({ onTriggered: closeShareMenu });
+
+  const saveRef = useRef<HTMLDialogElement>(null);
 
   const { currentUser } = useAuth();
 
@@ -333,63 +331,60 @@ const ManualBuild: React.FC = () => {
   }, [selectedCpu, selectedGpu, selectedMobo, selectedRam,
     selectedPower, selectedSsd, selectedCase]);
 
-  async function getEditBuildParts(){
+  async function getEditBuildParts() {
     const result = await fetch(`http://localhost:3001/builds/${buildId}`);
     const build = await result.json();
-    for(let buildPart in build){
+    for (let buildPart in build) {
       console.log(build[buildPart]);
       console.log(partList.filter(part => part._id === build[buildPart]));
     }
   }
 
   useEffect(() => {
-    if(buildId != undefined){
+    if (buildId != undefined) {
       getEditBuildParts();
     }
   }, []);
 
-  function openSaveMenu() {
-    setTimeout(() => {
-      setSaveMenuDisplay('flex');
-    }, 1);
-  }
-
-  function closeSaveMenu() {
-    if (saveMenu === 'flex') {
-      setSaveMenuDisplay('none');
-    }
-  }
-
   function showSaveBuildMenu() {
     if (allPartsSelected) {
       if (currentUser) {
-        openSaveMenu();
+        openModal();
       } else {
         navigate('/login');
       }
     }
   }
 
+  function openModal() {
+    saveRef.current!.showModal();
+  };
+
+  function closeModal() {
+    saveRef.current!.close();
+  };
+
+
   async function saveBuild() {
-    try{
+    try {
       const newBuild = await fetch(
         'http://localhost:3001/builds/post', ({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body:JSON.stringify(
-          {
-           userId : currentUser?.uid,
-           cpuId: selectedCpu?._id, 
-           gpuId: selectedGpu?._id, 
-           moboId: selectedMobo?._id, 
-           ramId: selectedRam?._id, 
-           powerId: selectedPower?._id, 
-           ssdId: selectedSsd?._id, 
-           caseId: selectedCase?._id
-          })
+          body: JSON.stringify(
+            {
+              userId: currentUser?.uid,
+              cpuId: selectedCpu?._id,
+              gpuId: selectedGpu?._id,
+              moboId: selectedMobo?._id,
+              ramId: selectedRam?._id,
+              powerId: selectedPower?._id,
+              ssdId: selectedSsd?._id,
+              caseId: selectedCase?._id
+            })
         }));
       navigate('/profile');
-    }catch(err){
+    } catch (err) {
       console.log(err);
     }
   }
@@ -546,7 +541,7 @@ const ManualBuild: React.FC = () => {
             <div className={mbStyle.buildButtonsBox}>
               <button className={mbStyle.buildButton}
                 style={{ backgroundColor: allPartsSelected ? '#0066FF' : 'grey' }}
-                onClick={showSaveBuildMenu}>
+                onClick={openModal}>
                 <img src={SaveIcon} alt='Salvar'></img>
               </button>
               <button className={mbStyle.buildButton}
@@ -576,47 +571,49 @@ const ManualBuild: React.FC = () => {
               <p>Copiar texto da montagem</p>
             </div>
           </div>
-          <div className={mbStyle.saveScreen} style={{ display: saveMenu }}>
-            <div className={mbStyle.saveBox} ref={saveRef}>
-              <h1>Deseja salvar essa build?</h1>
-              <SaveBuildPart
-                partLabel='Processador'
-                selectedPart={selectedCpu!}
-              />
-              <SaveBuildPart
-                partLabel='Placa de vídeo'
-                selectedPart={selectedGpu!}
-              />
-              <SaveBuildPart
-                partLabel='Placa mãe'
-                selectedPart={selectedMobo!}
-              />
-              <SaveBuildPart
-                partLabel='RAM'
-                selectedPart={selectedRam!}
-              />
-              <SaveBuildPart
-                partLabel='Fonte'
-                selectedPart={selectedPower!}
-              />
-              <SaveBuildPart
-                partLabel='SSD'
-                selectedPart={selectedSsd!}
-              />
-              <SaveBuildPart
-                partLabel='Gabinete'
-                selectedPart={selectedCase!}
-              />
-              <StandartButton
-                buttonLabel='Salvar'
-                onClick={saveBuild}
-              />
-              <StandartButton
-                buttonLabel='Cancelar'
-                onClick={closeSaveMenu}
-              />
+          <dialog ref={saveRef}>
+            <div className={mbStyle.saveScreen}>
+              <div className={mbStyle.saveBox}>
+                <h1>Deseja salvar essa build?</h1>
+                <SaveBuildPart
+                  partLabel='Processador'
+                  selectedPart={selectedCpu!}
+                />
+                <SaveBuildPart
+                  partLabel='Placa de vídeo'
+                  selectedPart={selectedGpu!}
+                />
+                <SaveBuildPart
+                  partLabel='Placa mãe'
+                  selectedPart={selectedMobo!}
+                />
+                <SaveBuildPart
+                  partLabel='RAM'
+                  selectedPart={selectedRam!}
+                />
+                <SaveBuildPart
+                  partLabel='Fonte'
+                  selectedPart={selectedPower!}
+                />
+                <SaveBuildPart
+                  partLabel='SSD'
+                  selectedPart={selectedSsd!}
+                />
+                <SaveBuildPart
+                  partLabel='Gabinete'
+                  selectedPart={selectedCase!}
+                />
+                <StandartButton
+                  buttonLabel='Salvar'
+                  onClick={saveBuild}
+                />
+                <StandartButton
+                  buttonLabel='Cancelar'
+                  onClick={closeModal}
+                />
+              </div>
             </div>
-          </div>
+          </dialog>
         </main>
       </div>
     </div>

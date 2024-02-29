@@ -160,6 +160,10 @@
     background-color: black;
 }
 
+.saveBox h1{
+    color: #DB5510;
+}
+
 @media screen and (max-width: 960px) {
     .partSelectorsBox {
         grid-template-columns: 1fr;
