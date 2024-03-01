@@ -8,6 +8,8 @@ interface Build {
   powerId: string;
   ssdId: string;
   caseId: string;
+  ramQuantity: number;
+  ssdQuantity: number;
 }
 
 export default Build;

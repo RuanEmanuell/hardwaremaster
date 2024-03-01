@@ -126,7 +126,7 @@ const ManualBuild: React.FC = () => {
   }
 
   function fixPrice(price: string) {
-    return parseFloat(price.replace('.', '').replace(',', '.'));
+    return parseFloat(price.replace(',', '.'));
   }
 
   function selectPart(part: Part) {
@@ -137,7 +137,7 @@ const ManualBuild: React.FC = () => {
         let newRamQuantityAndPrice = {
           ...selectedRam,
           partQuantity: parseInt(part['moboSlots']!),
-          price: (parseFloat(selectedRam['price'].replace(',', '.')) / selectedRam['partQuantity'] * parseInt(part['moboSlots']!)).toFixed(2).toString().replace('.', ',')
+          price: (fixPrice(selectedRam['price']) / selectedRam['partQuantity'] * parseInt(part['moboSlots']!)).toFixed(2).toString()
         }
         setSelectedRam(newRamQuantityAndPrice);
       }
@@ -155,7 +155,7 @@ const ManualBuild: React.FC = () => {
       newPrice = newPrice.replace('.', ',');
       let newPart = { ...part, partQuantity: newPartQuantity, price: newPrice }
       setNewPartValues(part, newPart);
-      setTotalBuildPrice(totalBuildPrice + (parseFloat(newPrice.replace(',', '.')) / newPartQuantity));
+      setTotalBuildPrice(totalBuildPrice + (fixPrice(newPrice) / newPartQuantity));
     }
   }
 
@@ -166,7 +166,7 @@ const ManualBuild: React.FC = () => {
       newPrice = newPrice.replace('.', ',');
       let newPart = { ...part, partQuantity: newPartQuantity, price: newPrice }
       setNewPartValues(part, newPart);
-      setTotalBuildPrice(totalBuildPrice - (parseFloat(newPrice.replace(',', '.')) / newPartQuantity));
+      setTotalBuildPrice(totalBuildPrice - (fixPrice(newPrice) / newPartQuantity));
     }
   }
 
@@ -298,6 +298,14 @@ const ManualBuild: React.FC = () => {
           fixPrice(temporarySelectedSsd!.price) +
           fixPrice(temporarySelectedCase!.price);
 
+        temporarySelectedRam!.partQuantity = temporarySelectedBuild.ramQuantity;
+        temporarySelectedSsd!.partQuantity = temporarySelectedBuild.ssdQuantity;
+
+        temporarySelectedSsd!.price = (fixPrice(temporarySelectedSsd!.price) * temporarySelectedSsd!.partQuantity).toString();
+        temporarySelectedSsd!.price = temporarySelectedSsd!.price.replaceAll('.', ',');
+
+        temporarySelectedRam!.price = (fixPrice(temporarySelectedRam!.price) * temporarySelectedRam!.partQuantity).toString();
+        temporarySelectedRam!.price = temporarySelectedRam!.price.replaceAll('.', ',');
 
         setSelectedCpu(temporarySelectedCpu);
         setSelectedGpu(temporarySelectedGpu);
@@ -381,7 +389,9 @@ const ManualBuild: React.FC = () => {
                 ramId: selectedRam?._id,
                 powerId: selectedPower?._id,
                 ssdId: selectedSsd?._id,
-                caseId: selectedCase?._id
+                caseId: selectedCase?._id,
+                ramQuantity: selectedRam?.partQuantity,
+                ssdQuantity: selectedSsd?.partQuantity
               })
           }));
       navigate('/profile');

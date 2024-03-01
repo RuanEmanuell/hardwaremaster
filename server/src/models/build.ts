@@ -12,6 +12,8 @@ const buildSchema = new Schema({
     powerId: String,
     ssdId: String,
     caseId: String,
+    ramQuantity: Number,
+    ssdQuantity: Number
 })
 
 const Build = mongoose.model('build', buildSchema);

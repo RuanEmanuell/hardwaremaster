@@ -27,6 +27,7 @@ const PartBox: React.FC<Props> = ({ userParts, build, calculateBuildPrice }) => 
         (part =>
           <ProfileBuildPart
             part={part}
+            build={build}
             calculateBuildPrice = {calculateBuildPrice}
           />
         )}</div>
