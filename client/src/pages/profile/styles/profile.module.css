@@ -3,6 +3,47 @@
   justify-content: center;
 }
 
+.userProfile{
+  margin-top: 2.5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.userPhotoBox{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.userPhoto{
+  background-color: grey;
+  width: 50%;
+  border-radius: 30px;
+  height: fit-content;
+}
+
+.userBuildsLabel{
+  text-align: center;
+}
+
+.signIn{
+  margin: 5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 50%;
+  text-align: center;
+}
+
+.signIn button{
+  font-size: larger;
+}
+
+
 .buildsContainer{
   display: grid;
   grid-template-columns: 1fr 1fr;

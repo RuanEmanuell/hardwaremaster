@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import globalComponentStyle from './styles/globalcomponents.module.css'
 import { useDetectClickOutside } from 'react-detect-click-outside';
+import hamburguerIcon from '../../images/hamburguer.png'
 
 const HamburguerMenu: React.FC = () => {
     const [hamburguerMenuDisplay, setShareMenuDisplay] = useState<string>('none');
@@ -22,11 +23,9 @@ const HamburguerMenu: React.FC = () => {
     return (
         <div className={globalComponentStyle.hamburguerMenuContainer}>
             <div>
-                <div className={globalComponentStyle.hamburguerMenu} ref={hamburguerMenuRef} onClick={showHamburguerMenu}>
-                    <div className={globalComponentStyle.dash}></div>
-                    <div className={globalComponentStyle.dash}></div>
-                    <div className={globalComponentStyle.dash}></div>
-                </div>
+                <img src = {hamburguerIcon} className={globalComponentStyle.hamburguerMenu} ref={hamburguerMenuRef} onClick={showHamburguerMenu}>
+                    
+                </img>
             </div>
             <div className={globalComponentStyle.hamburguerMenuOptions} style={{ display: hamburguerMenuDisplay }}>
                 <Link to='/'>

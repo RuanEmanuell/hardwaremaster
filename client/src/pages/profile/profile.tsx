@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import profileStyle from './styles/profile.module.css';
 import { useAuth } from '../../utils/auth';
 import NavBar from '../../components/global/navbar';
-import EditIcon from '../../images/edit.png';
-import DeleteIcon from '../../images/delete.png';
+import profileIcon from '../../images/profile.png';
 import { useNavigate } from 'react-router-dom';
 import StandartButton from '../../components/global/standartbutton';
+import User from '../../utils/user';
 import Part from '../../utils/part';
 import Build from '../../utils/build';
 import BuildBox from '../../components/profile/buildbox';
@@ -14,6 +14,8 @@ import Loading from '../../components/global/loading';
 const Profile: React.FC = () => {
   const { currentUser } = useAuth();
 
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [userProfile, setUserProfile] = useState<User | null>(null);
   const [userBuilds, setUserBuildList] = useState<Build[] | null>(null);
   const [userParts, setUserPartList] = useState<Part[] | null>(null);
 
@@ -22,12 +24,25 @@ const Profile: React.FC = () => {
 
   const navigate = useNavigate();
 
+  async function getUserProfile() {
+    try {
+      const response = await fetch(`http://localhost:3001/users/${currentUser?.uid}`);
+      const user = await response.json();
+      setUserProfile(user);
+      getUserBuildList();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   async function getUserBuildList() {
     try {
       const response = await fetch(`http://localhost:3001/builds/users/${currentUser?.uid}`);
       const builds: Build[] = await response.json();
       setUserBuildList(builds);
-      getPartList();
+      if (builds.length > 0) {
+        getPartList();
+      }
     } catch (err) {
       console.log(err);
     }
@@ -35,9 +50,11 @@ const Profile: React.FC = () => {
 
   async function getPartList() {
     try {
+      setLoading(true);
       const response = await fetch('http://localhost:3001/list/parts');
       const parts: Part[] = await response.json();
       setUserPartList(parts);
+      setLoading(false);
     } catch (err) {
       console.log(err);
     }
@@ -69,8 +86,25 @@ const Profile: React.FC = () => {
     deleteBuildRef.current!.close();
   }
 
+  function sendToLoginScreen() {
+    navigate('/login');
+  }
+
+  function sendToManualBuild() {
+    navigate('/manualbuild');
+  }
+
   useEffect(() => {
-      getUserBuildList();
+    setLoading(true);
+    if (currentUser) {
+      getUserProfile();
+    } else {
+      setTimeout(() => {
+        if (!currentUser) {
+          setLoading(false);
+        }
+      }, 300)
+    }
   }, [currentUser]);
 
   return (
@@ -78,9 +112,32 @@ const Profile: React.FC = () => {
       <NavBar />
       <div className={profileStyle.profileScreen}>
         <main>
-          {!currentUser && !userParts ?
-            <Loading/> : <div></div>
+          {isLoading ?
+            <Loading /> :
+            <>
+              <div className={profileStyle.userProfile}>
+                <div className={profileStyle.userPhotoBox}>
+                  <img src={userProfile?.photo === '' ? profileIcon : userProfile?.photo} className={profileStyle.userPhoto}></img>
+                </div>
+                <h1>{userProfile?.name}</h1>
+              </div>
+              {userBuilds && userBuilds.length === 0 && currentUser ? <div className={profileStyle.signIn}>
+                <h2>Parece que você ainda não montou nenhum pc...</h2>
+                <StandartButton
+                  buttonLabel='Montar PC'
+                  onClick={sendToManualBuild}
+                />
+              </div>
+                : !currentUser && !userBuilds ? <div className={profileStyle.signIn}>
+                  <h2>Parece que você ainda não tem uma conta...</h2>
+                  <StandartButton
+                    buttonLabel='Fazer login'
+                    onClick={sendToLoginScreen}
+                  />
+                </div> : <></>}
+            </>
           }
+
           <div className={profileStyle.buildsContainer}>
             {userBuilds?.map
               ((build: Build, index) => (
