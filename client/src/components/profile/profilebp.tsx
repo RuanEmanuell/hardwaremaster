@@ -11,7 +11,20 @@ interface Props{
 
 const ProfileBuildPart : React.FC<Props> = ({part, calculateBuildPrice, build}) => {
     useEffect(() => {
-      calculateBuildPrice(part.price);
+      let quantity = 1;
+      switch(part.type){
+        case 'ram':
+          quantity = build.ramQuantity;
+        break;
+        case 'ssd':
+          quantity = build.ssdQuantity
+        break;
+        default:
+          quantity = 1;
+        break;
+      }
+      //console.log(parseFloat(part.price.replace(',', '.')) * quantity)
+      calculateBuildPrice((parseFloat(part.price.replace(',', '.')) * quantity).toString());
     }, [])
 
     function fixPrice(price: string) {

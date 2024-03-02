@@ -36,8 +36,7 @@
     background-color: #DB5510;
     width: 100vw;
     min-height: 25px;
-    max-height: 100px;
-    height: calc(2vw + 6vh);
+    height: 7.5vh;
     display: flex;
     justify-content: center;
 }
@@ -48,7 +47,7 @@
     max-width: 1280px;
     color: white;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1.4fr 1fr;
 }
 
 .navBar a {
@@ -63,22 +62,21 @@
 }
 
 .navLogo h1 {
-    margin: 0;
-    margin-top: calc(2vh + 0.5vw);
+    margin: auto 0;
     font-size: min(max(30px), calc(1.5vh + 1vw));
     text-transform: uppercase;
     font-weight: 900;
 }
 
 .navOptions {
-    margin-top: calc(1vh + 0.5vw);
+    margin: auto 0;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
 .navOption {
     text-align: center;
-    transition: all 0.5s;
+    transition: all 0.25s;
 }
 
 .navOption:hover {
@@ -108,11 +106,8 @@
 }
 
 .hamburguerMenu {
-    margin-top: 10%;
     width: 30px;
     height: 30px;
-    padding: 0 33%;
-    align-self: center;
     display: grid;
     grid-template-rows: 1fr 1fr 1fr;
 }
@@ -186,7 +181,9 @@
         display: none;
     }
     .hamburguerMenuContainer {
-        display: block;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     .navLogo h1{
         margin-left: 10%;

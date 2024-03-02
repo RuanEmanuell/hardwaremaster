@@ -292,15 +292,6 @@ const ManualBuild: React.FC = () => {
         const temporarySelectedCase = partList.find(part => part._id === temporarySelectedBuild.caseId);
 
 
-        let temporaryBuildPrice =
-          fixPrice(temporarySelectedCpu!.price) +
-          fixPrice(temporarySelectedGpu!.price) +
-          fixPrice(temporarySelectedMobo!.price) +
-          fixPrice(temporarySelectedRam!.price) +
-          fixPrice(temporarySelectedPower!.price) +
-          fixPrice(temporarySelectedSsd!.price) +
-          fixPrice(temporarySelectedCase!.price);
-
         temporarySelectedRam!.partQuantity = temporarySelectedBuild.ramQuantity;
         temporarySelectedSsd!.partQuantity = temporarySelectedBuild.ssdQuantity;
 
@@ -310,6 +301,15 @@ const ManualBuild: React.FC = () => {
         temporarySelectedRam!.price = (fixPrice(temporarySelectedRam!.price) * temporarySelectedRam!.partQuantity).toString();
         temporarySelectedRam!.price = temporarySelectedRam!.price.replaceAll('.', ',');
 
+        let temporaryBuildPrice =
+        fixPrice(temporarySelectedCpu!.price) +
+        fixPrice(temporarySelectedGpu!.price) +
+        fixPrice(temporarySelectedMobo!.price) +
+        fixPrice(temporarySelectedRam!.price) +
+        fixPrice(temporarySelectedPower!.price) +
+        fixPrice(temporarySelectedSsd!.price) +
+        fixPrice(temporarySelectedCase!.price);
+        
         setSelectedCpu(temporarySelectedCpu);
         setSelectedGpu(temporarySelectedGpu);
         setSelectedMobo(temporarySelectedMobo);

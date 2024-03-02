@@ -6,6 +6,7 @@ import HamburguerMenu from './hamburguermenu';
 import homeIcon from '../../images/home.png';
 import buildIcon from '../../images/build.png';
 import bookIcon from '../../images/book.png';
+import profileIcon from '../../images/profile.png';
 
 const NavBar : React.FC = () => {
     return (
@@ -29,6 +30,12 @@ const NavBar : React.FC = () => {
                         <NavBarIcon
                             navIcon={bookIcon}
                             navLabel='Ver peças'
+                        />
+                    </Link>
+                    <Link to='/profile'>
+                        <NavBarIcon
+                            navIcon={profileIcon}
+                            navLabel='Meu perfil'
                         />
                     </Link>
                 </div>

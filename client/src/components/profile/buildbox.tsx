@@ -20,8 +20,8 @@ const BuildBox: React.FC<Props> = ({ build, index, parts, onEditBuildClick, onSh
   let temporaryBuildPrice : number = 0;
 
   function calculateBuildPrice(partPrice: string){
-    temporaryBuildPrice += parseFloat(partPrice.replace('.', '').replace(',', '.'));
-    setBuildPrice(temporaryBuildPrice.toFixed(2));
+    temporaryBuildPrice += parseFloat(partPrice);
+    setBuildPrice(temporaryBuildPrice.toFixed(2).replace('.', ','));
   }
 
   return (
