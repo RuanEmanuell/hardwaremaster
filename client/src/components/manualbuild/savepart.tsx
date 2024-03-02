@@ -13,7 +13,7 @@ const SaveBuildPart: React.FC<Props> = ({ partLabel, selectedPart }) => {
       <h2 className={mbComponentStyle.buildPartLabel}>{partLabel}</h2>
       <div className={mbComponentStyle.saveBuildPart}>
         <img src={selectedPart?.imageLink}></img>
-        <h3>{selectedPart?.name} {selectedPart?.type === ('ram' || 'ssd') && selectedPart?.partQuantity > 1 ? ` (${selectedPart?.partQuantity} unidades)` : ''}</h3>
+        <h3>{selectedPart?.name} {(selectedPart?.type === 'ram' || selectedPart?.type === 'ssd') && selectedPart?.partQuantity > 1 ? ` (${selectedPart?.partQuantity} unidades)` : ''}</h3>
         <h3>R$ {selectedPart?.price}</h3>
       </div>
     </div>

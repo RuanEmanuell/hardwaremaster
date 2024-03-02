@@ -8,14 +8,14 @@ import { useNavigate } from 'react-router-dom';
 import StandartButton from '../../components/global/standartbutton';
 import Part from '../../utils/part';
 import Build from '../../utils/build';
-import ProfileBuildPart from '../../components/profile/profilebp';
-import PartBox from '../../components/profile/partbox';
 import BuildBox from '../../components/profile/buildbox';
+import Loading from '../../components/global/loading';
 
 const Profile: React.FC = () => {
   const { currentUser } = useAuth();
-  const [userBuilds, setUserBuildList] = useState<Build[] | undefined>(undefined);
-  const [userParts, setUserPartList] = useState<Part[] | undefined>(undefined);
+
+  const [userBuilds, setUserBuildList] = useState<Build[] | null>(null);
+  const [userParts, setUserPartList] = useState<Part[] | null>(null);
 
   const [selectedBuildId, setSelectedBuildId] = useState<String>('');
   const deleteBuildRef = useRef<HTMLDialogElement>(null);
@@ -27,6 +27,7 @@ const Profile: React.FC = () => {
       const response = await fetch(`http://localhost:3001/builds/users/${currentUser?.uid}`);
       const builds: Build[] = await response.json();
       setUserBuildList(builds);
+      getPartList();
     } catch (err) {
       console.log(err);
     }
@@ -34,11 +35,9 @@ const Profile: React.FC = () => {
 
   async function getPartList() {
     try {
-      if (userBuilds) {
-        const response = await fetch('http://localhost:3001/list/parts');
-        const parts: Part[] = await response.json();
-        setUserPartList(parts);
-      }
+      const response = await fetch('http://localhost:3001/list/parts');
+      const parts: Part[] = await response.json();
+      setUserPartList(parts);
     } catch (err) {
       console.log(err);
     }
@@ -71,27 +70,27 @@ const Profile: React.FC = () => {
   }
 
   useEffect(() => {
-    getUserBuildList();
+      getUserBuildList();
   }, [currentUser]);
-
-  useEffect(() => {
-    getPartList();
-  }, [userBuilds]);
 
   return (
     <div>
       <NavBar />
       <div className={profileStyle.profileScreen}>
         <main>
+          {!currentUser && !userParts ?
+            <Loading/> : <div></div>
+          }
           <div className={profileStyle.buildsContainer}>
             {userBuilds?.map
               ((build: Build, index) => (
                 <BuildBox
-                build={build}
-                index={index}
-                parts={userParts!}
-                onEditBuildClick={editBuild}
-                onShowDeleteBuildMenuClick={showDeleteBuildMenu}
+                  key={build._id}
+                  build={build}
+                  index={index}
+                  parts={userParts!}
+                  onEditBuildClick={editBuild}
+                  onShowDeleteBuildMenuClick={showDeleteBuildMenu}
                 />))}
           </div>
           <dialog ref={deleteBuildRef}>

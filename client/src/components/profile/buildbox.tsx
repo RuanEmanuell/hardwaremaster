@@ -25,7 +25,7 @@ const BuildBox: React.FC<Props> = ({ build, index, parts, onEditBuildClick, onSh
   }
 
   return (
-    <div className={profileComponentStyle.buildBox} key={index}>
+    <div className={profileComponentStyle.buildBox}>
       <div className={profileComponentStyle.buildInfoAndButtons}>
         <h2 className={profileComponentStyle.buildLabel}>Build {index + 1}</h2>
         <div className={profileComponentStyle.buildButtons}>

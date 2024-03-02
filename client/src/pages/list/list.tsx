@@ -9,6 +9,7 @@ import StandartButton from '../../components/global/standartbutton';
 import CircleButton from '../../components/global/circlebutton';
 import { useDetectClickOutside } from 'react-detect-click-outside';
 import { useAuth } from '../../utils/auth';
+import Loading from '../../components/global/loading';
 
 interface PartData {
   name: string;
@@ -430,6 +431,8 @@ const List: React.FC<ListProps> = () => {
       <NavBar />
       <div className={listStyle.mainContainer}>
         <main>
+          {fullPartList.length === 0 ? <Loading/> :
+          <>
           <h1 className={listStyle.mainTitle}>{filterPartLabel}</h1>
           <div className={listStyle.partFilters}>
             <div className={listStyle.gridSpacer}></div>
@@ -556,6 +559,8 @@ const List: React.FC<ListProps> = () => {
               <CircleButton onClick={showSelectTypeMenu} buttonIcon='+' />
             </div>
           </div>
+          </>
+}
         </main>
         <dialog ref = {addPartRef}>
           <div className={listStyle.addPartContainer}>

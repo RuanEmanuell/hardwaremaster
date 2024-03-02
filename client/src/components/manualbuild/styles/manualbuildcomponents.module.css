@@ -10,7 +10,7 @@
     grid-template-columns: 1fr 3fr 1fr;
     height: 50%;
     max-height: fit-content;
-    margin: 0 5%;
+    margin: 5% 5%;
 }
 
 .imgBox {

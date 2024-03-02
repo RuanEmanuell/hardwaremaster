@@ -26,6 +26,7 @@ const PartBox: React.FC<Props> = ({ userParts, build, calculateBuildPrice }) => 
         ((part: Part) => (part._id === buildPartType[part['type']])).map
         (part =>
           <ProfileBuildPart
+            key = {part.name}
             part={part}
             build={build}
             calculateBuildPrice = {calculateBuildPrice}
