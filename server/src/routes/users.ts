@@ -26,4 +26,26 @@ userRouter.post('/post', async (req, res) => {
   }
 });
 
+userRouter.put('/update/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    await User.findByIdAndUpdate(userId, req.body);
+    res.sendStatus(201);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+userRouter.delete('/delete/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    await User.findByIdAndDelete(userId, req.body);
+    res.sendStatus(201);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
 export default userRouter;

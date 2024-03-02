@@ -1,16 +1,17 @@
 import { Router } from 'express';
 import mongoose from 'mongoose';
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-extra';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import Part from '../models/part.ts';
 import db from '../database/connection.ts';
 
 const listRouter = Router();
 
 listRouter.get('/parts', async (req, res) => {
-  try{
+  try {
     const parts = await db.collection('parts').find({}).toArray();
     res.json(parts);
-  }catch(err){
+  } catch (err) {
     console.log(err);
     res.sendStatus(500);
   }
@@ -51,6 +52,7 @@ listRouter.get('/currentprice/:partId', async (req, res) => {
   const id = req.params.partId;
   const selectedPart: mongoose.mongo.WithId<mongoose.AnyObject> | null = await db.collection('parts').findOne({ "_id": new mongoose.Types.ObjectId(id) });
 
+  puppeteer.use(StealthPlugin());
   const browserPromise = puppeteer.launch();
   const browser = await browserPromise;
 
@@ -70,23 +72,35 @@ listRouter.get('/currentprice/:partId', async (req, res) => {
 
         let priceLink = '0.0';
 
-        if (await page.$('.sc-5492faee-2.ipHrwP.finalPrice')) {
-          priceLink = await page.$eval('.sc-5492faee-2.ipHrwP.finalPrice', (h4) => (h4 as HTMLElement).innerText.substring(3));
-        } else if (await page.$('#valVista')) {
-          priceLink = await page.$eval('#valVista', (p) => (p as HTMLElement).innerText.substring(3));
-        } else if (await page.$('.jss272')) {
-          priceLink = await page.$eval('.jss272', (div) => (div as HTMLElement).innerText.substring(3));
-        } else if (await page.$('.jss267')) {
-          priceLink = await page.$eval('.jss267', (div) => (div as HTMLElement).innerText.substring(3));
-        } else if (await page.$('.jss266')) {
-          priceLink = await page.$eval('.jss266', (div) => (div as HTMLElement).innerText.substring(3));
-        } else if (await page.$('.a-offscreen')) {
-          priceLink = await page.$eval('.a-offscreen', (span) => (span as HTMLElement).innerText.substring(2));
+        if (partLink.includes('pichau')) {
+          let possibleDivs = ['.jss258', '.jss266', '.jss267', '.jss272'];
+
+          for (let i = 0; i < possibleDivs.length; i++) {
+            if (await page.$(possibleDivs[i])) {
+              let temporaryPriceLink = '0.0';
+              temporaryPriceLink = await page.$eval(possibleDivs[i], (div) => (div as HTMLElement).innerText.substring(3));
+              if (temporaryPriceLink.length < 15) {
+                priceLink = temporaryPriceLink;
+              }
+            }
+          }
+        } else if (partLink.includes('kabum')) {
+          if (await page.$('.sc-5492faee-2.ipHrwP.finalPrice')) {
+            priceLink = await page.$eval('.sc-5492faee-2.ipHrwP.finalPrice', (h4) => (h4 as HTMLElement).innerText.substring(3));
+          }
+        } else if (partLink.includes('terabyte')) {
+          if (await page.$('#valVista')) {
+            priceLink = await page.$eval('#valVista', (p) => (p as HTMLElement).innerText.substring(3));
+          }
+        } else if (partLink.includes('amazon')) {
+          if (await page.$('.a-offscreen')) {
+            priceLink = await page.$eval('.a-offscreen', (span) => (span as HTMLElement).innerText.substring(2));
+          }
         }
 
         priceLink = priceLink.replace('.', '');
 
-        if (parseInt(priceLink) < parseInt(currentPrice) && parseInt(priceLink) > 10) {
+        if (parseInt(priceLink) < parseInt(currentPrice) && parseInt(priceLink) > 0) {
           currentPrice = priceLink;
         }
       }

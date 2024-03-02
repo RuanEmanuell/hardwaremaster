@@ -41,8 +41,8 @@ buildRouter.post('/post', async (req, res) => {
 });
 
 buildRouter.put('/update/:buildId', async (req, res) => {
-  const buildId = req.params.buildId;
   try {
+    const buildId = req.params.buildId;
     await Build.findByIdAndUpdate(buildId, req.body);
     res.sendStatus(201);
   } catch (err) {
@@ -52,8 +52,8 @@ buildRouter.put('/update/:buildId', async (req, res) => {
 });
 
 buildRouter.delete('/delete/:buildId', async(req, res) => {
-  const buildId = req.params.buildId;
   try {
+    const buildId = req.params.buildId;
     await Build.findByIdAndDelete(buildId, req.body);
     res.sendStatus(201);
   } catch (err) {
