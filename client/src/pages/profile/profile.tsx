@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import profileStyle from './styles/profile.module.css';
 import { useAuth } from '../../utils/auth';
 import NavBar from '../../components/global/navbar';
-import profileIcon from '../../images/profile.png';
+import ProfileIcon from '../../images/profile.png';
+import EditIcon from '../../images/edit.png';
 import { useNavigate } from 'react-router-dom';
 import StandartButton from '../../components/global/standartbutton';
 import User from '../../utils/user';
@@ -19,6 +20,11 @@ const Profile: React.FC = () => {
   const [userBuilds, setUserBuildList] = useState<Build[] | null>(null);
   const [userParts, setUserPartList] = useState<Part[] | null>(null);
 
+  const editUserRef = useRef<HTMLDialogElement>(null);
+  const [editUserPhoto, setEditUserPhoto] = useState<string>('');
+  const [editUserName, setEditUserName] = useState<string>('');
+  const [userNameCheckError, setUserNameCheckError] = useState<boolean>(false);
+
   const [selectedBuildId, setSelectedBuildId] = useState<String>('');
   const deleteBuildRef = useRef<HTMLDialogElement>(null);
 
@@ -26,9 +32,13 @@ const Profile: React.FC = () => {
 
   async function getUserProfile() {
     try {
+      setLoading(true);
       const response = await fetch(`http://localhost:3001/users/${currentUser?.uid}`);
-      const user = await response.json();
+      const user: User = await response.json();
       setUserProfile(user);
+      if (!user) {
+        setLoading(false);
+      }
       getUserBuildList();
     } catch (err) {
       console.log(err);
@@ -42,6 +52,8 @@ const Profile: React.FC = () => {
       setUserBuildList(builds);
       if (builds.length > 0) {
         getPartList();
+      } else {
+        setLoading(false);
       }
     } catch (err) {
       console.log(err);
@@ -58,6 +70,50 @@ const Profile: React.FC = () => {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  function showEditUserMenu() {
+    editUserRef.current?.showModal();
+    setUserNameCheckError(false);
+    setEditUserName('');
+    setEditUserPhoto(userProfile!.photo);
+  }
+
+  function closeEditUserMenu() {
+    editUserRef.current?.close();
+  }
+
+  const editUserImage = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const file = event.target.files[0];
+      const imageURL = URL.createObjectURL(file);
+      setEditUserPhoto(imageURL);
+    }
+  }
+
+  const handleEditName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEditUserName(event.target.value);
+  }
+
+  async function saveEditUserMenuChanges() {
+    if(editUserName.length<5){
+      setUserNameCheckError(true);
+    }else{
+    try {
+      await fetch(`http://localhost:3001/users/update/${userProfile?._id}`, {
+        method: 'PUT',
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify({
+          name: editUserName,
+          photo: editUserPhoto
+        })
+      });
+      getUserProfile();
+      closeEditUserMenu();
+    } catch (err) {
+      console.log(err);
+    }
+  }
   }
 
   async function editBuild(buildId: string) {
@@ -95,16 +151,7 @@ const Profile: React.FC = () => {
   }
 
   useEffect(() => {
-    setLoading(true);
-    if (currentUser) {
-      getUserProfile();
-    } else {
-      setTimeout(() => {
-        if (!currentUser) {
-          setLoading(false);
-        }
-      }, 300)
-    }
+    getUserProfile();
   }, [currentUser]);
 
   return (
@@ -114,13 +161,56 @@ const Profile: React.FC = () => {
         <main>
           {isLoading ?
             <Loading /> :
-            <>
-              <div className={profileStyle.userProfile}>
-                <div className={profileStyle.userPhotoBox}>
-                  <img src={userProfile?.photo === '' ? profileIcon : userProfile?.photo} className={profileStyle.userPhoto}></img>
+            <> {currentUser ?
+              <div>
+                <div className={profileStyle.userProfile}>
+                  <div className={profileStyle.userPhotoBox}>
+                    <img src={userProfile?.photo === '' ? ProfileIcon : userProfile?.photo} className={profileStyle.userPhoto}></img>
+                  </div>
+                  <div className={profileStyle.userNameBox}>
+                    <h1>{userProfile?.name}</h1>
+                    <img src={EditIcon} onClick={showEditUserMenu}></img>
+                  </div>
                 </div>
-                <h1>{userProfile?.name}</h1>
-              </div>
+                <dialog ref={editUserRef}>
+                  <div className={profileStyle.editUserProfileBox}>
+                    <div className={profileStyle.editUserProfile}>
+                      <h1>Editar perfil</h1>
+                      <img src={userProfile?.photo === '' && editUserPhoto === '' ? ProfileIcon : editUserPhoto} className={profileStyle.editUserPhoto}></img>
+                      <StandartButton
+                        buttonLabel='Editar foto'
+                        onClick={() => {
+                          const input = document.createElement('input');
+                          input.type = 'file';
+                          input.accept = 'image/*';
+                          input.onchange = (event) => editUserImage(event as any);
+                          input.click();
+                        }}
+                      />
+                      <h2>Nome</h2>
+                      <input
+                        placeholder='Digite um novo nome de usuário...'
+                        value={editUserName}
+                        onChange={(event) => handleEditName(event)}
+                      ></input>
+                      <p className={profileStyle.userNameCheckError}
+                        style={{ display: userNameCheckError ? 'block' : 'none' }}>⚠ Nome de usuário deve ter mais de 5 caracteres</p>
+                      <div className={profileStyle.saveAndCancelButtons}>
+                        <StandartButton
+                          buttonLabel='Salvar'
+                          backgroundColor='green'
+                          onClick={saveEditUserMenuChanges}
+                        />
+                        <StandartButton
+                          buttonLabel='Cancelar'
+                          backgroundColor='red'
+                          onClick={closeEditUserMenu}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </dialog>
+              </div> : <></>}
               {userBuilds && userBuilds.length === 0 && currentUser ? <div className={profileStyle.signIn}>
                 <h2>Parece que você ainda não montou nenhum pc...</h2>
                 <StandartButton
@@ -128,7 +218,7 @@ const Profile: React.FC = () => {
                   onClick={sendToManualBuild}
                 />
               </div>
-                : !currentUser && !userBuilds ? <div className={profileStyle.signIn}>
+                : !currentUser ? <div className={profileStyle.signIn}>
                   <h2>Parece que você ainda não tem uma conta...</h2>
                   <StandartButton
                     buttonLabel='Fazer login'
