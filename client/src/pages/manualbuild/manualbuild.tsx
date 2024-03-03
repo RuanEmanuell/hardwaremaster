@@ -20,6 +20,20 @@ import Build from '../../utils/build';
 import Loading from '../../components/global/loading';
 
 const ManualBuild: React.FC = () => {
+
+  const [buildMode, setBuildMode] = useState<string>('automatic');
+
+  const cpuBrands = ['Intel', 'AMD', 'Tanto faz'];
+  const gpuBrands = ['NVIDIA', 'AMD', 'Intel', 'Tanto faz'];
+  const resolutions = ['1080p', '2.5K', '4K'];
+  const fpsOptions = ['30', '60', '144', '240'];
+
+  const [budgetSlideValue, setBudgetSlide] = useState<number>(3000);
+  const [preferedCpuBrand, setPreferedCpuBrand] = useState<string>(cpuBrands[2]);
+  const [preferedGpuBrand, setPreferedGpuBrand] = useState<string>(gpuBrands[3]);
+  const [preferedResolution, setPreferedResolution] = useState<string>(resolutions[0]);
+  const [preferedFps, setPreferedFps] = useState<string>(fpsOptions[1]);
+
   const [partList, setPartList] = useState<Part[]>([]);
 
   const [selectedCpu, setSelectedCpu] = useState<Part | undefined>(undefined);
@@ -302,14 +316,14 @@ const ManualBuild: React.FC = () => {
         temporarySelectedRam!.price = temporarySelectedRam!.price.replaceAll('.', ',');
 
         let temporaryBuildPrice =
-        fixPrice(temporarySelectedCpu!.price) +
-        fixPrice(temporarySelectedGpu!.price) +
-        fixPrice(temporarySelectedMobo!.price) +
-        fixPrice(temporarySelectedRam!.price) +
-        fixPrice(temporarySelectedPower!.price) +
-        fixPrice(temporarySelectedSsd!.price) +
-        fixPrice(temporarySelectedCase!.price);
-        
+          fixPrice(temporarySelectedCpu!.price) +
+          fixPrice(temporarySelectedGpu!.price) +
+          fixPrice(temporarySelectedMobo!.price) +
+          fixPrice(temporarySelectedRam!.price) +
+          fixPrice(temporarySelectedPower!.price) +
+          fixPrice(temporarySelectedSsd!.price) +
+          fixPrice(temporarySelectedCase!.price);
+
         setSelectedCpu(temporarySelectedCpu);
         setSelectedGpu(temporarySelectedGpu);
         setSelectedMobo(temporarySelectedMobo);
@@ -323,6 +337,10 @@ const ManualBuild: React.FC = () => {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  function changeSlider(event: React.ChangeEvent<HTMLInputElement>) {
+    setBudgetSlide(parseInt(event.target.value));
   }
 
   //Fetch API
@@ -409,234 +427,297 @@ const ManualBuild: React.FC = () => {
       <NavBar />
       <div className={mbStyle.mainContainer}>
         <main>
-          {partList.length === 0  || buildId && !userBuildLoaded ? <Loading/> :
+          {partList.length === 0 || buildId && !userBuildLoaded ? <Loading /> :
             <>
-              <h1 className={mbStyle.pageTitle}>Montagem Manual</h1>
-              <div className={mbStyle.partSelectorsBox}>
-                <PartSelectorBox
-                  partName='Processador'
-                  selectedPart={selectedCpu}
-                  partIcon={CpuIcon}
-                  selectPartLabel={'Selecione um processador'}
-                  inputPlaceHolder={'Digite o nome de um processador...'}
-                  selectPartInput={selectCpuInput.toLowerCase().trim()}
-                  handleChange={handleChange}
-                  selectPart={selectPart}
-                  partList={partList.filter(item => item.type === 'cpu')}
-                  info1={selectedCpu ? `Núcleos: ${selectedCpu['cpuCores']}, Threads: ${selectedCpu['cpuThreads']}` : ''}
-                  info2={selectedCpu ? `Frequência: ${selectedCpu['cpuFrequency']} GHz` : ''}
-                  info3={selectedCpu ? `Socket: ${selectedCpu['cpuSocket']}` : ''}
-                  increasePartQuantity={increasePartQuantity}
-                  decreasePartQuantity={decreasePartQuantity}
-                  resetSelectedPart={resetSelectedPart}
-                  selectedMobo={selectedMobo}
-                  selectedRam={selectedRam}
-                  clearInputs={clearInputs}
-                />
-                <PartSelectorBox
-                  partName='Placa de vídeo'
-                  selectedPart={selectedGpu}
-                  partIcon={GpuIcon}
-                  selectPartLabel={'Selecione uma placa de vídeo'}
-                  inputPlaceHolder={'Digite o nome de uma placa de vídeo...'}
-                  selectPartInput={selectGpuInput.toLowerCase().trim()}
-                  handleChange={handleChange}
-                  selectPart={selectPart}
-                  partList={partList.filter(item => item.type === 'gpu')}
-                  info1={selectedGpu ? `Núcleos: ${selectedGpu!['gpuCores']}` : ''}
-                  info2={selectedGpu ? `Memória: ${selectedGpu!['gpuMemory']}GB` : ''}
-                  info3={selectedGpu ? `Tipo da memória: ${selectedGpu!['gpuMemoryType']}` : ''}
-                  increasePartQuantity={increasePartQuantity}
-                  decreasePartQuantity={decreasePartQuantity}
-                  resetSelectedPart={resetSelectedPart}
-                  selectedPower={selectedPower}
-                  clearInputs={clearInputs}
-                />
+              <h1 className={mbStyle.pageTitle}>Montagem {buildMode === 'automatic' ? 'Automática' : 'Manual'}</h1>
+              {buildMode === 'automatic' ?
+              <div>
+                <div className={mbStyle.automaticBuildFiltersContainer}>
+                  <div className={mbStyle.automaticBuildFilterBox}>
+                    <h2>Orçamento</h2>
+                    <input
+                      type='range'
+                      className={mbStyle.budgetSlider}
+                      value={budgetSlideValue}
+                      onChange={(event) => changeSlider(event)}
+                      min='1500'
+                      max='10000'
+                      step='500'
+                    ></input>
+                    <h3>R$ {budgetSlideValue}</h3>
+                  </div>
+                  <div className={mbStyle.automaticBuildFilterBox}>
+                    <h2>Marca de processador preferida</h2>
+                    {cpuBrands.map((cpuBrand) => <StandartButton
+                    buttonLabel={cpuBrand}
+                    backgroundColor={preferedCpuBrand === cpuBrand ? '#0066FF' : '#DB5510'}
+                    onClick={() => setPreferedCpuBrand(cpuBrand)}
+                    />)}
+                    <h3>{preferedCpuBrand}</h3>
+                  </div>
+                  <div className={mbStyle.automaticBuildFilterBox}>
+                    <h2>Marca de placa de vídeo preferida</h2>
+                    {gpuBrands.map((gpuBrand) => <StandartButton
+                    buttonLabel={gpuBrand}
+                    backgroundColor={preferedGpuBrand === gpuBrand ? '#0066FF' : '#DB5510'}
+                    onClick={() => setPreferedGpuBrand(gpuBrand)}
+                    />)}
+                    <h3>{preferedGpuBrand}</h3>
+                  </div>
+                  <div className={mbStyle.automaticBuildFilterBox}>
+                    <h2>Qual resolução?</h2>
+                    {resolutions.map((resolution) => <StandartButton
+                    buttonLabel={resolution}
+                    backgroundColor={preferedResolution === resolution ? '#0066FF' : '#DB5510'}
+                    onClick={() => setPreferedResolution(resolution)}
+                    />)}
+                    <h3>{preferedResolution}</h3>
+                  </div>
+                  <div className={mbStyle.automaticBuildFilterBox}>
+                    <h2>A quantos FPS?</h2>
+                    {fpsOptions.map((fps) => <StandartButton
+                    buttonLabel={fps}
+                    backgroundColor={preferedFps === fps ? '#0066FF' : '#DB5510'}
+                    onClick={() => setPreferedFps(fps)}
+                    />)}
+                    <h3>{preferedFps}</h3>
+                  </div>
+                  </div>
+                  <div className={mbStyle.findPcButtonBox}>
+                  <StandartButton
+                  buttonLabel='Achar meu pc ideal'
+                  />
+                  </div>
+                </div> :
+                <>
+                  <div className={mbStyle.partSelectorsBox}>
+                    <PartSelectorBox
+                      partName='Processador'
+                      selectedPart={selectedCpu}
+                      partIcon={CpuIcon}
+                      selectPartLabel={'Selecione um processador'}
+                      inputPlaceHolder={'Digite o nome de um processador...'}
+                      selectPartInput={selectCpuInput.toLowerCase().trim()}
+                      handleChange={handleChange}
+                      selectPart={selectPart}
+                      partList={partList.filter(item => item.type === 'cpu')}
+                      info1={selectedCpu ? `Núcleos: ${selectedCpu['cpuCores']}, Threads: ${selectedCpu['cpuThreads']}` : ''}
+                      info2={selectedCpu ? `Frequência: ${selectedCpu['cpuFrequency']} GHz` : ''}
+                      info3={selectedCpu ? `Socket: ${selectedCpu['cpuSocket']}` : ''}
+                      increasePartQuantity={increasePartQuantity}
+                      decreasePartQuantity={decreasePartQuantity}
+                      resetSelectedPart={resetSelectedPart}
+                      selectedMobo={selectedMobo}
+                      selectedRam={selectedRam}
+                      clearInputs={clearInputs}
+                    />
+                    <PartSelectorBox
+                      partName='Placa de vídeo'
+                      selectedPart={selectedGpu}
+                      partIcon={GpuIcon}
+                      selectPartLabel={'Selecione uma placa de vídeo'}
+                      inputPlaceHolder={'Digite o nome de uma placa de vídeo...'}
+                      selectPartInput={selectGpuInput.toLowerCase().trim()}
+                      handleChange={handleChange}
+                      selectPart={selectPart}
+                      partList={partList.filter(item => item.type === 'gpu')}
+                      info1={selectedGpu ? `Núcleos: ${selectedGpu!['gpuCores']}` : ''}
+                      info2={selectedGpu ? `Memória: ${selectedGpu!['gpuMemory']}GB` : ''}
+                      info3={selectedGpu ? `Tipo da memória: ${selectedGpu!['gpuMemoryType']}` : ''}
+                      increasePartQuantity={increasePartQuantity}
+                      decreasePartQuantity={decreasePartQuantity}
+                      resetSelectedPart={resetSelectedPart}
+                      selectedPower={selectedPower}
+                      clearInputs={clearInputs}
+                    />
 
-                <PartSelectorBox
-                  partName='Placa-mãe'
-                  selectedPart={selectedMobo}
-                  partIcon={GpuIcon}
-                  selectPartLabel={'Selecione uma placa-mãe'}
-                  inputPlaceHolder={'Digite o nome de uma placa-mãe...'}
-                  selectPartInput={selectMoboInput.toLowerCase().trim()}
-                  handleChange={handleChange}
-                  selectPart={selectPart}
-                  partList={partList.filter(item => item.type === 'mobo')}
-                  info1={selectedMobo ? `Chipset: ${selectedMobo['moboChipset']}` : ''}
-                  info2={selectedMobo ? `Compatibilidade de socket: ${selectedMobo['moboSocketCompatibility']}` : ''}
-                  info3={selectedMobo ? `Compatibilidade de RAM: ${selectedMobo['moboRamCompatibility']}` : ''}
-                  increasePartQuantity={increasePartQuantity}
-                  decreasePartQuantity={decreasePartQuantity}
-                  resetSelectedPart={resetSelectedPart}
-                  selectedCpu={selectedCpu}
-                  selectedRam={selectedRam}
-                  clearInputs={clearInputs}
-                />
+                    <PartSelectorBox
+                      partName='Placa-mãe'
+                      selectedPart={selectedMobo}
+                      partIcon={GpuIcon}
+                      selectPartLabel={'Selecione uma placa-mãe'}
+                      inputPlaceHolder={'Digite o nome de uma placa-mãe...'}
+                      selectPartInput={selectMoboInput.toLowerCase().trim()}
+                      handleChange={handleChange}
+                      selectPart={selectPart}
+                      partList={partList.filter(item => item.type === 'mobo')}
+                      info1={selectedMobo ? `Chipset: ${selectedMobo['moboChipset']}` : ''}
+                      info2={selectedMobo ? `Compatibilidade de socket: ${selectedMobo['moboSocketCompatibility']}` : ''}
+                      info3={selectedMobo ? `Compatibilidade de RAM: ${selectedMobo['moboRamCompatibility']}` : ''}
+                      increasePartQuantity={increasePartQuantity}
+                      decreasePartQuantity={decreasePartQuantity}
+                      resetSelectedPart={resetSelectedPart}
+                      selectedCpu={selectedCpu}
+                      selectedRam={selectedRam}
+                      clearInputs={clearInputs}
+                    />
 
-                <PartSelectorBox
-                  partName='Memória RAM'
-                  selectedPart={selectedRam}
-                  partIcon={GpuIcon}
-                  selectPartLabel={'Selecione uma memória RAM'}
-                  inputPlaceHolder={'Digite o nome de uma memória RAM...'}
-                  selectPartInput={selectRamInput.toLowerCase().trim()}
-                  handleChange={handleChange}
-                  selectPart={selectPart}
-                  partList={partList.filter(item => item.type === 'ram')}
-                  info1={selectedRam ? `Capacidade: ${selectedRam['ramCapacity']} GB` : ''}
-                  info2={selectedRam ? `Frequência: ${selectedRam['ramFrequency']} MHz` : ''}
-                  info3={selectedRam ? `Tipo: ${selectedRam['ramType']}` : ''}
-                  increasePartQuantity={increasePartQuantity}
-                  decreasePartQuantity={decreasePartQuantity}
-                  resetSelectedPart={resetSelectedPart}
-                  selectedCpu={selectedCpu}
-                  selectedMobo={selectedMobo}
-                  clearInputs={clearInputs}
-                />
+                    <PartSelectorBox
+                      partName='Memória RAM'
+                      selectedPart={selectedRam}
+                      partIcon={GpuIcon}
+                      selectPartLabel={'Selecione uma memória RAM'}
+                      inputPlaceHolder={'Digite o nome de uma memória RAM...'}
+                      selectPartInput={selectRamInput.toLowerCase().trim()}
+                      handleChange={handleChange}
+                      selectPart={selectPart}
+                      partList={partList.filter(item => item.type === 'ram')}
+                      info1={selectedRam ? `Capacidade: ${selectedRam['ramCapacity']} GB` : ''}
+                      info2={selectedRam ? `Frequência: ${selectedRam['ramFrequency']} MHz` : ''}
+                      info3={selectedRam ? `Tipo: ${selectedRam['ramType']}` : ''}
+                      increasePartQuantity={increasePartQuantity}
+                      decreasePartQuantity={decreasePartQuantity}
+                      resetSelectedPart={resetSelectedPart}
+                      selectedCpu={selectedCpu}
+                      selectedMobo={selectedMobo}
+                      clearInputs={clearInputs}
+                    />
 
-                <PartSelectorBox
-                  partName='Fonte de Alimentação'
-                  selectedPart={selectedPower}
-                  partIcon={GpuIcon}
-                  selectPartLabel={'Selecione uma fonte de alimentação'}
-                  inputPlaceHolder={'Digite o nome de uma fonte de alimentação...'}
-                  selectPartInput={selectPowerInput.toLowerCase().trim()}
-                  handleChange={handleChange}
-                  selectPart={selectPart}
-                  partList={partList.filter(item => item.type === 'power')}
-                  info1={selectedPower ? `Potência: ${selectedPower['powerWatts']} Watts` : ''}
-                  info2={selectedPower ? `Eficiência: ${selectedPower['powerEfficiency']}` : ''}
-                  info3={selectedPower ? `Modular: ${selectedPower['powerModular']}` : ''}
-                  increasePartQuantity={increasePartQuantity}
-                  decreasePartQuantity={decreasePartQuantity}
-                  resetSelectedPart={resetSelectedPart}
-                  selectedGpu={selectedGpu}
-                  clearInputs={clearInputs}
-                />
+                    <PartSelectorBox
+                      partName='Fonte de Alimentação'
+                      selectedPart={selectedPower}
+                      partIcon={GpuIcon}
+                      selectPartLabel={'Selecione uma fonte de alimentação'}
+                      inputPlaceHolder={'Digite o nome de uma fonte de alimentação...'}
+                      selectPartInput={selectPowerInput.toLowerCase().trim()}
+                      handleChange={handleChange}
+                      selectPart={selectPart}
+                      partList={partList.filter(item => item.type === 'power')}
+                      info1={selectedPower ? `Potência: ${selectedPower['powerWatts']} Watts` : ''}
+                      info2={selectedPower ? `Eficiência: ${selectedPower['powerEfficiency']}` : ''}
+                      info3={selectedPower ? `Modular: ${selectedPower['powerModular']}` : ''}
+                      increasePartQuantity={increasePartQuantity}
+                      decreasePartQuantity={decreasePartQuantity}
+                      resetSelectedPart={resetSelectedPart}
+                      selectedGpu={selectedGpu}
+                      clearInputs={clearInputs}
+                    />
 
-                <PartSelectorBox
-                  partName='SSD'
-                  selectedPart={selectedSsd}
-                  partIcon={GpuIcon}
-                  selectPartLabel={'Selecione um SSD'}
-                  inputPlaceHolder={'Digite o nome de um SSD...'}
-                  selectPartInput={selectSsdInput.toLowerCase().trim()}
-                  handleChange={handleChange}
-                  selectPart={selectPart}
-                  partList={partList.filter(item => item.type === 'ssd')}
-                  info1={selectedSsd ? `Capacidade: ${selectedSsd['ssdCapacity']} GB` : ''}
-                  info2={selectedSsd ? `Tipo: ${selectedSsd['ssdType']}` : ''}
-                  info3={selectedSsd ? `Velocidade (Leitura): ${selectedSsd['ssdSpeed']} MB/s` : ''}
-                  increasePartQuantity={increasePartQuantity}
-                  decreasePartQuantity={decreasePartQuantity}
-                  resetSelectedPart={resetSelectedPart}
-                  clearInputs={clearInputs}
-                />
+                    <PartSelectorBox
+                      partName='SSD'
+                      selectedPart={selectedSsd}
+                      partIcon={GpuIcon}
+                      selectPartLabel={'Selecione um SSD'}
+                      inputPlaceHolder={'Digite o nome de um SSD...'}
+                      selectPartInput={selectSsdInput.toLowerCase().trim()}
+                      handleChange={handleChange}
+                      selectPart={selectPart}
+                      partList={partList.filter(item => item.type === 'ssd')}
+                      info1={selectedSsd ? `Capacidade: ${selectedSsd['ssdCapacity']} GB` : ''}
+                      info2={selectedSsd ? `Tipo: ${selectedSsd['ssdType']}` : ''}
+                      info3={selectedSsd ? `Velocidade (Leitura): ${selectedSsd['ssdSpeed']} MB/s` : ''}
+                      increasePartQuantity={increasePartQuantity}
+                      decreasePartQuantity={decreasePartQuantity}
+                      resetSelectedPart={resetSelectedPart}
+                      clearInputs={clearInputs}
+                    />
 
-                <PartSelectorBox
-                  partName='Gabinete'
-                  selectedPart={selectedCase}
-                  partIcon={GpuIcon}
-                  selectPartLabel={'Selecione um gabinete'}
-                  inputPlaceHolder={'Digite o nome de um gabinete...'}
-                  selectPartInput={selectCaseInput.toLowerCase().trim()}
-                  handleChange={handleChange}
-                  selectPart={selectPart}
-                  partList={partList.filter(item => item.type === 'case')}
-                  info1={selectedCase ? `Formato: ${selectedCase['caseForm']}` : ''}
-                  info2={selectedCase ? `Suporte a fans: ${selectedCase['caseFanSupport']}` : ''}
-                  info3={selectedCase ? `Suporte a Water Cooler: ${selectedCase['caseWcSupport']}` : ''}
-                  increasePartQuantity={increasePartQuantity}
-                  decreasePartQuantity={decreasePartQuantity}
-                  resetSelectedPart={resetSelectedPart}
-                  clearInputs={clearInputs}
-                />
-              </div>
-              <div className={mbStyle.finishBuildBox} ref={shareRef}>
-                <h2 className={mbStyle.buildPrice}>Preço total: R$ {totalBuildPrice.toFixed(2).toString().replace('.', ',')}</h2>
-                <div className={mbStyle.buildButtonsBox}>
-                  <button className={mbStyle.buildButton}
-                    style={{ backgroundColor: allPartsSelected ? '#0066FF' : 'grey' }}
-                    onClick={openModal}>
-                    <img src={SaveIcon} alt='Salvar'></img>
-                  </button>
-                  <button className={mbStyle.buildButton}
-                    style={{ backgroundColor: allPartsSelected ? '#00C22B' : 'grey' }}
-                    onClick={showShareOptions}>
-                    <img src={ShareIcon} alt='Compartilhar'></img>
-                  </button>
-                  <button className={mbStyle.buildButton}
-                    style={{ backgroundColor: '#c20000' }}
-                    onClick={resetBuild}>
-                    <img src={RestartIcon} alt='Reiniciar'></img>
-                  </button>
-                </div>
-              </div>
-              <div className={mbStyle.copiedToTABox}>
-                <div className={mbStyle.copiedToTA} style={{ display: copiedToTA }}>
-                  <h4>Copiado para a área de transferência</h4>
-                </div>
-              </div>
-              <div className={mbStyle.shareMenu} style={{ display: shareMenu }}>
-                <div onClick={() => shareText('whatsapp')}>
-                  <img src={WhatsappIcon} className={mbStyle.shareOptionImg}></img>
-                  <p>Compartilhar via Whatsapp</p>
-                </div>
-                <div onClick={() => shareText('copy')}>
-                  <img src={CopyIcon} className={mbStyle.shareOptionImg}></img>
-                  <p>Copiar texto da montagem</p>
-                </div>
-              </div>
-              {!currentUser ? <div></div> :
-              <dialog ref={saveRef}>
-                <div className={mbStyle.saveScreen}>
-                  <div className={mbStyle.saveBox}>
-                    <h1>Deseja salvar essa build?</h1>
-                    <SaveBuildPart
-                      partLabel='Processador'
-                      selectedPart={selectedCpu!}
-                    />
-                    <SaveBuildPart
-                      partLabel='Placa de vídeo'
-                      selectedPart={selectedGpu!}
-                    />
-                    <SaveBuildPart
-                      partLabel='Placa mãe'
-                      selectedPart={selectedMobo!}
-                    />
-                    <SaveBuildPart
-                      partLabel='RAM'
-                      selectedPart={selectedRam!}
-                    />
-                    <SaveBuildPart
-                      partLabel='Fonte'
-                      selectedPart={selectedPower!}
-                    />
-                    <SaveBuildPart
-                      partLabel='SSD'
-                      selectedPart={selectedSsd!}
-                    />
-                    <SaveBuildPart
-                      partLabel='Gabinete'
-                      selectedPart={selectedCase!}
-                    />
-                    <StandartButton
-                      buttonLabel='Salvar'
-                      onClick={saveBuild}
-                      backgroundColor='green'
-                    />
-                    <StandartButton
-                      buttonLabel='Cancelar'
-                      onClick={closeModal}
-                      backgroundColor='red'
+                    <PartSelectorBox
+                      partName='Gabinete'
+                      selectedPart={selectedCase}
+                      partIcon={GpuIcon}
+                      selectPartLabel={'Selecione um gabinete'}
+                      inputPlaceHolder={'Digite o nome de um gabinete...'}
+                      selectPartInput={selectCaseInput.toLowerCase().trim()}
+                      handleChange={handleChange}
+                      selectPart={selectPart}
+                      partList={partList.filter(item => item.type === 'case')}
+                      info1={selectedCase ? `Formato: ${selectedCase['caseForm']}` : ''}
+                      info2={selectedCase ? `Suporte a fans: ${selectedCase['caseFanSupport']}` : ''}
+                      info3={selectedCase ? `Suporte a Water Cooler: ${selectedCase['caseWcSupport']}` : ''}
+                      increasePartQuantity={increasePartQuantity}
+                      decreasePartQuantity={decreasePartQuantity}
+                      resetSelectedPart={resetSelectedPart}
+                      clearInputs={clearInputs}
                     />
                   </div>
-                </div>
-              </dialog>
-}
+                  <div className={mbStyle.finishBuildBox} ref={shareRef}>
+                    <h2 className={mbStyle.buildPrice}>Preço total: R$ {totalBuildPrice.toFixed(2).toString().replace('.', ',')}</h2>
+                    <div className={mbStyle.buildButtonsBox}>
+                      <button className={mbStyle.buildButton}
+                        style={{ backgroundColor: allPartsSelected ? '#0066FF' : 'grey' }}
+                        onClick={openModal}>
+                        <img src={SaveIcon} alt='Salvar'></img>
+                      </button>
+                      <button className={mbStyle.buildButton}
+                        style={{ backgroundColor: allPartsSelected ? '#00C22B' : 'grey' }}
+                        onClick={showShareOptions}>
+                        <img src={ShareIcon} alt='Compartilhar'></img>
+                      </button>
+                      <button className={mbStyle.buildButton}
+                        style={{ backgroundColor: '#c20000' }}
+                        onClick={resetBuild}>
+                        <img src={RestartIcon} alt='Reiniciar'></img>
+                      </button>
+                    </div>
+                  </div>
+                  <div className={mbStyle.copiedToTABox}>
+                    <div className={mbStyle.copiedToTA} style={{ display: copiedToTA }}>
+                      <h4>Copiado para a área de transferência</h4>
+                    </div>
+                  </div>
+                  <div className={mbStyle.shareMenu} style={{ display: shareMenu }}>
+                    <div onClick={() => shareText('whatsapp')}>
+                      <img src={WhatsappIcon} className={mbStyle.shareOptionImg}></img>
+                      <p>Compartilhar via Whatsapp</p>
+                    </div>
+                    <div onClick={() => shareText('copy')}>
+                      <img src={CopyIcon} className={mbStyle.shareOptionImg}></img>
+                      <p>Copiar texto da montagem</p>
+                    </div>
+                  </div>
+                  {!currentUser ? <div></div> :
+                    <dialog ref={saveRef}>
+                      <div className={mbStyle.saveScreen}>
+                        <div className={mbStyle.saveBox}>
+                          <h1>Deseja salvar essa build?</h1>
+                          <SaveBuildPart
+                            partLabel='Processador'
+                            selectedPart={selectedCpu!}
+                          />
+                          <SaveBuildPart
+                            partLabel='Placa de vídeo'
+                            selectedPart={selectedGpu!}
+                          />
+                          <SaveBuildPart
+                            partLabel='Placa mãe'
+                            selectedPart={selectedMobo!}
+                          />
+                          <SaveBuildPart
+                            partLabel='RAM'
+                            selectedPart={selectedRam!}
+                          />
+                          <SaveBuildPart
+                            partLabel='Fonte'
+                            selectedPart={selectedPower!}
+                          />
+                          <SaveBuildPart
+                            partLabel='SSD'
+                            selectedPart={selectedSsd!}
+                          />
+                          <SaveBuildPart
+                            partLabel='Gabinete'
+                            selectedPart={selectedCase!}
+                          />
+                          <StandartButton
+                            buttonLabel='Salvar'
+                            onClick={saveBuild}
+                            backgroundColor='green'
+                          />
+                          <StandartButton
+                            buttonLabel='Cancelar'
+                            onClick={closeModal}
+                            backgroundColor='red'
+                          />
+                        </div>
+                      </div>
+                    </dialog>
+                  }
+                </>
+              }
             </>
           }
+
         </main>
       </div>
     </div>

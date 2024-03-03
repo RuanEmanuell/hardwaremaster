@@ -155,8 +155,48 @@
     color: #DB5510;
 }
 
+.automaticBuildFiltersContainer{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.automaticBuildFilterBox{
+    margin: 2.5%;
+    text-align: center;
+    border: 2px solid #DB5510;
+    border-radius: 20px;
+    height: fit-content;
+}
+
+.automaticBuildFilterBox button, .automaticBuildFilterBox h2{
+    margin: 2.5%;
+}
+
+.selectedOption{
+    color: #0066FF;
+}
+
+.findPcButtonBox{
+    display: flex;
+    justify-content: center;
+}
+
+.findPcButtonBox button{
+    background-color: green;
+    font-size: larger;
+}
+
 @media screen and (max-width: 960px) {
     .partSelectorsBox {
         grid-template-columns: 1fr;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .automaticBuildBox{
+        grid-template-columns: 1fr;
+    }
+    .findPcButtonBox button{
+        width: 100%;
     }
 }

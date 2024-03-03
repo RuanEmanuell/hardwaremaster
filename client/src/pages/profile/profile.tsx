@@ -75,7 +75,7 @@ const Profile: React.FC = () => {
   function showEditUserMenu() {
     editUserRef.current?.showModal();
     setUserNameCheckError(false);
-    setEditUserName('');
+    setEditUserName(userProfile!.name);
     setEditUserPhoto(userProfile!.photo);
   }
 
