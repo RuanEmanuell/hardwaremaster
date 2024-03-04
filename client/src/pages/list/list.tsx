@@ -301,11 +301,11 @@ const List: React.FC<ListProps> = () => {
   }
 
   function openModal() {
-    addPartRef.current!.showModal(); 
+    addPartRef.current!.showModal();
   };
 
-  function closeModal ()  {
-    addPartRef.current!.close(); 
+  function closeModal() {
+    addPartRef.current!.close();
   };
 
 
@@ -413,11 +413,52 @@ const List: React.FC<ListProps> = () => {
       const response = await fetch(`http://localhost:3001/list/currentprice/${id}`);
       const data = await response.json();
       const newPrice = data['preço'];
+      let newCostBenefit: number;
+      const partToUpdate: any = fullPartList.find(part => part._id === id);
+
+      const fixedPrice = fixPrice(newPrice); 
+
+    switch (partToUpdate.type) {
+        case 'cpu':
+            newCostBenefit = (partToUpdate.cpuCores + partToUpdate.cpuThreads + partToUpdate.cpuFrequency) + partToUpdate.cpuPerformance + partToUpdate.igpuPerformance / (fixedPrice * 2);
+            break;
+        case 'gpu':
+            newCostBenefit = (partToUpdate.gpuCores + partToUpdate.gpuMemory + partToUpdate.gpuPerformance) / (fixedPrice * 2);
+            break;
+        case 'mobo':
+            newCostBenefit = (partToUpdate.moboSlots + 1) / (fixedPrice * 2); 
+            break;
+        case 'ram':
+            newCostBenefit = (partToUpdate.ramCapacity + partToUpdate.ramFrequency) / (fixedPrice * 2);
+            break;
+        case 'power':
+            const modularBonus = partToUpdate.powerModular !== 'Não modular' ? 1 : 0;
+            newCostBenefit = (partToUpdate.powerWatts + modularBonus) / (fixedPrice * 2);
+            break;
+        case 'ssd':
+            newCostBenefit = (partToUpdate.ssdCapacity + partToUpdate.ssdSpeed) / (fixedPrice * 2);
+            break;
+        case 'case':
+            const fanSupportBonus = partToUpdate.caseFanSupport;
+            newCostBenefit = fanSupportBonus / (fixedPrice * 2); 
+            break;
+        default:
+            newCostBenefit = 0; 
+        break;
+    }
+
+    alert((partToUpdate.powerWatts + modularBonus) / (fixedPrice * 2));
+
+      if (newCostBenefit > 100) {
+        newCostBenefit = 100;
+      }
+
+      newCostBenefit = parseInt(newCostBenefit.toFixed(1));
 
       await fetch(`http://localhost:3001/list/update/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ price: newPrice }),
+        body: JSON.stringify({ price: newPrice, costBenefit: newCostBenefit }),
       });
 
       getPartList();
@@ -426,143 +467,147 @@ const List: React.FC<ListProps> = () => {
     }
   };
 
+  function fixPrice(price: string) {
+    return parseFloat(price.replace(',', '.'));
+  }
+
   return (
     <div>
       <NavBar />
       <div className={listStyle.mainContainer}>
         <main>
-          {fullPartList.length === 0 ? <Loading/> :
-          <>
-          <h1 className={listStyle.mainTitle}>{filterPartLabel}</h1>
-          <div className={listStyle.partFilters}>
-            <div className={listStyle.gridSpacer}></div>
-            <FilterBox
-              firstFilterLabel='Filtrar por'
-              onClick={showPartFilterMenu}
-              firstFilterDisplayCondition={firstFilterLabelVisibility}
-              currentFilter={filterPartLabel}
-              isFiltering={filterPartMenuVisibility}
-              filterMenu={partFilterMenu}
-              selectFilter={selectFilterPart}
-              onClickOutside={closePartFilterMenu}
-            />
-            <FilterBox
-              firstFilterLabel='Ordenar por'
-              onClick={showPartOrderMenu}
-              firstFilterDisplayCondition={firstOrderLabelVisibility}
-              currentFilter={filterOrderLabel}
-              isFiltering={filterOrderMenuVisibility}
-              filterMenu={orderFilterMenu}
-              selectFilter={selectFilterOrder}
-              onClickOutside={closePartOrderMenu}
-            />
-            <div className={listStyle.gridSpacer}></div>
-          </div>
-          <div className={listStyle.partList}>
-            {interfaceList.length > 0 ? (
-              <>
-                {interfaceList.map((part, index) => (
-                  <div key={part.id} className={listStyle.partInfo}>
-                    <div className={listStyle.partImage}>
-                      <img src={part['imageLink']} alt={part['name']} />
-                    </div>
-                    <div className={listStyle.partSpecs}>
-                      <h1>{part['name']}</h1>
-                      <p>Marca: {part['brand']}</p>
-                      {part['type'] === 'cpu' ? (
-                        <>
-                          <p>Lançamento: {part['launch']}</p>
-                          <p>Socket: {part['cpuSocket']}</p>
-                          <p>Geração: {part['cpuGeneration']}</p>
-                          <p>Núcleos: {part['cpuCores']}</p>
-                          <p>Threads: {part['cpuThreads']}</p>
-                          <p>Frequência: {part['cpuFrequency']}GHZ</p>
-                          <p>Tem integrada: {part['cpuIgpu']}</p>
-                          <p>Tipo de memória suportada: {part['cpuRamType']}</p>
-                          <p>Preço: R$ {part['price']}</p>
-                          <SpecCircle performanceLabel='Performance:' performanceRating={part['cpuPerformance']} />
-                          <SpecCircle performanceLabel='Integrada (iGPU):' performanceRating={part['igpuPerformance']} />
-                        </>
-                      ) : part['type'] === 'gpu' ? (
-                        <>
-                          <p>Lançamento: {part['launch']}</p>
-                          <p>Geração: {part['gpuGeneration']}</p>
-                          <p>Núcleos: {part['gpuCores']}</p>
-                          <p>Memória: {part['gpuMemory']}GB</p>
-                          <p>Tipo de memória: {part['gpuMemoryType']}</p>
-                          <p>Interface da memória: {part['gpuMemoryBus']} bits</p>
-                          <p>Fonte recomendada: {part['gpuRecommendedPower']}W</p>
-                          <p>Preço: R$ {part['price']}</p>
-                          <SpecCircle performanceLabel='Performance:' performanceRating={part['gpuPerformance']} />
-                        </>
-                      ) : part['type'] === 'mobo' ? (
-                        <>
-                          <p>Chipset: {part['moboChipset']}</p>
-                          <p>Socket compatível: {part['moboSocketCompatibility']}</p>
-                          <p>Tipo de RAM compatível: {part['moboRamCompatibility']}</p>
-                          <p>Slots de RAM: {part['moboSlots']}</p>
-                          <p>Preço: R$ {part['price']}</p>
-                        </>
-                      ) : part['type'] === 'ram' ? (
-                        <>
-                          <p>Frequência: {part['ramFrequency']}MHZ</p>
-                          <p>Capacidade: {part['ramCapacity']}GB</p>
-                          <p>Tipo da memória: {part['ramType']}</p>
-                          <p>Latência: {part['ramLatency']}</p>
-                          <p>Preço: R$ {part['price']}</p>
-                        </>
-                      ) : part['type'] === 'power' ? (
-                        <>
-                          <p>Watts: {part['powerWatts']}W</p>
-                          <p>Efficiência: {part['powerEfficiency']}</p>
-                          <p>Modular: {part['powerModular']}</p>
-                          <p>Preço: R$ {part['price']}</p>
-                        </>
-                      ) : part['type'] === 'ssd' ? (
-                        <>
-                          <p>Capacidade: {part['ssdCapacity']}GB</p>
-                          <p>Tipo do SSD: {part['ssdType']}</p>
-                          <p>Velocidade (Leitura): {part['ssdSpeed']}MB/s</p>
-                          <p>Preço: R$ {part['price']}</p>
-                        </>
-                      ) : part['type'] === 'case' ? (
-                        <>
-                          <p>Formato do Gabinete: {part['caseForm']}</p>
-                          <p>Suporte a fans: {part['caseFanSupport']}</p>
-                          <p>Suporte a Water Cooler: {part['caseWcSupport']}</p>
-                          <p>Preço: R$ {part['price']}</p>
-                        </>
-                      ) : null}
-
-                      <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
-                      <div style={{ display: crudButtonsVisibile ? 'block' : 'none' }}>
-                        <div className={listStyle.editDeleteButtons}>
-                          <button onClick={() => editPart(index)} className={listStyle.editButton}><img src={EditIcon} alt="Edit Icon" /></button>
-                          <button onClick={() => deletePart(part['_id'])} className={listStyle.deleteButton}><img src={DeleteIcon} alt="Delete Icon" /></button>
-                        </div>
-                        <StandartButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </>
-            ) : <></>}
-            <br></br>
-            <div ref={selectTypeRef} style={{ display: crudButtonsVisibile ? 'block' : 'none' }}>
-              <div className={listStyle.choosePartType} style={{ display: selectTypeMenuVisibility }}>
-                {Object.keys(partTypeDataMap).map((addPart, index) => (
-                  <h3 key={index} className={listStyle.partType} onClick={() => showModalAddPart(addPart)}>
-                    {addPart}
-                  </h3>
-                ))}
+          {fullPartList.length === 0 ? <Loading /> :
+            <>
+              <h1 className={listStyle.mainTitle}>{filterPartLabel}</h1>
+              <div className={listStyle.partFilters}>
+                <div className={listStyle.gridSpacer}></div>
+                <FilterBox
+                  firstFilterLabel='Filtrar por'
+                  onClick={showPartFilterMenu}
+                  firstFilterDisplayCondition={firstFilterLabelVisibility}
+                  currentFilter={filterPartLabel}
+                  isFiltering={filterPartMenuVisibility}
+                  filterMenu={partFilterMenu}
+                  selectFilter={selectFilterPart}
+                  onClickOutside={closePartFilterMenu}
+                />
+                <FilterBox
+                  firstFilterLabel='Ordenar por'
+                  onClick={showPartOrderMenu}
+                  firstFilterDisplayCondition={firstOrderLabelVisibility}
+                  currentFilter={filterOrderLabel}
+                  isFiltering={filterOrderMenuVisibility}
+                  filterMenu={orderFilterMenu}
+                  selectFilter={selectFilterOrder}
+                  onClickOutside={closePartOrderMenu}
+                />
+                <div className={listStyle.gridSpacer}></div>
               </div>
-              <CircleButton onClick={showSelectTypeMenu} buttonIcon='+' />
-            </div>
-          </div>
-          </>
-}
+              <div className={listStyle.partList}>
+                {interfaceList.length > 0 ? (
+                  <>
+                    {interfaceList.map((part, index) => (
+                      <div key={part.id} className={listStyle.partInfo}>
+                        <div className={listStyle.partImage}>
+                          <img src={part['imageLink']} alt={part['name']} />
+                        </div>
+                        <div className={listStyle.partSpecs}>
+                          <h1>{part['name']}</h1>
+                          <p>Marca: {part['brand']}</p>
+                          {part['type'] === 'cpu' ? (
+                            <>
+                              <p>Lançamento: {part['launch']}</p>
+                              <p>Socket: {part['cpuSocket']}</p>
+                              <p>Geração: {part['cpuGeneration']}</p>
+                              <p>Núcleos: {part['cpuCores']}</p>
+                              <p>Threads: {part['cpuThreads']}</p>
+                              <p>Frequência: {part['cpuFrequency']}GHZ</p>
+                              <p>Tem integrada: {part['cpuIgpu']}</p>
+                              <p>Tipo de memória suportada: {part['cpuRamType']}</p>
+                              <p>Preço: R$ {part['price']}</p>
+                              <SpecCircle performanceLabel='Performance:' performanceRating={part['cpuPerformance']} />
+                              <SpecCircle performanceLabel='Integrada (iGPU):' performanceRating={part['igpuPerformance']} />
+                            </>
+                          ) : part['type'] === 'gpu' ? (
+                            <>
+                              <p>Lançamento: {part['launch']}</p>
+                              <p>Geração: {part['gpuGeneration']}</p>
+                              <p>Núcleos: {part['gpuCores']}</p>
+                              <p>Memória: {part['gpuMemory']}GB</p>
+                              <p>Tipo de memória: {part['gpuMemoryType']}</p>
+                              <p>Interface da memória: {part['gpuMemoryBus']} bits</p>
+                              <p>Fonte recomendada: {part['gpuRecommendedPower']}W</p>
+                              <p>Preço: R$ {part['price']}</p>
+                              <SpecCircle performanceLabel='Performance:' performanceRating={part['gpuPerformance']} />
+                            </>
+                          ) : part['type'] === 'mobo' ? (
+                            <>
+                              <p>Chipset: {part['moboChipset']}</p>
+                              <p>Socket compatível: {part['moboSocketCompatibility']}</p>
+                              <p>Tipo de RAM compatível: {part['moboRamCompatibility']}</p>
+                              <p>Slots de RAM: {part['moboSlots']}</p>
+                              <p>Preço: R$ {part['price']}</p>
+                            </>
+                          ) : part['type'] === 'ram' ? (
+                            <>
+                              <p>Frequência: {part['ramFrequency']}MHZ</p>
+                              <p>Capacidade: {part['ramCapacity']}GB</p>
+                              <p>Tipo da memória: {part['ramType']}</p>
+                              <p>Latência: {part['ramLatency']}</p>
+                              <p>Preço: R$ {part['price']}</p>
+                            </>
+                          ) : part['type'] === 'power' ? (
+                            <>
+                              <p>Watts: {part['powerWatts']}W</p>
+                              <p>Efficiência: {part['powerEfficiency']}</p>
+                              <p>Modular: {part['powerModular']}</p>
+                              <p>Preço: R$ {part['price']}</p>
+                            </>
+                          ) : part['type'] === 'ssd' ? (
+                            <>
+                              <p>Capacidade: {part['ssdCapacity']}GB</p>
+                              <p>Tipo do SSD: {part['ssdType']}</p>
+                              <p>Velocidade (Leitura): {part['ssdSpeed']}MB/s</p>
+                              <p>Preço: R$ {part['price']}</p>
+                            </>
+                          ) : part['type'] === 'case' ? (
+                            <>
+                              <p>Formato do Gabinete: {part['caseForm']}</p>
+                              <p>Suporte a fans: {part['caseFanSupport']}</p>
+                              <p>Suporte a Water Cooler: {part['caseWcSupport']}</p>
+                              <p>Preço: R$ {part['price']}</p>
+                            </>
+                          ) : null}
+
+                          <SpecCircle performanceLabel='Custo x Benefício:' performanceRating={part['costBenefit']} />
+                          <div style={{ display: crudButtonsVisibile ? 'block' : 'none' }}>
+                            <div className={listStyle.editDeleteButtons}>
+                              <button onClick={() => editPart(index)} className={listStyle.editButton}><img src={EditIcon} alt="Edit Icon" /></button>
+                              <button onClick={() => deletePart(part['_id'])} className={listStyle.deleteButton}><img src={DeleteIcon} alt="Delete Icon" /></button>
+                            </div>
+                            <StandartButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                ) : <></>}
+                <br></br>
+                <div ref={selectTypeRef} style={{ display: crudButtonsVisibile ? 'block' : 'none' }}>
+                  <div className={listStyle.choosePartType} style={{ display: selectTypeMenuVisibility }}>
+                    {Object.keys(partTypeDataMap).map((addPart, index) => (
+                      <h3 key={index} className={listStyle.partType} onClick={() => showModalAddPart(addPart)}>
+                        {addPart}
+                      </h3>
+                    ))}
+                  </div>
+                  <CircleButton onClick={showSelectTypeMenu} buttonIcon='+' />
+                </div>
+              </div>
+            </>
+          }
         </main>
-        <dialog ref = {addPartRef}>
+        <dialog ref={addPartRef}>
           <div className={listStyle.addPartContainer}>
             {selectedPartType ? (
               <div className={listStyle.addPartModal}>

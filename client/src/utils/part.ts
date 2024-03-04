@@ -10,6 +10,7 @@ interface Part {
   cpuFrequency?: string;
   cpuSocket?: string;
   cpuRamType?: string;
+  cpuIgpu?: string;
   gpuCores?: string,
   gpuMemory?: string,
   gpuMemoryType?: string,

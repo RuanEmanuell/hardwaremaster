@@ -100,7 +100,7 @@ listRouter.get('/currentprice/:partId', async (req, res) => {
 
         priceLink = priceLink.replace('.', '');
 
-        if (parseInt(priceLink) < parseInt(currentPrice) && parseInt(priceLink) > 0) {
+        if (parseFloat(priceLink) < parseFloat(currentPrice) && parseFloat(priceLink) > 0) {
           currentPrice = priceLink;
         }
       }
