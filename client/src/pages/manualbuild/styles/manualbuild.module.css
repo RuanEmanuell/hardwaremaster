@@ -172,10 +172,6 @@
     margin: 2.5%;
 }
 
-.selectedOption{
-    color: #0066FF;
-}
-
 .findPcButtonBox{
     display: flex;
     justify-content: center;
@@ -193,7 +189,7 @@
 }
 
 @media screen and (max-width: 768px) {
-    .automaticBuildBox{
+    .automaticBuildFiltersContainer{
         grid-template-columns: 1fr;
     }
     .findPcButtonBox button{

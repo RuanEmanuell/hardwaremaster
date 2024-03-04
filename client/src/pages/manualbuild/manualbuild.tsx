@@ -108,7 +108,8 @@ const ManualBuild: React.FC = () => {
         caseForm: item.caseForm,
         caseFanSupport: item.caseFanSupport,
         caseWcSupport: item.caseWcSupport,
-        partQuantity: 1
+        partQuantity: 1,
+        costBenefit: item.costBenefit
       }));
 
       setPartList(filteredPartList);
@@ -343,6 +344,81 @@ const ManualBuild: React.FC = () => {
     setBudgetSlide(parseInt(event.target.value));
   }
 
+  function getAutomaticPCParts(){
+    let automaticSelectedCpuBrand : string = preferedCpuBrand;
+
+    if(preferedCpuBrand === cpuBrands[2]){
+      automaticSelectedCpuBrand = 'AMD/Intel';
+    }
+    
+    let possibleCpus : Part[] = partList.filter(part => part.type === 'cpu' 
+    && fixPrice(part.price) < budgetSlideValue/4
+    && automaticSelectedCpuBrand.includes(part.brand)).sort((a, b) => b.costBenefit - a.costBenefit);
+
+    setSelectedCpu(possibleCpus[0]);
+
+    let automaticSelectedGpuBrand : string = preferedGpuBrand;
+    if(preferedGpuBrand === gpuBrands[3]){
+      automaticSelectedGpuBrand = 'NVIDIA/AMD/Intel';
+    }
+    
+    let possibleGpus : Part[] = partList.filter(part => part.type === 'gpu' 
+    && fixPrice(part.price) < budgetSlideValue/3
+    && automaticSelectedGpuBrand.includes(part.brand)).sort((a, b) => b.costBenefit - a.costBenefit);
+
+    setSelectedGpu(possibleGpus[0]);
+
+    console.log(possibleCpus[0]);
+
+    let possibleMobos : Part[] = partList.filter(part => part.type === 'mobo' 
+    && fixPrice(part.price) < budgetSlideValue/7.5
+    && possibleCpus[0].cpuSocket === part.moboSocketCompatibility
+    && possibleCpus[0].cpuRamType === part.moboRamCompatibility).sort((a, b) => b.costBenefit - a.costBenefit);
+
+    setSelectedMobo(possibleMobos[0])
+
+    let possibleRams : Part[] = partList.filter(part => part.type === 'ram' 
+    && fixPrice(part.price) < budgetSlideValue/10
+    && possibleMobos[0].moboRamCompatibility!.includes(part.ramType!)
+    ).sort((a, b) => b.costBenefit - a.costBenefit);
+
+    setSelectedRam(possibleRams[0]);
+
+    let possiblePowers : Part[] = partList.filter(part => part.type === 'power' 
+    && fixPrice(part.price) < budgetSlideValue/10
+    && possibleGpus[0].gpuRecommendedPower! < part.powerWatts!
+    ).sort((a, b) => b.costBenefit - a.costBenefit);
+
+    setSelectedPower(possiblePowers[0]);
+
+    let possibleSsds : Part[] = partList.filter(part => part.type === 'ssd' 
+    && fixPrice(part.price) < budgetSlideValue/15
+    ).sort((a, b) => b.costBenefit - a.costBenefit);
+
+    setSelectedSsd(possibleSsds[0]);
+
+    
+    let possibleCases : Part[] = partList.filter(part => part.type === 'case' 
+    && fixPrice(part.price) < budgetSlideValue/15
+    ).sort((a, b) => b.costBenefit - a.costBenefit);
+
+    setSelectedCase(possibleCases[0]);
+
+    let automaticBuildPrice : number = 
+    fixPrice(possibleCpus[0].price) +
+    fixPrice(possibleGpus[0].price) +
+    fixPrice(possibleMobos[0].price) +
+    fixPrice(possibleRams[0].price) +
+    fixPrice(possiblePowers[0].price) +
+    fixPrice(possibleSsds[0].price) +
+    fixPrice(possibleCases[0].price);
+
+    setTotalBuildPrice(automaticBuildPrice);
+
+    setBuildMode('manual');
+    
+  }
+
   //Fetch API
   useEffect(() => {
     getPartList();
@@ -485,7 +561,8 @@ const ManualBuild: React.FC = () => {
                   </div>
                   <div className={mbStyle.findPcButtonBox}>
                   <StandartButton
-                  buttonLabel='Achar meu pc ideal'
+                  buttonLabel='Achar meu PC ideal'
+                  onClick = {getAutomaticPCParts}
                   />
                   </div>
                 </div> :

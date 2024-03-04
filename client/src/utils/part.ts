@@ -31,6 +31,7 @@ interface Part {
   caseFanSupport?: string,
   caseWcSupport?: string,
   partQuantity: number
+  costBenefit: number
 }
 
 export default Part;
