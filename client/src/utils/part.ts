@@ -15,25 +15,25 @@ interface Part {
   gpuCores?: string,
   gpuMemory?: string,
   gpuMemoryType?: string,
-  gpuRecommendedPower?: string;
+  gpuRecommendedPower?: number;
   gpuPerformance?: number;
   moboChipset?: string,
   moboSocketCompatibility?: string,
   moboRamCompatibility?: string,
-  moboSlots?: string,
+  moboSlots?: number,
   moboType?: string,
-  ramFrequency?: string,
-  ramCapacity?: string,
+  ramFrequency?: number,
+  ramCapacity?: number,
   ramType?: string,
-  powerWatts?: string,
+  powerWatts?: number,
   powerEfficiency?: string,
   powerModular?: string,
-  ssdCapacity?: string,
+  ssdCapacity?: number,
   ssdType?: string,
-  ssdSpeed?: string,
+  ssdSpeed?: number,
   caseForm?: string,
-  caseFanSupport?: string,
-  caseWcSupport?: string,
+  caseFanSupport?: number,
+  caseWcSupport?: number,
   partQuantity: number
   costBenefit: number
 }

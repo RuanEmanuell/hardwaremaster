@@ -151,11 +151,11 @@ const ManualBuild: React.FC = () => {
     setNewPartValues(part, part);
     setTotalBuildPrice(totalBuildPrice + fixPrice(part['price']));
     if (part['type'] === 'mobo' && selectedRam) {
-      if (parseInt(part['moboSlots']!) < selectedRam!['partQuantity']) {
+      if (part['moboSlots']! < selectedRam!['partQuantity']) {
         let newRamQuantityAndPrice = {
           ...selectedRam,
-          partQuantity: parseInt(part['moboSlots']!),
-          price: (fixPrice(selectedRam['price']) / selectedRam['partQuantity'] * parseInt(part['moboSlots']!)).toFixed(2).toString()
+          partQuantity: part['moboSlots']!,
+          price: (fixPrice(selectedRam['price']) / selectedRam['partQuantity'] * part['moboSlots']!).toFixed(2).toString()
         }
         setSelectedRam(newRamQuantityAndPrice);
       }
@@ -165,7 +165,7 @@ const ManualBuild: React.FC = () => {
   function increasePartQuantity(part: Part) {
     let maxNumber: number = 4;
     if (selectedMobo && selectedMobo['moboSlots'] && part.type === 'ram') {
-      maxNumber = parseInt(selectedMobo!['moboSlots']);
+      maxNumber = selectedMobo!['moboSlots'];
     }
     if (part.partQuantity < maxNumber) {
       let newPartQuantity = part.partQuantity + 1;
@@ -349,7 +349,7 @@ const ManualBuild: React.FC = () => {
   function getAutomaticPCParts(){
     let willHaveGpu = true;
 
-    let currentAvailableBudget = budgetSlideValue;
+    let currentAvailableBudget = budgetSlideValue * 1.1;
 
     if(currentAvailableBudget < 2500){
       willHaveGpu = false;
@@ -364,8 +364,8 @@ const ManualBuild: React.FC = () => {
     const cpuPerformanceBonus = currentAvailableBudget;
     
     let possibleCpus = partList.filter(part => part.type === 'cpu' 
-    && fixPrice(part.price) < (willHaveGpu ? currentAvailableBudget/4 : currentAvailableBudget/2)
-    && (!willHaveGpu ? part.cpuIgpu!.length > 3 : (currentAvailableBudget <= 3500 ? part.cpuIgpu!.length <= 3 : part.type === 'cpu'))
+    && fixPrice(part.price) < (willHaveGpu ? currentAvailableBudget/4 : (currentAvailableBudget < 10000 ? currentAvailableBudget/2 : currentAvailableBudget/1.5))
+    && (!willHaveGpu ? part.cpuIgpu!.length > 3 : (currentAvailableBudget < 3500 ? part.cpuIgpu!.length <= 3 : part.type === 'cpu'))
     && automaticSelectedCpuBrand.includes(part.brand)).sort((a, b) => (b.costBenefit * (b.cpuPerformance! * cpuPerformanceBonus)) - (a.costBenefit * (a.cpuPerformance! * cpuPerformanceBonus)));
 
     console.log(possibleCpus);
@@ -384,7 +384,7 @@ const ManualBuild: React.FC = () => {
 
     if(willHaveGpu){
     possibleGpus = partList.filter(part => part.type === 'gpu' 
-    && fixPrice(part.price) < currentAvailableBudget/2
+    && fixPrice(part.price) < (currentAvailableBudget < 10000 ? currentAvailableBudget/2 : currentAvailableBudget)
     && automaticSelectedGpuBrand.includes(part.brand)).sort((a, b) => ((b.costBenefit + (b.gpuPerformance! * gpuPerformanceBonus)) - (a.costBenefit + (a.gpuPerformance! * gpuPerformanceBonus))));
     setSelectedGpu(possibleGpus[0]);
     console.log(possibleGpus);
@@ -404,7 +404,7 @@ const ManualBuild: React.FC = () => {
 
     let possibleRams = partList.filter(part => part.type === 'ram' 
     && fixPrice(part.price) < currentAvailableBudget/3
-    && currentAvailableBudget/ 3 < 500 ? parseInt(part.ramCapacity!) <= 8 : part.type === 'ram'
+    && currentAvailableBudget/ 3 < 500 ? part.ramCapacity! <= 8 : part.type === 'ram'
     && possibleMobos[0].moboRamCompatibility!.includes(part.ramType!)
     ).sort((a, b) => b.costBenefit - a.costBenefit);
 
@@ -429,7 +429,7 @@ const ManualBuild: React.FC = () => {
 
     let possibleSsds = partList.filter(part => part.type === 'ssd' 
     && fixPrice(part.price) < currentAvailableBudget/2
-    ).sort((a, b) => (b.costBenefit * parseInt(b.ssdCapacity!) * parseInt(b.ssdSpeed!)) - (a.costBenefit * parseInt(a.ssdCapacity!) * parseInt(a.ssdSpeed!)));
+    ).sort((a, b) => (b.costBenefit * b.ssdCapacity! * b.ssdSpeed!) - (a.costBenefit * a.ssdCapacity! * a.ssdSpeed!));
 
     setSelectedSsd(possibleSsds[0]);
 
@@ -439,7 +439,7 @@ const ManualBuild: React.FC = () => {
 
     let possibleCases = partList.filter(part => part.type === 'case' 
     && fixPrice(part.price) < currentAvailableBudget
-    ).sort((a, b) => (b.costBenefit * parseInt(b.caseFanSupport!) * (parseInt(b.caseWcSupport!) / 50)) - (a.costBenefit * parseInt(a.caseFanSupport!) * (parseInt(b.caseWcSupport!) / 50)));
+    ).sort((a, b) => (b.costBenefit / currentAvailableBudget * b.caseFanSupport! * (b.caseWcSupport! / 25)) - (a.costBenefit * a.caseFanSupport!) * (b.caseWcSupport! / 25));
 
     setSelectedCase(possibleCases[0]);
 
@@ -557,8 +557,8 @@ const ManualBuild: React.FC = () => {
                       value={budgetSlideValue}
                       onChange={(event) => changeSlider(event)}
                       min='1500'
-                      max='10000'
-                      step='500'
+                      max='20000'
+                      step = '500'
                     ></input>
                     <h3>R$ {budgetSlideValue}</h3>
                   </div>

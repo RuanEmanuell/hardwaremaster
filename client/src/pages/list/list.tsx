@@ -447,8 +447,8 @@ const List: React.FC<ListProps> = () => {
             newCostBenefit = (partToUpdate.ramCapacity * 1000 + partToUpdate.ramFrequency) * DDR5Bonus / (fixedPrice);
             break;
         case 'power':
-            const modularBonus = partToUpdate.powerModular.length > 3 ? 50 : 0;
-            newCostBenefit = (partToUpdate.powerWatts + modularBonus) / (fixedPrice / 25);
+            const modularBonus = partToUpdate.powerModular.length > 3 ? 300 : 0;
+            newCostBenefit = (partToUpdate.powerWatts * 1.5 + modularBonus) / (fixedPrice / 25);
             break;
         case 'ssd':
             newCostBenefit = ((partToUpdate.ssdCapacity * 10) + partToUpdate.ssdSpeed) / (fixedPrice / 2.5);

@@ -16,7 +16,7 @@ const PriceAndChangeButton: React.FC<Props> = ({ selectedPart, selectedMobo, onD
     let maxQuantity: number = 4;
     if (selectedPart['type'] === 'ram') {
       if (selectedMobo && selectedMobo['moboSlots']) {
-        maxQuantity = parseInt(selectedMobo['moboSlots']);
+        maxQuantity = selectedMobo['moboSlots'];
       }
     }
     return maxQuantity;
