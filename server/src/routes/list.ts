@@ -100,11 +100,12 @@ listRouter.get('/currentprice/:partId', async (req, res) => {
 
         priceLink = priceLink.replace('.', '');
 
-        if (parseFloat(priceLink) < parseFloat(currentPrice) && parseFloat(priceLink) > 0) {
+        if (parseFloat(priceLink) != parseFloat(currentPrice) && parseFloat(priceLink) > 0) {
           currentPrice = priceLink;
         }
       }
     }
+    page.close();
 
     return currentPrice;
   }
@@ -115,6 +116,8 @@ listRouter.get('/currentprice/:partId', async (req, res) => {
     if (price != selectedPart['price']) {
       res.json({ preço: price });
     } else {
+      //APAGAR DEPOIS
+      res.json({ preço: price });
       console.log('Mesmo preço!');
     }
   }

@@ -25,14 +25,10 @@ const ManualBuild: React.FC = () => {
 
   const cpuBrands = ['Intel', 'AMD', 'Tanto faz'];
   const gpuBrands = ['NVIDIA', 'AMD', 'Intel', 'Tanto faz'];
-  const resolutions = ['1080p', '2.5K', '4K'];
-  const fpsOptions = ['30', '60', '144', '240'];
 
   const [budgetSlideValue, setBudgetSlide] = useState<number>(3000);
   const [preferedCpuBrand, setPreferedCpuBrand] = useState<string>(cpuBrands[2]);
   const [preferedGpuBrand, setPreferedGpuBrand] = useState<string>(gpuBrands[3]);
-  const [preferedResolution, setPreferedResolution] = useState<string>(resolutions[0]);
-  const [preferedFps, setPreferedFps] = useState<string>(fpsOptions[1]);
 
   const [partList, setPartList] = useState<Part[]>([]);
 
@@ -89,14 +85,17 @@ const ManualBuild: React.FC = () => {
         cpuSocket: item.cpuSocket,
         cpuRamType: item.cpuRamType,
         cpuIgpu: item.cpuIgpu,
+        cpuPerformance: item.cpuPerformance,
         gpuCores: item.gpuCores,
         gpuMemory: item.gpuMemory,
         gpuMemoryType: item.gpuMemoryType,
+        gpuPerformance: item.gpuPerformance,
         gpuRecommendedPower: item.gpuRecommendedPower,
         moboChipset: item.moboChipset,
         moboSocketCompatibility: item.moboSocketCompatibility,
         moboRamCompatibility: item.moboRamCompatibility,
         moboSlots: item.moboSlots,
+        moboType: item.moboType,
         ramFrequency: item.ramFrequency,
         ramCapacity: item.ramCapacity,
         ramType: item.ramType,
@@ -350,7 +349,9 @@ const ManualBuild: React.FC = () => {
   function getAutomaticPCParts(){
     let willHaveGpu = true;
 
-    if(budgetSlideValue <= 2500){
+    let currentAvailableBudget = budgetSlideValue;
+
+    if(currentAvailableBudget < 2500){
       willHaveGpu = false;
     }
 
@@ -359,13 +360,18 @@ const ManualBuild: React.FC = () => {
     if(preferedCpuBrand === cpuBrands[2]){
       automaticSelectedCpuBrand = 'AMD/Intel';
     }
+
+    const cpuPerformanceBonus = currentAvailableBudget;
     
     let possibleCpus = partList.filter(part => part.type === 'cpu' 
-    && fixPrice(part.price) < (willHaveGpu ? budgetSlideValue/4 : budgetSlideValue/2)
-    && (!willHaveGpu ? part.cpuIgpu!.length > 3 : part.type === 'cpu')
-    && automaticSelectedCpuBrand.includes(part.brand)).sort((a, b) => b.costBenefit - a.costBenefit);
+    && fixPrice(part.price) < (willHaveGpu ? currentAvailableBudget/4 : currentAvailableBudget/2)
+    && (!willHaveGpu ? part.cpuIgpu!.length > 3 : (currentAvailableBudget <= 3500 ? part.cpuIgpu!.length <= 3 : part.type === 'cpu'))
+    && automaticSelectedCpuBrand.includes(part.brand)).sort((a, b) => (b.costBenefit * (b.cpuPerformance! * cpuPerformanceBonus)) - (a.costBenefit * (a.cpuPerformance! * cpuPerformanceBonus)));
 
+    console.log(possibleCpus);
     setSelectedCpu(possibleCpus[0]);
+
+    currentAvailableBudget -= fixPrice(possibleCpus[0].price);
 
     let automaticSelectedGpuBrand : string = preferedGpuBrand;
     if(preferedGpuBrand === gpuBrands[3]){
@@ -374,22 +380,31 @@ const ManualBuild: React.FC = () => {
     
     let possibleGpus : Part[] | undefined;
 
+    const gpuPerformanceBonus = currentAvailableBudget;
+
     if(willHaveGpu){
     possibleGpus = partList.filter(part => part.type === 'gpu' 
-    && fixPrice(part.price) < budgetSlideValue/3
-    && automaticSelectedGpuBrand.includes(part.brand)).sort((a, b) => b.costBenefit - a.costBenefit);
+    && fixPrice(part.price) < currentAvailableBudget/2
+    && automaticSelectedGpuBrand.includes(part.brand)).sort((a, b) => ((b.costBenefit + (b.gpuPerformance! * gpuPerformanceBonus)) - (a.costBenefit + (a.gpuPerformance! * gpuPerformanceBonus))));
     setSelectedGpu(possibleGpus[0]);
+    console.log(possibleGpus);
+    currentAvailableBudget -= fixPrice(possibleGpus[0].price);
     }
 
     let possibleMobos = partList.filter(part => part.type === 'mobo' 
-    && fixPrice(part.price) < budgetSlideValue/5
+    && fixPrice(part.price) < currentAvailableBudget/2.5
     && possibleCpus[0].cpuSocket === part.moboSocketCompatibility
     && possibleCpus[0].cpuRamType === part.moboRamCompatibility).sort((a, b) => b.costBenefit - a.costBenefit);
 
     setSelectedMobo(possibleMobos[0]);
 
+    console.log(possibleMobos);
+
+    currentAvailableBudget -= fixPrice(possibleMobos[0].price);
+
     let possibleRams = partList.filter(part => part.type === 'ram' 
-    && fixPrice(part.price) < budgetSlideValue/10
+    && fixPrice(part.price) < currentAvailableBudget/3
+    && currentAvailableBudget/ 3 < 500 ? parseInt(part.ramCapacity!) <= 8 : part.type === 'ram'
     && possibleMobos[0].moboRamCompatibility!.includes(part.ramType!)
     ).sort((a, b) => b.costBenefit - a.costBenefit);
 
@@ -400,24 +415,35 @@ const ManualBuild: React.FC = () => {
     
     setSelectedRam(possibleRams[0]);
 
+    
+    currentAvailableBudget -= fixPrice(possibleRams[0].price);
+
     let possiblePowers = partList.filter(part => part.type === 'power' 
-    && fixPrice(part.price) < budgetSlideValue/12
+    && fixPrice(part.price) < currentAvailableBudget/2
     && part.powerWatts! >= (possibleGpus ? possibleGpus[0].gpuRecommendedPower! : 0)
     ).sort((a, b) => b.costBenefit - a.costBenefit);
 
     setSelectedPower(possiblePowers[0]);
 
+    currentAvailableBudget -= fixPrice(possiblePowers[0].price);
+
     let possibleSsds = partList.filter(part => part.type === 'ssd' 
-    && fixPrice(part.price) < budgetSlideValue/15
-    ).sort((a, b) => b.costBenefit - a.costBenefit);
+    && fixPrice(part.price) < currentAvailableBudget/2
+    ).sort((a, b) => (b.costBenefit * parseInt(b.ssdCapacity!) * parseInt(b.ssdSpeed!)) - (a.costBenefit * parseInt(a.ssdCapacity!) * parseInt(a.ssdSpeed!)));
 
     setSelectedSsd(possibleSsds[0]);
 
+    console.log(possibleSsds);
+
+    currentAvailableBudget -= fixPrice(possibleSsds[0].price);
+
     let possibleCases = partList.filter(part => part.type === 'case' 
-    && fixPrice(part.price) < budgetSlideValue/10
-    ).sort((a, b) => b.costBenefit - a.costBenefit);
+    && fixPrice(part.price) < currentAvailableBudget
+    ).sort((a, b) => (b.costBenefit * parseInt(b.caseFanSupport!) * (parseInt(b.caseWcSupport!) / 50)) - (a.costBenefit * parseInt(a.caseFanSupport!) * (parseInt(b.caseWcSupport!) / 50)));
 
     setSelectedCase(possibleCases[0]);
+
+    currentAvailableBudget -= fixPrice(possibleCases[0].price)
 
     let automaticBuildPrice : number = 
     fixPrice(possibleCpus[0].price) +
@@ -553,24 +579,6 @@ const ManualBuild: React.FC = () => {
                     onClick={() => setPreferedGpuBrand(gpuBrand)}
                     />)}
                     <h3>{preferedGpuBrand}</h3>
-                  </div>
-                  <div className={mbStyle.automaticBuildFilterBox}>
-                    <h2>Qual resolução?</h2>
-                    {resolutions.map((resolution) => <StandartButton
-                    buttonLabel={resolution}
-                    backgroundColor={preferedResolution === resolution ? '#0066FF' : '#DB5510'}
-                    onClick={() => setPreferedResolution(resolution)}
-                    />)}
-                    <h3>{preferedResolution}</h3>
-                  </div>
-                  <div className={mbStyle.automaticBuildFilterBox}>
-                    <h2>A quantos FPS?</h2>
-                    {fpsOptions.map((fps) => <StandartButton
-                    buttonLabel={fps}
-                    backgroundColor={preferedFps === fps ? '#0066FF' : '#DB5510'}
-                    onClick={() => setPreferedFps(fps)}
-                    />)}
-                    <h3>{preferedFps}</h3>
                   </div>
                   </div>
                   <div className={mbStyle.findPcButtonBox}>

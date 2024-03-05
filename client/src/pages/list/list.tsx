@@ -47,6 +47,7 @@ interface PartData {
     moboSocketCompatibility: string;
     moboRamCompatibility: string;
     moboSlots: string;
+    moboType: string;
   };
   ram?: {
     ramFrequency: string;
@@ -163,7 +164,8 @@ const List: React.FC<ListProps> = () => {
               moboChipset: '',
               moboSocketCompatibility: '',
               moboRamCompatibility: '',
-              moboSlots: ''
+              moboSlots: '',
+              moboType: '',
             }
             : type === 'ram'
               ? {
@@ -420,34 +422,46 @@ const List: React.FC<ListProps> = () => {
 
     switch (partToUpdate.type) {
         case 'cpu':
-            newCostBenefit = (partToUpdate.cpuCores + partToUpdate.cpuThreads + partToUpdate.cpuFrequency) + partToUpdate.cpuPerformance + partToUpdate.igpuPerformance / (fixedPrice * 2);
+          newCostBenefit = ((partToUpdate.cpuCores * 2 + partToUpdate.cpuThreads + partToUpdate.cpuFrequency * 0.01) + (partToUpdate.cpuPerformance * 20) + partToUpdate.igpuPerformance * 2) * 2.5 / (fixedPrice / 25);
             break;
         case 'gpu':
-            newCostBenefit = (partToUpdate.gpuCores + partToUpdate.gpuMemory + partToUpdate.gpuPerformance) / (fixedPrice * 2);
+            newCostBenefit = ((partToUpdate.gpuMemory*5) + (partToUpdate.gpuPerformance*50)) / (fixedPrice/45)
             break;
         case 'mobo':
-            newCostBenefit = (partToUpdate.moboSlots + 1) / (fixedPrice * 2); 
+            let typeBonus : number;
+            switch (partToUpdate.moboType) {
+              case 'High-End':
+                typeBonus = 20;
+              break;
+              case 'Mid-End':
+                typeBonus = 15;
+              break;
+              default:
+                typeBonus = 10;
+                break;
+            }
+            newCostBenefit = (partToUpdate.moboSlots*250) * typeBonus / (fixedPrice/3); 
             break;
         case 'ram':
-            newCostBenefit = (partToUpdate.ramCapacity + partToUpdate.ramFrequency) / (fixedPrice * 2);
+            const DDR5Bonus = partToUpdate.ramType === 'DDR5' ? 1.25 : 1;
+            newCostBenefit = (partToUpdate.ramCapacity * 1000 + partToUpdate.ramFrequency) * DDR5Bonus / (fixedPrice);
             break;
         case 'power':
-            const modularBonus = partToUpdate.powerModular !== 'Não modular' ? 1 : 0;
-            newCostBenefit = (partToUpdate.powerWatts + modularBonus) / (fixedPrice * 2);
+            const modularBonus = partToUpdate.powerModular.length > 3 ? 50 : 0;
+            newCostBenefit = (partToUpdate.powerWatts + modularBonus) / (fixedPrice / 25);
             break;
         case 'ssd':
-            newCostBenefit = (partToUpdate.ssdCapacity + partToUpdate.ssdSpeed) / (fixedPrice * 2);
+            newCostBenefit = ((partToUpdate.ssdCapacity * 10) + partToUpdate.ssdSpeed) / (fixedPrice / 2.5);
             break;
         case 'case':
             const fanSupportBonus = partToUpdate.caseFanSupport;
-            newCostBenefit = fanSupportBonus / (fixedPrice * 2); 
+            const wcSupportBonus = partToUpdate.caseWcSupport;
+            newCostBenefit = (fanSupportBonus * 10 + wcSupportBonus * 10) / (fixedPrice / 7.5); 
             break;
         default:
             newCostBenefit = 0; 
         break;
     }
-
-    alert((partToUpdate.powerWatts + modularBonus) / (fixedPrice * 2));
 
       if (newCostBenefit > 100) {
         newCostBenefit = 100;
@@ -559,7 +573,7 @@ const List: React.FC<ListProps> = () => {
                           ) : part['type'] === 'power' ? (
                             <>
                               <p>Watts: {part['powerWatts']}W</p>
-                              <p>Efficiência: {part['powerEfficiency']}</p>
+                              <p>Eficiência: {part['powerEfficiency']}</p>
                               <p>Modular: {part['powerModular']}</p>
                               <p>Preço: R$ {part['price']}</p>
                             </>
@@ -573,8 +587,8 @@ const List: React.FC<ListProps> = () => {
                           ) : part['type'] === 'case' ? (
                             <>
                               <p>Formato do Gabinete: {part['caseForm']}</p>
-                              <p>Suporte a fans: {part['caseFanSupport']}</p>
-                              <p>Suporte a Water Cooler: {part['caseWcSupport']}</p>
+                              <p>Suporte a fans: Até {part['caseFanSupport']} fans</p>
+                              <p>Suporte a Water Cooler: Até {part['caseWcSupport']}mm</p>
                               <p>Preço: R$ {part['price']}</p>
                             </>
                           ) : null}

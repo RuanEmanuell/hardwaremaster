@@ -38,6 +38,7 @@ const partSchema = new Schema({
     moboSocketCompatibility: String,
     moboRamCompatibility: String,
     moboSlots: Number,
+    moboType: String,
     //RAM only
     ramFrequency: Number,
     ramCapacity: Number,

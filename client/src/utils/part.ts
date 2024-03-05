@@ -11,14 +11,17 @@ interface Part {
   cpuSocket?: string;
   cpuRamType?: string;
   cpuIgpu?: string;
+  cpuPerformance?: number;
   gpuCores?: string,
   gpuMemory?: string,
   gpuMemoryType?: string,
   gpuRecommendedPower?: string;
+  gpuPerformance?: number;
   moboChipset?: string,
   moboSocketCompatibility?: string,
   moboRamCompatibility?: string,
   moboSlots?: string,
+  moboType?: string,
   ramFrequency?: string,
   ramCapacity?: string,
   ramType?: string,
