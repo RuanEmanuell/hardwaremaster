@@ -363,7 +363,12 @@ const List: React.FC<ListProps> = () => {
       const response = await fetch('http://localhost:3001/list/parts');
       const data: Part[] = await response.json();
       setFullPartList(data);
+      if(filterPartLabel == 'Todas as peças'){
       setInterfaceList(data);
+      }else{
+        const filteredAndOrderedList = sortByCriteria(data.filter((part) => part.type === Object.keys(partFilterMenu).find(key => partFilterMenu[key] === filterPartLabel)), filterOrderLabel)
+        setInterfaceList(filteredAndOrderedList);
+      }
     } catch (err) {
       console.log(err);
     }

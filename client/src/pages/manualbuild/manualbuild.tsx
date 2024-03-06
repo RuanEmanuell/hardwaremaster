@@ -347,6 +347,7 @@ const ManualBuild: React.FC = () => {
   }
 
   function getAutomaticPCParts() {
+    try{
     let willHaveGpu = true;
 
     let currentAvailableBudget = budgetSlideValue * 1.1;
@@ -366,7 +367,7 @@ const ManualBuild: React.FC = () => {
     let possibleCpus = partList.filter(part => part.type === 'cpu'
       && fixPrice(part.price) < (willHaveGpu ? currentAvailableBudget / 4 : (currentAvailableBudget < 10000 ? currentAvailableBudget / 2 : currentAvailableBudget / 1.5))
       && (!willHaveGpu ? part.cpuIgpu!.length > 3 : (currentAvailableBudget < 3500 ? part.cpuIgpu!.length <= 3 : part.type === 'cpu'))
-      && automaticSelectedCpuBrand.includes(part.brand)).sort((a, b) => (b.costBenefit / cpuPerformanceBonus * b.cpuPerformance! * ((b.cpuCores! + b.cpuThreads!) * cpuPerformanceBonus) * (b.cpuRamType === 'DDR5' ? 2 : 1)) - (a.costBenefit / cpuPerformanceBonus * a.cpuPerformance! * ((a.cpuCores! + a.cpuThreads!) * cpuPerformanceBonus) * (a.cpuRamType === 'DDR5' ? 2 : 1)));
+      && automaticSelectedCpuBrand.includes(part.brand)).sort((a, b) => ((b.costBenefit / cpuPerformanceBonus) * b.cpuPerformance! * ((b.cpuCores! + b.cpuThreads!)) * (b.cpuRamType?.includes('DDR5') ? 2 : 1)) - ((a.costBenefit / cpuPerformanceBonus) * a.cpuPerformance! * ((a.cpuCores! + a.cpuThreads!)) * (a.cpuRamType?.includes('DDR5') ? 2 : 1)));
 
     console.log(possibleCpus);
     setSelectedCpu(possibleCpus[0]);
@@ -456,6 +457,9 @@ const ManualBuild: React.FC = () => {
     setTotalBuildPrice(automaticBuildPrice);
 
     setBuildMode('manual');
+  }catch(err){
+    alert('Não achamos nenhum PC possível com os filtros aplicados. Tente novamente!');
+  }
   }
 
   //Fetch API
