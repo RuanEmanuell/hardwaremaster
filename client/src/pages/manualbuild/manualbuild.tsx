@@ -317,7 +317,7 @@ const ManualBuild: React.FC = () => {
 
         let temporaryBuildPrice =
           fixPrice(temporarySelectedCpu!.price) +
-          fixPrice(temporarySelectedGpu ?temporarySelectedGpu!.price : '0.0') +
+          fixPrice(temporarySelectedGpu ? temporarySelectedGpu!.price : '0.0') +
           fixPrice(temporarySelectedMobo!.price) +
           fixPrice(temporarySelectedRam!.price) +
           fixPrice(temporarySelectedPower!.price) +
@@ -325,8 +325,8 @@ const ManualBuild: React.FC = () => {
           fixPrice(temporarySelectedCase!.price);
 
         setSelectedCpu(temporarySelectedCpu);
-        if(temporarySelectedGpu){
-        setSelectedGpu(temporarySelectedGpu);
+        if (temporarySelectedGpu) {
+          setSelectedGpu(temporarySelectedGpu);
         }
         setSelectedMobo(temporarySelectedMobo);
         setSelectedRam(temporarySelectedRam);
@@ -346,55 +346,55 @@ const ManualBuild: React.FC = () => {
     setBudgetSlide(parseInt(event.target.value));
   }
 
-  function getAutomaticPCParts(){
+  function getAutomaticPCParts() {
     let willHaveGpu = true;
 
     let currentAvailableBudget = budgetSlideValue * 1.1;
 
-    if(currentAvailableBudget < 2500){
+    if (currentAvailableBudget < 2500) {
       willHaveGpu = false;
     }
 
-    let automaticSelectedCpuBrand : string = preferedCpuBrand;
+    let automaticSelectedCpuBrand: string = preferedCpuBrand;
 
-    if(preferedCpuBrand === cpuBrands[2]){
+    if (preferedCpuBrand === cpuBrands[2]) {
       automaticSelectedCpuBrand = 'AMD/Intel';
     }
 
     const cpuPerformanceBonus = currentAvailableBudget;
-    
-    let possibleCpus = partList.filter(part => part.type === 'cpu' 
-    && fixPrice(part.price) < (willHaveGpu ? currentAvailableBudget/4 : (currentAvailableBudget < 10000 ? currentAvailableBudget/2 : currentAvailableBudget/1.5))
-    && (!willHaveGpu ? part.cpuIgpu!.length > 3 : (currentAvailableBudget < 3500 ? part.cpuIgpu!.length <= 3 : part.type === 'cpu'))
-    && automaticSelectedCpuBrand.includes(part.brand)).sort((a, b) => (b.costBenefit * (b.cpuPerformance! * cpuPerformanceBonus)) - (a.costBenefit * (a.cpuPerformance! * cpuPerformanceBonus)));
+
+    let possibleCpus = partList.filter(part => part.type === 'cpu'
+      && fixPrice(part.price) < (willHaveGpu ? currentAvailableBudget / 4 : (currentAvailableBudget < 10000 ? currentAvailableBudget / 2 : currentAvailableBudget / 1.5))
+      && (!willHaveGpu ? part.cpuIgpu!.length > 3 : (currentAvailableBudget < 3500 ? part.cpuIgpu!.length <= 3 : part.type === 'cpu'))
+      && automaticSelectedCpuBrand.includes(part.brand)).sort((a, b) => (b.costBenefit / cpuPerformanceBonus * b.cpuPerformance! * ((b.cpuCores! + b.cpuThreads!) * cpuPerformanceBonus) * (b.cpuRamType === 'DDR5' ? 2 : 1)) - (a.costBenefit / cpuPerformanceBonus * a.cpuPerformance! * ((a.cpuCores! + a.cpuThreads!) * cpuPerformanceBonus) * (a.cpuRamType === 'DDR5' ? 2 : 1)));
 
     console.log(possibleCpus);
     setSelectedCpu(possibleCpus[0]);
 
     currentAvailableBudget -= fixPrice(possibleCpus[0].price);
 
-    let automaticSelectedGpuBrand : string = preferedGpuBrand;
-    if(preferedGpuBrand === gpuBrands[3]){
+    let automaticSelectedGpuBrand: string = preferedGpuBrand;
+    if (preferedGpuBrand === gpuBrands[3]) {
       automaticSelectedGpuBrand = 'NVIDIA/AMD/Intel';
     }
-    
-    let possibleGpus : Part[] | undefined;
+
+    let possibleGpus: Part[] | undefined;
 
     const gpuPerformanceBonus = currentAvailableBudget;
 
-    if(willHaveGpu){
-    possibleGpus = partList.filter(part => part.type === 'gpu' 
-    && fixPrice(part.price) < (currentAvailableBudget < 10000 ? currentAvailableBudget/2 : currentAvailableBudget)
-    && automaticSelectedGpuBrand.includes(part.brand)).sort((a, b) => ((b.costBenefit + (b.gpuPerformance! * gpuPerformanceBonus)) - (a.costBenefit + (a.gpuPerformance! * gpuPerformanceBonus))));
-    setSelectedGpu(possibleGpus[0]);
-    console.log(possibleGpus);
-    currentAvailableBudget -= fixPrice(possibleGpus[0].price);
+    if (willHaveGpu) {
+      possibleGpus = partList.filter(part => part.type === 'gpu'
+        && fixPrice(part.price) < (currentAvailableBudget < 10000 ? currentAvailableBudget / 2 : currentAvailableBudget / 1.25)
+        && automaticSelectedGpuBrand.includes(part.brand)).sort((a, b) => ((b.costBenefit + (b.gpuPerformance! * gpuPerformanceBonus)) - (a.costBenefit + (a.gpuPerformance! * gpuPerformanceBonus))));
+      setSelectedGpu(possibleGpus[0]);
+      console.log(possibleGpus);
+      currentAvailableBudget -= fixPrice(possibleGpus[0].price);
     }
 
-    let possibleMobos = partList.filter(part => part.type === 'mobo' 
-    && fixPrice(part.price) < currentAvailableBudget/2.5
-    && possibleCpus[0].cpuSocket === part.moboSocketCompatibility
-    && possibleCpus[0].cpuRamType === part.moboRamCompatibility).sort((a, b) => b.costBenefit - a.costBenefit);
+    let possibleMobos = partList.filter(part => part.type === 'mobo'
+      && fixPrice(part.price) < currentAvailableBudget / 2.5
+      && possibleCpus[0].cpuSocket === part.moboSocketCompatibility
+      && possibleCpus[0].cpuRamType?.includes(part.moboRamCompatibility!)).sort((a, b) => b.costBenefit - a.costBenefit);
 
     setSelectedMobo(possibleMobos[0]);
 
@@ -402,33 +402,32 @@ const ManualBuild: React.FC = () => {
 
     currentAvailableBudget -= fixPrice(possibleMobos[0].price);
 
-    let possibleRams = partList.filter(part => part.type === 'ram' 
-    && fixPrice(part.price) < currentAvailableBudget/3
-    && currentAvailableBudget/ 3 < 500 ? part.ramCapacity! <= 8 : part.type === 'ram'
+    let possibleRams = partList.filter(part => part.type === 'ram'
+      && fixPrice(part.price) < currentAvailableBudget / 3
+      && currentAvailableBudget / 3 < 500 ? part.ramCapacity! <= 8 : part.type === 'ram'
     && possibleMobos[0].moboRamCompatibility!.includes(part.ramType!)
     ).sort((a, b) => b.costBenefit - a.costBenefit);
 
-    if(budgetSlideValue >= 2000){
-    possibleRams[0].price = (fixPrice(possibleRams[0].price) * 2).toString().replace('.', ',');
-    possibleRams[0].partQuantity = 2;
+    if (budgetSlideValue >= 2000) {
+      possibleRams[0].price = (fixPrice(possibleRams[0].price) * 2).toString().replace('.', ',');
+      possibleRams[0].partQuantity = 2;
     }
-    
+
     setSelectedRam(possibleRams[0]);
 
-    
     currentAvailableBudget -= fixPrice(possibleRams[0].price);
 
-    let possiblePowers = partList.filter(part => part.type === 'power' 
-    && fixPrice(part.price) < currentAvailableBudget/2
-    && part.powerWatts! >= (possibleGpus ? possibleGpus[0].gpuRecommendedPower! : 0)
+    let possiblePowers = partList.filter(part => part.type === 'power'
+      && fixPrice(part.price) < currentAvailableBudget / 2
+      && part.powerWatts! >= (possibleGpus ? possibleGpus[0].gpuRecommendedPower! : 0)
     ).sort((a, b) => b.costBenefit - a.costBenefit);
 
     setSelectedPower(possiblePowers[0]);
 
     currentAvailableBudget -= fixPrice(possiblePowers[0].price);
 
-    let possibleSsds = partList.filter(part => part.type === 'ssd' 
-    && fixPrice(part.price) < currentAvailableBudget/2
+    let possibleSsds = partList.filter(part => part.type === 'ssd'
+      && fixPrice(part.price) < currentAvailableBudget / 2
     ).sort((a, b) => (b.costBenefit * b.ssdCapacity! * b.ssdSpeed!) - (a.costBenefit * a.ssdCapacity! * a.ssdSpeed!));
 
     setSelectedSsd(possibleSsds[0]);
@@ -437,22 +436,22 @@ const ManualBuild: React.FC = () => {
 
     currentAvailableBudget -= fixPrice(possibleSsds[0].price);
 
-    let possibleCases = partList.filter(part => part.type === 'case' 
-    && fixPrice(part.price) < currentAvailableBudget
+    let possibleCases = partList.filter(part => part.type === 'case'
+      && fixPrice(part.price) < currentAvailableBudget
     ).sort((a, b) => (b.costBenefit / currentAvailableBudget * b.caseFanSupport! * (b.caseWcSupport! / 25)) - (a.costBenefit * a.caseFanSupport!) * (b.caseWcSupport! / 25));
 
     setSelectedCase(possibleCases[0]);
 
     currentAvailableBudget -= fixPrice(possibleCases[0].price)
 
-    let automaticBuildPrice : number = 
-    fixPrice(possibleCpus[0].price) +
-    fixPrice(possibleGpus ? possibleGpus[0].price : '0.0') +
-    fixPrice(possibleMobos[0].price) +
-    fixPrice(possibleRams[0].price) +
-    fixPrice(possiblePowers[0].price) +
-    fixPrice(possibleSsds[0].price) +
-    fixPrice(possibleCases[0].price);
+    let automaticBuildPrice: number =
+      fixPrice(possibleCpus[0].price) +
+      fixPrice(possibleGpus ? possibleGpus[0].price : '0.0') +
+      fixPrice(possibleMobos[0].price) +
+      fixPrice(possibleRams[0].price) +
+      fixPrice(possiblePowers[0].price) +
+      fixPrice(possibleSsds[0].price) +
+      fixPrice(possibleCases[0].price);
 
     setTotalBuildPrice(automaticBuildPrice);
 
@@ -547,45 +546,45 @@ const ManualBuild: React.FC = () => {
             <>
               <h1 className={mbStyle.pageTitle}>Montagem {buildMode === 'automatic' ? 'Automática' : 'Manual'}</h1>
               {buildMode === 'automatic' ?
-              <div>
-                <div className={mbStyle.automaticBuildFiltersContainer}>
-                  <div className={mbStyle.automaticBuildFilterBox}>
-                    <h2>Orçamento</h2>
-                    <input
-                      type='range'
-                      className={mbStyle.budgetSlider}
-                      value={budgetSlideValue}
-                      onChange={(event) => changeSlider(event)}
-                      min='1500'
-                      max='20000'
-                      step = '500'
-                    ></input>
-                    <h3>R$ {budgetSlideValue}</h3>
-                  </div>
-                  <div className={mbStyle.automaticBuildFilterBox}>
-                    <h2>Marca de processador preferida</h2>
-                    {cpuBrands.map((cpuBrand) => <StandartButton
-                    buttonLabel={cpuBrand}
-                    backgroundColor={preferedCpuBrand === cpuBrand ? '#0066FF' : '#DB5510'}
-                    onClick={() => setPreferedCpuBrand(cpuBrand)}
-                    />)}
-                    <h3>{preferedCpuBrand}</h3>
-                  </div>
-                  <div className={mbStyle.automaticBuildFilterBox}>
-                    <h2>Marca de placa de vídeo preferida</h2>
-                    {gpuBrands.map((gpuBrand) => <StandartButton
-                    buttonLabel={gpuBrand}
-                    backgroundColor={preferedGpuBrand === gpuBrand ? '#0066FF' : '#DB5510'}
-                    onClick={() => setPreferedGpuBrand(gpuBrand)}
-                    />)}
-                    <h3>{preferedGpuBrand}</h3>
-                  </div>
+                <div>
+                  <div className={mbStyle.automaticBuildFiltersContainer}>
+                    <div className={mbStyle.automaticBuildFilterBox}>
+                      <h2>Orçamento</h2>
+                      <input
+                        type='range'
+                        className={mbStyle.budgetSlider}
+                        value={budgetSlideValue}
+                        onChange={(event) => changeSlider(event)}
+                        min='1500'
+                        max='20000'
+                        step='500'
+                      ></input>
+                      <h3>R$ {budgetSlideValue}</h3>
+                    </div>
+                    <div className={mbStyle.automaticBuildFilterBox}>
+                      <h2>Marca de processador preferida</h2>
+                      {cpuBrands.map((cpuBrand) => <StandartButton
+                        buttonLabel={cpuBrand}
+                        backgroundColor={preferedCpuBrand === cpuBrand ? '#0066FF' : '#DB5510'}
+                        onClick={() => setPreferedCpuBrand(cpuBrand)}
+                      />)}
+                      <h3>{preferedCpuBrand}</h3>
+                    </div>
+                    <div className={mbStyle.automaticBuildFilterBox}>
+                      <h2>Marca de placa de vídeo preferida</h2>
+                      {gpuBrands.map((gpuBrand) => <StandartButton
+                        buttonLabel={gpuBrand}
+                        backgroundColor={preferedGpuBrand === gpuBrand ? '#0066FF' : '#DB5510'}
+                        onClick={() => setPreferedGpuBrand(gpuBrand)}
+                      />)}
+                      <h3>{preferedGpuBrand}</h3>
+                    </div>
                   </div>
                   <div className={mbStyle.findPcButtonBox}>
-                  <StandartButton
-                  buttonLabel='Achar meu PC ideal'
-                  onClick = {getAutomaticPCParts}
-                  />
+                    <StandartButton
+                      buttonLabel='Achar meu PC ideal'
+                      onClick={getAutomaticPCParts}
+                    />
                   </div>
                 </div> :
                 <>
@@ -775,11 +774,11 @@ const ManualBuild: React.FC = () => {
                             selectedPart={selectedCpu!}
                           />
                           {selectedGpu ?
-                          <SaveBuildPart
-                            partLabel='Placa de vídeo'
-                            selectedPart={selectedGpu!}
-                          />
-                          : <></>}
+                            <SaveBuildPart
+                              partLabel='Placa de vídeo'
+                              selectedPart={selectedGpu!}
+                            />
+                            : <></>}
                           <SaveBuildPart
                             partLabel='Placa mãe'
                             selectedPart={selectedMobo!}

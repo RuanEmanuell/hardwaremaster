@@ -1,12 +1,12 @@
 interface Part {
-  _id?: String,
+  _id?: string,
   type: string;
   name: string;
   brand: string;
   price: string;
   imageLink: string;
-  cpuCores?: string;
-  cpuThreads?: string;
+  cpuCores?: number;
+  cpuThreads?: number;
   cpuFrequency?: string;
   cpuSocket?: string;
   cpuRamType?: string;
