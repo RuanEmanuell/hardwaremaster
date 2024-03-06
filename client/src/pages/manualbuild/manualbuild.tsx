@@ -350,7 +350,7 @@ const ManualBuild: React.FC = () => {
     try{
     let willHaveGpu = true;
 
-    let currentAvailableBudget = budgetSlideValue * 1.1;
+    let currentAvailableBudget = budgetSlideValue * 1.05;
 
     if (currentAvailableBudget < 2500) {
       willHaveGpu = false;
@@ -386,7 +386,7 @@ const ManualBuild: React.FC = () => {
     if (willHaveGpu) {
       possibleGpus = partList.filter(part => part.type === 'gpu'
         && fixPrice(part.price) < (currentAvailableBudget < 10000 ? currentAvailableBudget / 2 : currentAvailableBudget / 1.25)
-        && automaticSelectedGpuBrand.includes(part.brand)).sort((a, b) => ((b.costBenefit + (b.gpuPerformance! * gpuPerformanceBonus)) - (a.costBenefit + (a.gpuPerformance! * gpuPerformanceBonus))));
+        && automaticSelectedGpuBrand.includes(part.brand)).sort((a, b) => ((b.costBenefit / gpuPerformanceBonus + b.gpuPerformance!) - (a.costBenefit / gpuPerformanceBonus + a.gpuPerformance!)));
       setSelectedGpu(possibleGpus[0]);
       console.log(possibleGpus);
       currentAvailableBudget -= fixPrice(possibleGpus[0].price);

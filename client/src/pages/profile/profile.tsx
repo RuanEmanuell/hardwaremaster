@@ -11,9 +11,12 @@ import Part from '../../utils/part';
 import Build from '../../utils/build';
 import BuildBox from '../../components/profile/buildbox';
 import Loading from '../../components/global/loading';
+import { storage } from '../../confidential/firebase.config';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
 const Profile: React.FC = () => {
   const { currentUser } = useAuth();
+  const storage = getStorage();
 
   const [isLoading, setLoading] = useState<boolean>(false);
   const [userProfile, setUserProfile] = useState<User | null>(null);
@@ -21,7 +24,8 @@ const Profile: React.FC = () => {
   const [userParts, setUserPartList] = useState<Part[] | null>(null);
 
   const editUserRef = useRef<HTMLDialogElement>(null);
-  const [editUserPhoto, setEditUserPhoto] = useState<string>('');
+  const [userPhoto, setUserPhoto] = useState<string | null>(null);
+  const [editUserFile, setEditUserFile] = useState<File | null>(null);
   const [editUserName, setEditUserName] = useState<string>('');
   const [userNameCheckError, setUserNameCheckError] = useState<boolean>(false);
 
@@ -76,7 +80,6 @@ const Profile: React.FC = () => {
     editUserRef.current?.showModal();
     setUserNameCheckError(false);
     setEditUserName(userProfile!.name);
-    setEditUserPhoto(userProfile!.photo);
   }
 
   function closeEditUserMenu() {
@@ -87,7 +90,8 @@ const Profile: React.FC = () => {
     if (event.target.files) {
       const file = event.target.files[0];
       const imageURL = URL.createObjectURL(file);
-      setEditUserPhoto(imageURL);
+      setUserPhoto(imageURL);
+      setEditUserFile(file);
     }
   }
 
@@ -95,17 +99,38 @@ const Profile: React.FC = () => {
     setEditUserName(event.target.value);
   }
 
+  async function uploadImageToStorage(file: File) {
+    try {
+      const storageRef = ref(getStorage(), `userImages/${userProfile?._id}`);
+      await uploadBytes(storageRef, file);
+  
+      const downloadURL = await getDownloadURL(storageRef);
+  
+      return downloadURL;
+    } catch (error) {
+      console.error('Erro durante o upload para o Firebase Storage:', error);
+      throw error;
+    }
+  }
+  
+
   async function saveEditUserMenuChanges() {
     if(editUserName.length<5){
       setUserNameCheckError(true);
     }else{
-    try {
+      setLoading(true);
+      try {
+        let photoURL : unknown;
+    
+        if (editUserFile) {
+          photoURL = await uploadImageToStorage(editUserFile); 
+        }
+    
       await fetch(`http://localhost:3001/users/update/${userProfile?._id}`, {
         method: 'PUT',
         headers: { 'Content-type': 'application/json' },
         body: JSON.stringify({
           name: editUserName,
-          photo: editUserPhoto
         })
       });
       getUserProfile();
@@ -113,6 +138,7 @@ const Profile: React.FC = () => {
     } catch (err) {
       console.log(err);
     }
+    setLoading(false);
   }
   }
 
@@ -154,6 +180,15 @@ const Profile: React.FC = () => {
     getUserProfile();
   }, [currentUser]);
 
+  useEffect(() =>{
+    if(userProfile){
+      const storageRef = ref(storage, `userImages/${userProfile?._id}`);
+      getDownloadURL(storageRef).then((url) => {
+        setUserPhoto(url)
+      });
+    }
+  }, [userProfile]);
+
   return (
     <div>
       <NavBar />
@@ -165,7 +200,7 @@ const Profile: React.FC = () => {
               <div>
                 <div className={profileStyle.userProfile}>
                   <div className={profileStyle.userPhotoBox}>
-                    <img src={userProfile?.photo === '' ? ProfileIcon : userProfile?.photo} className={profileStyle.userPhoto}></img>
+                    <img src={!userPhoto ? ProfileIcon : userPhoto} className={profileStyle.userPhoto}></img>
                   </div>
                   <div className={profileStyle.userNameBox}>
                     <h1>{userProfile?.name}</h1>
@@ -176,7 +211,7 @@ const Profile: React.FC = () => {
                   <div className={profileStyle.editUserProfileBox}>
                     <div className={profileStyle.editUserProfile}>
                       <h1>Editar perfil</h1>
-                      <img src={userProfile?.photo === '' && editUserPhoto === '' ? ProfileIcon : editUserPhoto} className={profileStyle.editUserPhoto}></img>
+                      <img src={!userPhoto  ? ProfileIcon : userPhoto} className={profileStyle.editUserPhoto}></img>
                       <StandartButton
                         buttonLabel='Editar foto'
                         onClick={() => {
