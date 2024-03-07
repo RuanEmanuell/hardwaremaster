@@ -21,7 +21,7 @@ const Home : React.FC = () => {
               buttonLabel='Montar PC customizado' 
               buttonBackgroundColor = '#0066FF'/>
           </Link>
-          <Link to = '/login'>
+          <Link to='/manualbuild/?mode=action&automaticMode=yes'>
             <HomeOption
               icon={MotherboardIcon}
               optionDescription='Defina seu orçamento e preferências, e deixe que o nosso algoritmo decida o melhor PC possível para você!'

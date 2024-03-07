@@ -61,7 +61,7 @@ button {
 }
 
 .partImage img {
-    width: 65%;
+    width: 55%;
     max-width: fit-content;
     min-height: fit-content;
     max-height: 100%;

@@ -71,7 +71,7 @@
 .navOptions {
     margin: auto 0;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
 }
 
 .navOption {
@@ -135,43 +135,68 @@
     padding: 5%;
 }
 
-.loadingSpinnerContainer{
+.loadingSpinnerContainer {
     height: 90vh;
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-  
-  .loadingSpinner {
+}
+
+.loadingSpinner {
     width: 100px;
     height: 100px;
     border: 5px solid #252525;
-    border-bottom-color :#DB5510;
+    border-bottom-color: #DB5510;
     border-radius: 50%;
     display: inline-block;
     box-sizing: border-box;
     animation: rotation 1s linear infinite;
-    }
-  
-    @keyframes rotation {
+}
+
+@keyframes rotation {
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }
-  } 
+}
 
+.chooseBuildMode{
+    background-color: #252525;
+    border-radius: 25px;
+    min-width: 400px;
+    max-width: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+  }
+
+.chooseBuildMode div{
+    padding: 10%;
+}
+
+.chooseBuildMode div button{
+    width: 100%;
+}
+
+.chooseBuildMode div button:hover{
+    background-color: #DB5510;
+}
 
 @media screen and (max-width: 960px) {
     .navOption {
         display: none;
     }
+
     .hamburguerMenuContainer {
         display: flex;
         align-items: center;
     }
-    .navBar{
+
+    .navBar {
         margin: 0 2.5%;
     }
 }

@@ -103,7 +103,7 @@ const CreateAccount: React.FC = () => {
           authId: newUser.user.uid,
           type: 'user',
           email: newUser.user.email,
-          name: newUser.user.displayName,
+          name: user,
           photo: ''
         })
       }

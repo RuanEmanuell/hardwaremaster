@@ -21,7 +21,11 @@ import Loading from '../../components/global/loading';
 
 const ManualBuild: React.FC = () => {
 
-  const [buildMode, setBuildMode] = useState<string>('automatic');
+  const location = useLocation();
+  const queryParams = queryString.parse(location.search);
+  const automaticBuild = queryParams.automaticMode as string;
+
+  const [buildMode, setBuildMode] = useState<string>(automaticBuild ? 'automatic' : 'manual');
 
   const cpuBrands = ['Intel', 'AMD', 'Tanto faz'];
   const gpuBrands = ['NVIDIA', 'AMD', 'Intel', 'Tanto faz'];
@@ -63,8 +67,6 @@ const ManualBuild: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const location = useLocation();
-  const queryParams = queryString.parse(location.search);
   const buildId = queryParams.buildId as string;
 
   async function getPartList() {
@@ -228,6 +230,9 @@ const ManualBuild: React.FC = () => {
     setSelectedCase(undefined);
     setSelectCaseInput('');
     setTotalBuildPrice(0);
+    if(automaticBuild){
+      setBuildMode('automatic');
+    }
   }
 
   function shareText(option: string) {
@@ -462,41 +467,6 @@ const ManualBuild: React.FC = () => {
   }
   }
 
-  //Fetch API
-  useEffect(() => {
-    getPartList();
-  }, []);
-
-
-  useEffect(() => {
-    if (buildId) {
-      getUserBuildPartList();
-    }
-  }, [partList, currentUser]);
-
-  useEffect(() => {
-    if (totalBuildPrice < 0) {
-      setTotalBuildPrice(0);
-    }
-  }, [totalBuildPrice]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      if (copiedToTA == 'flex') {
-        setCopiedDisplay('none')
-      }
-    }, 2000)
-  }, [copiedToTA])
-
-  useEffect(() => {
-    if (selectedCpu && selectedMobo && selectedRam
-      && selectedPower && selectedSsd && selectedCase) {
-      setAllPartsSelected(true);
-    } else {
-      setAllPartsSelected(false);
-    }
-  }, [selectedCpu, selectedGpu, selectedMobo, selectedRam,
-    selectedPower, selectedSsd, selectedCase]);
 
   function openModal() {
     if (allPartsSelected) {
@@ -541,6 +511,47 @@ const ManualBuild: React.FC = () => {
     }
   }
 
+
+  //Fetch API
+  useEffect(() => {
+    getPartList();
+  }, []);
+
+
+  useEffect(() => {
+    if (buildId) {
+      getUserBuildPartList();
+    }
+  }, [partList, currentUser]);
+
+  useEffect(() => {
+    if (totalBuildPrice < 0) {
+      setTotalBuildPrice(0);
+    }
+  }, [totalBuildPrice]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (copiedToTA == 'flex') {
+        setCopiedDisplay('none')
+      }
+    }, 2000)
+  }, [copiedToTA])
+
+  useEffect(() => {
+    if (selectedCpu && selectedMobo && selectedRam
+      && selectedPower && selectedSsd && selectedCase) {
+      setAllPartsSelected(true);
+    } else {
+      setAllPartsSelected(false);
+    }
+  }, [selectedCpu, selectedGpu, selectedMobo, selectedRam,
+    selectedPower, selectedSsd, selectedCase]);
+
+  useEffect(() => {
+   setBuildMode(automaticBuild ? 'automatic':'manual');
+  },[automaticBuild])
+
   return (
     <div>
       <NavBar />
@@ -548,7 +559,7 @@ const ManualBuild: React.FC = () => {
         <main>
           {partList.length === 0 || buildId && !userBuildLoaded ? <Loading /> :
             <>
-              <h1 className={mbStyle.pageTitle}>Montagem {buildMode === 'automatic' ? 'Automática' : 'Manual'}</h1>
+              <h1 className={mbStyle.pageTitle}>Montagem {automaticBuild ? 'Automática' : 'Manual'}</h1>
               {buildMode === 'automatic' ?
                 <div>
                   <div className={mbStyle.automaticBuildFiltersContainer}>

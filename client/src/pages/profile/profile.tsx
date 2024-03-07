@@ -131,6 +131,7 @@ const Profile: React.FC = () => {
         headers: { 'Content-type': 'application/json' },
         body: JSON.stringify({
           name: editUserName,
+          photo: userPhoto,
         })
       });
       getUserProfile();
@@ -181,7 +182,7 @@ const Profile: React.FC = () => {
   }, [currentUser]);
 
   useEffect(() =>{
-    if(userProfile){
+    if(userProfile && userProfile.photo){
       const storageRef = ref(storage, `userImages/${userProfile?._id}`);
       getDownloadURL(storageRef).then((url) => {
         setUserPhoto(url)
