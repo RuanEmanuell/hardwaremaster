@@ -54,7 +54,7 @@ const InputResultBox: React.FC<Props> = ({ partList, selectPartInput, selectPart
     return (
         <div className={mbComponentStyle.inputResultBox}>
             <div>
-                {partList.filter(part =>
+                {partList.sort((a, b) => parseFloat(a.price) - parseFloat(b.price)).filter(part =>
                     `${part['brand']} ${part['name']}`.toLowerCase().trim().includes(selectPartInput)).map(part => {
                         let incompatiblePartReason = checkPartIncompatibility(part);
                         return (

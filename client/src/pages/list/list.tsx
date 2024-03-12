@@ -106,6 +106,7 @@ const List: React.FC<ListProps> = () => {
   const [filterOrderMenuVisibility, setFilterOrderMenuVisibility] = useState<string>('none');
   const [selectTypeMenuVisibility, setSelectTypeMenuVisibility] = useState<string>('none');
   const [selectedPartType, setSelectedType] = useState<string>('cpu');
+  const [partSearch, setPartSearch] = useState<string>('');
 
   const selectTypeRef = useDetectClickOutside({ onTriggered: closeSelectTypeMenu });
 
@@ -242,14 +243,6 @@ const List: React.FC<ListProps> = () => {
 
   function selectFilterPart(filterPartType: string) {
     setfilterPartLabel(partFilterMenu[filterPartType]);
-    let filteredList: Part[] = [];
-    if (filterPartType === 'all') {
-      filteredList = fullPartList!;
-    } else {
-      filteredList = fullPartList!.filter((part) => part.type === filterPartType);
-    }
-    filteredList = sortByCriteria(filteredList, filterOrderLabel);
-    setInterfaceList(filteredList);
     closePartFilterMenu();
   }
 
@@ -342,6 +335,24 @@ const List: React.FC<ListProps> = () => {
     title2: 'Nome (Z-A)',
   };
 
+  function handleSearch(event: React.ChangeEvent<HTMLInputElement>) {
+    const searchValue = event.currentTarget.value;
+    setPartSearch(searchValue);
+    updateListSearch(searchValue);
+  }
+
+  function updateListSearch(searchValue: string){
+    const orderedSearchResults = sortByCriteria(fullPartList.filter(part =>
+      (`${part['brand']} ${part['name']}`).toLowerCase().trim().includes(searchValue)
+    ), filterOrderLabel);
+
+    const currentTypeFilter = Object.keys(partFilterMenu).find(key => partFilterMenu[key] === filterPartLabel);
+
+    const filteredSearchResults = currentTypeFilter === 'all' ? orderedSearchResults : orderedSearchResults.filter(part => part.type === currentTypeFilter);
+
+    setInterfaceList(filteredSearchResults);
+  }
+
   // CRUD functions
   async function getUserType() {
     try {
@@ -363,9 +374,9 @@ const List: React.FC<ListProps> = () => {
       const response = await fetch('http://localhost:3001/list/parts');
       const data: Part[] = await response.json();
       setFullPartList(data);
-      if(filterPartLabel == 'Todas as peças'){
-      setInterfaceList(data);
-      }else{
+      if (filterPartLabel == 'Todas as peças') {
+        setInterfaceList(data);
+      } else {
         const filteredAndOrderedList = sortByCriteria(data.filter((part) => part.type === Object.keys(partFilterMenu).find(key => partFilterMenu[key] === filterPartLabel)), filterOrderLabel)
         setInterfaceList(filteredAndOrderedList);
       }
@@ -423,50 +434,50 @@ const List: React.FC<ListProps> = () => {
       let newCostBenefit: number;
       const partToUpdate: any = fullPartList.find(part => part._id === id);
 
-      const fixedPrice = fixPrice(newPrice); 
+      const fixedPrice = fixPrice(newPrice);
 
-    switch (partToUpdate.type) {
+      switch (partToUpdate.type) {
         case 'cpu':
           newCostBenefit = ((partToUpdate.cpuCores * 2 + partToUpdate.cpuThreads + partToUpdate.cpuFrequency * 0.01) + (partToUpdate.cpuPerformance * 20) + partToUpdate.igpuPerformance * 2) * 2.5 / (fixedPrice / 25);
-            break;
+          break;
         case 'gpu':
-            newCostBenefit = ((partToUpdate.gpuMemory*5) + (partToUpdate.gpuPerformance*50)) / (fixedPrice/45)
-            break;
+          newCostBenefit = ((partToUpdate.gpuMemory * 5) + (partToUpdate.gpuPerformance * 50)) / (fixedPrice / 45)
+          break;
         case 'mobo':
-            let typeBonus : number;
-            switch (partToUpdate.moboType) {
-              case 'High-End':
-                typeBonus = 20;
+          let typeBonus: number;
+          switch (partToUpdate.moboType) {
+            case 'High-End':
+              typeBonus = 20;
               break;
-              case 'Mid-End':
-                typeBonus = 15;
+            case 'Mid-End':
+              typeBonus = 15;
               break;
-              default:
-                typeBonus = 10;
-                break;
-            }
-            newCostBenefit = (partToUpdate.moboSlots*250) * typeBonus / (fixedPrice/3); 
-            break;
+            default:
+              typeBonus = 10;
+              break;
+          }
+          newCostBenefit = (partToUpdate.moboSlots * 250) * typeBonus / (fixedPrice / 3);
+          break;
         case 'ram':
-            const DDR5Bonus = partToUpdate.ramType === 'DDR5' ? 1.25 : 1;
-            newCostBenefit = (partToUpdate.ramCapacity * 1000 + partToUpdate.ramFrequency) * DDR5Bonus / (fixedPrice);
-            break;
+          const DDR5Bonus = partToUpdate.ramType === 'DDR5' ? 1.25 : 1;
+          newCostBenefit = (partToUpdate.ramCapacity * 1000 + partToUpdate.ramFrequency) * DDR5Bonus / (fixedPrice);
+          break;
         case 'power':
-            const modularBonus = partToUpdate.powerModular.length > 3 ? 300 : 0;
-            newCostBenefit = (partToUpdate.powerWatts * 1.5 + modularBonus) / (fixedPrice / 25);
-            break;
+          const modularBonus = partToUpdate.powerModular.length > 3 ? 300 : 0;
+          newCostBenefit = (partToUpdate.powerWatts * 1.5 + modularBonus) / (fixedPrice / 25);
+          break;
         case 'ssd':
-            newCostBenefit = ((partToUpdate.ssdCapacity * 10) + partToUpdate.ssdSpeed) / (fixedPrice / 2.5);
-            break;
+          newCostBenefit = ((partToUpdate.ssdCapacity * 10) + partToUpdate.ssdSpeed) / (fixedPrice / 2.5);
+          break;
         case 'case':
-            const fanSupportBonus = partToUpdate.caseFanSupport;
-            const wcSupportBonus = partToUpdate.caseWcSupport;
-            newCostBenefit = (fanSupportBonus * 10 + wcSupportBonus * 10) / (fixedPrice / 7.5); 
-            break;
+          const fanSupportBonus = partToUpdate.caseFanSupport;
+          const wcSupportBonus = partToUpdate.caseWcSupport;
+          newCostBenefit = (fanSupportBonus * 10 + wcSupportBonus * 10) / (fixedPrice / 7.5);
+          break;
         default:
-            newCostBenefit = 0; 
-        break;
-    }
+          newCostBenefit = 0;
+          break;
+      }
 
       if (newCostBenefit > 100) {
         newCostBenefit = 100;
@@ -489,6 +500,11 @@ const List: React.FC<ListProps> = () => {
   function fixPrice(price: string) {
     return parseFloat(price.replace(',', '.'));
   }
+
+
+  useEffect(() => {
+    updateListSearch(partSearch);
+  }, [filterPartLabel]);
 
   return (
     <div>
@@ -522,6 +538,16 @@ const List: React.FC<ListProps> = () => {
                 />
                 <div className={listStyle.gridSpacer}></div>
               </div>
+              <section className = {listStyle.searchInputBox}>
+              <div>
+              <label>Pesquisar por</label>
+              <input
+                className = {listStyle.searchPartInput}
+                placeholder='Digite o nome de uma peça...'
+                value={partSearch}
+                onChange={handleSearch}></input>
+              </div>
+              </section>
               <div className={listStyle.partList}>
                 {interfaceList.length > 0 ? (
                   <>

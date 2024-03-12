@@ -39,7 +39,7 @@
 .userNameBox img{
   margin: auto 2.5%;
   width: 7.5%;
-  height: fit-content;
+  height: auto;
 }
 
 .editUserProfileBox{

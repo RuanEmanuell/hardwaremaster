@@ -29,6 +29,30 @@ button {
     margin-bottom: 3%;
 }
 
+.searchInputBox{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 2.5% 0;
+    width: 100%;
+}
+
+.searchInputBox div{
+    width: 50%;
+}
+
+.searchInputBox label{
+    width: 100%;
+    text-align: start;
+}
+
+.searchPartInput{
+    font-weight: bold;
+    padding: 2.5%;
+    width: 100%;
+}
+
 .partList {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -61,7 +85,7 @@ button {
 
 .partImage img {
     width: 50%;
-    max-width: fit-content;
+    max-width: auto;
     max-height: 100%;
     margin: auto;
 }
@@ -190,8 +214,8 @@ button {
 }
 
 .addPartImg img {
-    height: fit-content;
-    width: fit-content;
+    height: auto;
+    width: auto;
     max-width: 100%;
     max-height: 100%;
     margin: auto;
@@ -233,5 +257,8 @@ button {
 @media screen and (max-width: 480px) {
     .partList {
         grid-template-columns: 1fr;
+    }
+    .searchPartInput{
+        width: 75%;
     }
 }
