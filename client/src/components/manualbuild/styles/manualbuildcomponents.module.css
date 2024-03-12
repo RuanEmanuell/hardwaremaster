@@ -46,6 +46,16 @@
     padding: 1%;
 }
 
+.visitLink{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.visitLink button{
+    margin: 0 0 10% 0;
+}
+
 .inputResultBox {
     margin-top: 1%;
     position: relative;
@@ -112,6 +122,8 @@
 .buttonBox {
     display: flex;
     justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 .incompatiblePartBox{

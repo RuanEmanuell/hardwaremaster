@@ -4,6 +4,7 @@ interface Part {
   name: string;
   brand: string;
   price: string;
+  bestPriceLink: string;
   imageLink: string;
   cpuCores?: number;
   cpuThreads?: number;

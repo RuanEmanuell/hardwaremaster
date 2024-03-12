@@ -5,6 +5,7 @@ import PartInfoBox from "./partinfobox";
 import PriceAndChangeButton from "./pricebutton";
 import { useDetectClickOutside } from "react-detect-click-outside";
 import Part from "../../utils/part";
+import StandartButton from "../global/standartbutton";
 
 interface Props {
     partName: string;
@@ -92,6 +93,16 @@ const PartSelectorBox: React.FC<Props> = (
                         : <></>}
                 </div>
             </div>
+            {selectedPart ? 
+            <a
+                className = {mbComponentStyle.visitLink}
+                target='_blank'
+                href={selectedPart?.bestPriceLink}>
+                <StandartButton
+                    backgroundColor='#0066FF'
+                    buttonLabel='Visitar site'
+                />
+            </a> : <></>}
         </div>
     );
 }

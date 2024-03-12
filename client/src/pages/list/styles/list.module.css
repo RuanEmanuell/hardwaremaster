@@ -95,8 +95,7 @@ button {
     width: 100%;
     min-width: 170px;
     text-align: center;
-    padding-bottom: 5%;
-    margin-bottom: 10%;
+    margin-bottom: 15%;
 }
 
 .partSpecs h1 {
@@ -257,8 +256,5 @@ button {
 @media screen and (max-width: 480px) {
     .partList {
         grid-template-columns: 1fr;
-    }
-    .searchPartInput{
-        width: 75%;
     }
 }

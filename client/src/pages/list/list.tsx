@@ -22,6 +22,7 @@ interface PartData {
   imageLink: string;
   costBenefit: string;
   price: string;
+  bestPriceLink: string;
   cpu?: {
     cpuSocket: string;
     cpuGeneration: string;
@@ -116,15 +117,6 @@ const List: React.FC<ListProps> = () => {
 
   const addPartRef = useRef<HTMLDialogElement>(null);
 
-  // Showing infos on screen on page load
-  useEffect(() => {
-    getPartList();
-  }, []);
-
-  useEffect(() => {
-    getUserType();
-  }, [currentUser]);
-
   // Setting inputs for add part modal based on type
   function getInitialPartData(type: string): PartData {
     return {
@@ -138,6 +130,7 @@ const List: React.FC<ListProps> = () => {
       imageLink: '',
       costBenefit: '',
       price: '',
+      bestPriceLink: '',
       ...(type === 'cpu'
         ? {
           cpuSocket: '',
@@ -430,7 +423,8 @@ const List: React.FC<ListProps> = () => {
     try {
       const response = await fetch(`http://localhost:3001/list/currentprice/${id}`);
       const data = await response.json();
-      const newPrice = data['preço'];
+      const newPrice = data['newPrice'];
+      const newBestLink = data['newBestLink'];
       let newCostBenefit: number;
       const partToUpdate: any = fullPartList.find(part => part._id === id);
 
@@ -488,7 +482,7 @@ const List: React.FC<ListProps> = () => {
       await fetch(`http://localhost:3001/list/update/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ price: newPrice, costBenefit: newCostBenefit }),
+        body: JSON.stringify({ price: newPrice, costBenefit: newCostBenefit, bestPriceLink: newBestLink}),
       });
 
       getPartList();
@@ -497,14 +491,30 @@ const List: React.FC<ListProps> = () => {
     }
   };
 
+  async function updateAllPrices() {
+    for(let i = 0; i<fullPartList.length; i++){
+      updatePrice(fullPartList[i]._id);
+    }
+  }
+
   function fixPrice(price: string) {
     return parseFloat(price.replace(',', '.'));
   }
 
 
+  // Showing infos on screen on page load
+  useEffect(() => {
+    getPartList();
+  }, []);
+
+  useEffect(() => {
+    getUserType();
+  }, [currentUser]);
+
   useEffect(() => {
     updateListSearch(partSearch);
   }, [filterPartLabel]);
+  
 
   return (
     <div>
@@ -632,6 +642,13 @@ const List: React.FC<ListProps> = () => {
                             </div>
                             <StandartButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
                           </div>
+                          <a 
+                          target='_blank'
+                          href={part['bestPriceLink']}>
+                          <StandartButton 
+                            backgroundColor='#0066FF'
+                            buttonLabel='Visitar site'/>
+                            </a>
                         </div>
                       </div>
                     ))}

@@ -33,8 +33,8 @@ listRouter.put('/update/:partId', async (req, res) => {
   try {
     await Part.findByIdAndUpdate(id, req.body);
     res.sendStatus(201);
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
   }
 });
 
@@ -103,9 +103,9 @@ listRouter.get('/currentprice/:partId', async (req, res) => {
         if (parseFloat(priceLink) != parseFloat(currentPrice) && parseFloat(priceLink) > 0) {
           currentPrice = priceLink;
         }
+        page.close();
       }
     }
-    page.close();
 
     return currentPrice;
   }
@@ -114,10 +114,9 @@ listRouter.get('/currentprice/:partId', async (req, res) => {
     price = await choosePrice([selectedPart['shopLink'], selectedPart['shopLink2'], selectedPart['shopLink3']]);
 
     if (price != selectedPart['price']) {
-      res.json({ preço: price });
+      res.json({ newPrice: price, newBestLink: selectedPart['shopLink'] });
     } else {
-      //APAGAR DEPOIS
-      res.json({ preço: price });
+      res.json({ newPrice: price, newBestLink: selectedPart['shopLink'] });
       console.log('Mesmo preço!');
     }
   }

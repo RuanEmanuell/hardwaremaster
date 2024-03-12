@@ -15,6 +15,7 @@ const partSchema = new Schema({
     price: String,
     costBenefit: Number,
     launch: Number,
+    bestPriceLink: String,
     //CPU only
     cpuSocket: String,
     cpuGeneration: String,

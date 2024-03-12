@@ -80,6 +80,7 @@ const ManualBuild: React.FC = () => {
         name: item.name,
         brand: item.brand,
         price: item.price,
+        bestPriceLink: item.bestPriceLink,
         imageLink: item.imageLink,
         cpuCores: item.cpuCores,
         cpuFrequency: item.cpuFrequency,
