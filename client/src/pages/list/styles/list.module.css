@@ -142,6 +142,12 @@ button {
     background-color: black;
 }
 
+.updateAllPricesButton{
+    position: fixed;
+    bottom: 0.5em;
+    right: 25em;
+}
+
 .choosePartType {
     position: fixed;
     bottom: 10%;
@@ -226,7 +232,7 @@ button {
     height: 75%;
 }
 
-.saveButtonContainer {
+.saveButtonContainer{
     display: flex;
     justify-content: center;
 }
@@ -236,6 +242,8 @@ button {
     padding: 2%;
     margin: auto;
 }
+
+
 
 @media screen and (max-width: 960px) {
     .partList {

@@ -46,14 +46,14 @@
     padding: 1%;
 }
 
-.visitLink{
+.changePart{
     display: flex;
     justify-content: center;
     width: 100%;
 }
 
-.visitLink button{
-    margin: 0 0 10% 0;
+.changePart button{
+    margin: 0 0 2.5% 0;
 }
 
 .inputResultBox {
@@ -125,6 +125,7 @@
     flex-direction: column;
     align-items: center;
 }
+
 
 .incompatiblePartBox{
     justify-content: space-evenly;
@@ -207,5 +208,8 @@
 @media screen and (max-width: 480px) {
     .incompatibleImg{
         display: none;
+    }
+    .changePart button{
+        margin: 0 0 5% 0;
     }
 }

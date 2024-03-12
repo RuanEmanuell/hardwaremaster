@@ -3,6 +3,11 @@ import mbStyle from './styles/manualbuild.module.css';
 import NavBar from '../../components/global/navbar';
 import CpuIcon from '../../images/cpu.png';
 import GpuIcon from '../../images/gpu.png';
+import MoboIcon from '../../images/motherboard.png';
+import RamIcon from '../../images/ram.png';
+import PowerIcon from '../../images/power.png';
+import SsdIcon from '../../images/ssd.png';
+import CaseIcon from '../../images/case.png';
 import SaveIcon from '../../images/save.png';
 import ShareIcon from '../../images/share.png';
 import RestartIcon from '../../images/restart.png';
@@ -648,7 +653,7 @@ const ManualBuild: React.FC = () => {
                     <PartSelectorBox
                       partName='Placa-mãe'
                       selectedPart={selectedMobo}
-                      partIcon={GpuIcon}
+                      partIcon={MoboIcon}
                       selectPartLabel={'Selecione uma placa-mãe'}
                       inputPlaceHolder={'Digite o nome de uma placa-mãe...'}
                       selectPartInput={selectMoboInput.toLowerCase().trim()}
@@ -669,7 +674,7 @@ const ManualBuild: React.FC = () => {
                     <PartSelectorBox
                       partName='Memória RAM'
                       selectedPart={selectedRam}
-                      partIcon={GpuIcon}
+                      partIcon={RamIcon}
                       selectPartLabel={'Selecione uma memória RAM'}
                       inputPlaceHolder={'Digite o nome de uma memória RAM...'}
                       selectPartInput={selectRamInput.toLowerCase().trim()}
@@ -690,7 +695,7 @@ const ManualBuild: React.FC = () => {
                     <PartSelectorBox
                       partName='Fonte de Alimentação'
                       selectedPart={selectedPower}
-                      partIcon={GpuIcon}
+                      partIcon={PowerIcon}
                       selectPartLabel={'Selecione uma fonte de alimentação'}
                       inputPlaceHolder={'Digite o nome de uma fonte de alimentação...'}
                       selectPartInput={selectPowerInput.toLowerCase().trim()}
@@ -710,7 +715,7 @@ const ManualBuild: React.FC = () => {
                     <PartSelectorBox
                       partName='SSD'
                       selectedPart={selectedSsd}
-                      partIcon={GpuIcon}
+                      partIcon={SsdIcon}
                       selectPartLabel={'Selecione um SSD'}
                       inputPlaceHolder={'Digite o nome de um SSD...'}
                       selectPartInput={selectSsdInput.toLowerCase().trim()}
@@ -729,7 +734,7 @@ const ManualBuild: React.FC = () => {
                     <PartSelectorBox
                       partName='Gabinete'
                       selectedPart={selectedCase}
-                      partIcon={GpuIcon}
+                      partIcon={CaseIcon}
                       selectPartLabel={'Selecione um gabinete'}
                       inputPlaceHolder={'Digite o nome de um gabinete...'}
                       selectPartInput={selectCaseInput.toLowerCase().trim()}

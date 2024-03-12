@@ -88,21 +88,16 @@ const PartSelectorBox: React.FC<Props> = (
                             selectedMobo={selectedMobo}
                             onIncreasePartQuantity={() => increasePartQuantity(selectedPart)}
                             onDecreasePartQuantity={() => decreasePartQuantity(selectedPart)}
-                            onChangePartClick={() => resetSelectedPart(selectedPart)}
                         />
                         : <></>}
                 </div>
             </div>
-            {selectedPart ? 
-            <a
-                className = {mbComponentStyle.visitLink}
-                target='_blank'
-                href={selectedPart?.bestPriceLink}>
-                <StandartButton
-                    backgroundColor='#0066FF'
-                    buttonLabel='Visitar site'
-                />
-            </a> : <></>}
+            {selectedPart ?
+                <div className={mbComponentStyle.changePart}>
+                    <StandartButton
+                        onClick={() => resetSelectedPart(selectedPart)}
+                        buttonLabel='Trocar peça'
+                    /></div> : <></>}
         </div>
     );
 }

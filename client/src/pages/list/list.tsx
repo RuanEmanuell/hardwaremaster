@@ -334,7 +334,7 @@ const List: React.FC<ListProps> = () => {
     updateListSearch(searchValue);
   }
 
-  function updateListSearch(searchValue: string){
+  function updateListSearch(searchValue: string) {
     const orderedSearchResults = sortByCriteria(fullPartList.filter(part =>
       (`${part['brand']} ${part['name']}`).toLowerCase().trim().includes(searchValue)
     ), filterOrderLabel);
@@ -482,7 +482,7 @@ const List: React.FC<ListProps> = () => {
       await fetch(`http://localhost:3001/list/update/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ price: newPrice, costBenefit: newCostBenefit, bestPriceLink: newBestLink}),
+        body: JSON.stringify({ price: newPrice, costBenefit: newCostBenefit, bestPriceLink: newBestLink }),
       });
 
       getPartList();
@@ -492,7 +492,7 @@ const List: React.FC<ListProps> = () => {
   };
 
   async function updateAllPrices() {
-    for(let i = 0; i<fullPartList.length; i++){
+    for (let i = 0; i < fullPartList.length; i++) {
       updatePrice(fullPartList[i]._id);
     }
   }
@@ -513,8 +513,8 @@ const List: React.FC<ListProps> = () => {
 
   useEffect(() => {
     updateListSearch(partSearch);
-  }, [filterPartLabel]);
-  
+  }, [filterPartLabel, fullPartList]);
+
 
   return (
     <div>
@@ -548,15 +548,15 @@ const List: React.FC<ListProps> = () => {
                 />
                 <div className={listStyle.gridSpacer}></div>
               </div>
-              <section className = {listStyle.searchInputBox}>
-              <div>
-              <label>Pesquisar por</label>
-              <input
-                className = {listStyle.searchPartInput}
-                placeholder='Digite o nome de uma peça...'
-                value={partSearch}
-                onChange={handleSearch}></input>
-              </div>
+              <section className={listStyle.searchInputBox}>
+                <div>
+                  <label>Pesquisar por</label>
+                  <input
+                    className={listStyle.searchPartInput}
+                    placeholder='Digite o nome de uma peça...'
+                    value={partSearch}
+                    onChange={handleSearch}></input>
+                </div>
               </section>
               <div className={listStyle.partList}>
                 {interfaceList.length > 0 ? (
@@ -567,7 +567,7 @@ const List: React.FC<ListProps> = () => {
                           <img src={part['imageLink']} alt={part['name']} />
                         </div>
                         <div className={listStyle.partSpecs}>
-                          <h1>{part['name']}</h1>
+                          <h1>{part['brand']} {part['name']}</h1>
                           <p>Marca: {part['brand']}</p>
                           {part['type'] === 'cpu' ? (
                             <>
@@ -642,13 +642,13 @@ const List: React.FC<ListProps> = () => {
                             </div>
                             <StandartButton onClick={() => updatePrice(part['_id'])} buttonLabel='Atualizar preço' />
                           </div>
-                          <a 
-                          target='_blank'
-                          href={part['bestPriceLink']}>
-                          <StandartButton 
-                            backgroundColor='#0066FF'
-                            buttonLabel='Visitar site'/>
-                            </a>
+                          <a
+                            target='_blank'
+                            href={part['bestPriceLink']}>
+                            <StandartButton
+                              backgroundColor='#0066FF'
+                              buttonLabel='Visitar site' />
+                          </a>
                         </div>
                       </div>
                     ))}
@@ -662,6 +662,12 @@ const List: React.FC<ListProps> = () => {
                         {addPart}
                       </h3>
                     ))}
+                  </div>
+                  <div className={listStyle.updateAllPricesButton}>
+                    <StandartButton
+                      onClick={updateAllPrices}
+                      buttonLabel='Atualizar todos os preços'
+                    />
                   </div>
                   <CircleButton onClick={showSelectTypeMenu} buttonIcon='+' />
                 </div>

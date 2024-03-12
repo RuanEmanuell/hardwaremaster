@@ -8,10 +8,9 @@ interface Props {
   selectedMobo?: Part;
   onIncreasePartQuantity: () => void;
   onDecreasePartQuantity: () => void;
-  onChangePartClick: () => void;
 }
 
-const PriceAndChangeButton: React.FC<Props> = ({ selectedPart, selectedMobo, onDecreasePartQuantity, onIncreasePartQuantity, onChangePartClick }) => {
+const PriceAndChangeButton: React.FC<Props> = ({ selectedPart, selectedMobo, onDecreasePartQuantity, onIncreasePartQuantity }) => {
   function defineMaxQuantity() {
     let maxQuantity: number = 4;
     if (selectedPart['type'] === 'ram') {
@@ -22,9 +21,9 @@ const PriceAndChangeButton: React.FC<Props> = ({ selectedPart, selectedMobo, onD
     return maxQuantity;
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     defineMaxQuantity();
-  },[selectedMobo]);
+  }, [selectedMobo]);
 
   return (
     <div>
@@ -40,10 +39,15 @@ const PriceAndChangeButton: React.FC<Props> = ({ selectedPart, selectedMobo, onD
         </div>
       </div>
       <div className={mbComponentStyle.buttonBox}>
-        <StandartButton
-          buttonLabel='Trocar peça'
-          onClick={onChangePartClick}
-        />
+        <a
+          className={mbComponentStyle.visitLink}
+          target='_blank'
+          href={selectedPart?.bestPriceLink}>
+          <StandartButton
+            backgroundColor='#0066FF'
+            buttonLabel='Visitar site'
+          />
+        </a>
       </div>
     </div>
   )

@@ -43,8 +43,8 @@ listRouter.delete('/delete/:partId', async (req, res) => {
   try {
     await Part.findByIdAndDelete(id, req.body);
     res.sendStatus(201);
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
   }
 });
 
@@ -103,9 +103,10 @@ listRouter.get('/currentprice/:partId', async (req, res) => {
         if (parseFloat(priceLink) != parseFloat(currentPrice) && parseFloat(priceLink) > 0) {
           currentPrice = priceLink;
         }
-        page.close();
       }
     }
+
+    page.close();
 
     return currentPrice;
   }
