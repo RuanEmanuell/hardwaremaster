@@ -351,7 +351,7 @@ const List: React.FC<ListProps> = () => {
     try {
       if (currentUser) {
         const userId = currentUser.uid;
-        const response = await fetch(`http://localhost:3001/users/${userId}`);
+        const response = await fetch(`https://hardwaremaster-server.onrender.com/users/${userId}`);
         const user = await response.json();
         if (user.type === 'admin') {
           setCrudButtonsVisibility(true);
@@ -364,7 +364,7 @@ const List: React.FC<ListProps> = () => {
 
   async function getPartList() {
     try {
-      const response = await fetch('http://localhost:3001/list/parts');
+      const response = await fetch('https://hardwaremaster-server.onrender.com/list/parts');
       const data: Part[] = await response.json();
       setFullPartList(data);
       if (filterPartLabel == 'Todas as peças') {
@@ -384,8 +384,8 @@ const List: React.FC<ListProps> = () => {
     try {
       await fetch(
         editingPartId
-          ? `http://localhost:3001/list/update/${editingPartId}`
-          : 'http://localhost:3001/list/post',
+          ? `https://hardwaremaster-server.onrender.com/list/update/${editingPartId}`
+          : 'https://hardwaremaster-server.onrender.com/list/post',
         {
           method: editingPartId ? 'PUT' : 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -408,7 +408,7 @@ const List: React.FC<ListProps> = () => {
 
   async function deletePart(id: string) {
     try {
-      await fetch(`http://localhost:3001/list/delete/${id}`, {
+      await fetch(`https://hardwaremaster-server.onrender.com/list/delete/${id}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -421,7 +421,7 @@ const List: React.FC<ListProps> = () => {
 
   async function updatePrice(id: string) {
     try {
-      const response = await fetch(`http://localhost:3001/list/currentprice/${id}`);
+      const response = await fetch(`https://hardwaremaster-server.onrender.com/list/currentprice/${id}`);
       const data = await response.json();
       const newPrice = data['newPrice'];
       const newBestLink = data['newBestLink'];
@@ -479,7 +479,7 @@ const List: React.FC<ListProps> = () => {
 
       newCostBenefit = parseInt(newCostBenefit.toFixed(1));
 
-      await fetch(`http://localhost:3001/list/update/${id}`, {
+      await fetch(`https://hardwaremaster-server.onrender.com/list/update/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ price: newPrice, costBenefit: newCostBenefit, bestPriceLink: newBestLink }),

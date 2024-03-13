@@ -38,7 +38,7 @@ const Profile: React.FC = () => {
     try {
       setLoading(true);
       if(currentUser){
-      const response = await fetch(`http://localhost:3001/users/${currentUser.uid}`);
+      const response = await fetch(`https://hardwaremaster-server.onrender.com/users/${currentUser.uid}`);
       const user: User = await response.json();
       setUserProfile(user);
       getUserBuildList();
@@ -53,7 +53,7 @@ const Profile: React.FC = () => {
   async function getUserBuildList() {
     try {
       if(currentUser){
-      const response = await fetch(`http://localhost:3001/builds/users/${currentUser.uid}`);
+      const response = await fetch(`https://hardwaremaster-server.onrender.com/builds/users/${currentUser.uid}`);
       const builds: Build[] = await response.json();
       setUserBuildList(builds);
       if (builds.length > 0) {
@@ -69,7 +69,7 @@ const Profile: React.FC = () => {
   async function getPartList() {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3001/list/parts');
+      const response = await fetch('https://hardwaremaster-server.onrender.com/list/parts');
       const parts: Part[] = await response.json();
       setUserPartList(parts);
       setLoading(false);
@@ -128,7 +128,7 @@ const Profile: React.FC = () => {
           photoURL = await uploadImageToStorage(editUserFile); 
         }
     
-      await fetch(`http://localhost:3001/users/update/${userProfile!._id}`, {
+      await fetch(`https://hardwaremaster-server.onrender.com/users/update/${userProfile!._id}`, {
         method: 'PUT',
         headers: { 'Content-type': 'application/json' },
         body: JSON.stringify({
@@ -151,7 +151,7 @@ const Profile: React.FC = () => {
 
   async function deleteBuild() {
     try {
-      await fetch(`http://localhost:3001/builds/delete/${selectedBuildId}`, {
+      await fetch(`https://hardwaremaster-server.onrender.com/builds/delete/${selectedBuildId}`, {
         method: 'DELETE',
         headers: { 'Content-type': 'application/json' }
       });

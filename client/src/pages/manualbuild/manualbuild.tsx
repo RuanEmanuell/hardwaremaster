@@ -76,7 +76,7 @@ const ManualBuild: React.FC = () => {
 
   async function getPartList() {
     try {
-      const response = await fetch('http://localhost:3001/list/parts');
+      const response = await fetch('https://hardwaremaster-server.onrender.com/list/parts');
       const data: Part[] = await response.json();
 
       const filteredPartList = data.map(item => ({
@@ -305,7 +305,7 @@ const ManualBuild: React.FC = () => {
   async function getUserBuildPartList() {
     try {
       if(currentUser){
-      const response = await fetch(`http://localhost:3001/builds/users/${currentUser.uid}`);
+      const response = await fetch(`https://hardwaremaster-server.onrender.com/builds/users/${currentUser.uid}`);
       const allUserBuilds: Build[] = await response.json();
       const temporarySelectedBuild = allUserBuilds.find(build => build._id === buildId);
 
@@ -489,8 +489,8 @@ const ManualBuild: React.FC = () => {
     try {
       await fetch(
         buildId ?
-          `http://localhost:3001/builds/update/${buildId}` :
-          'http://localhost:3001/builds/post', ({
+          `https://hardwaremaster-server.onrender.com/builds/update/${buildId}` :
+          'https://hardwaremaster-server.onrender.com/builds/post', ({
             method: buildId ? 'PUT' : 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(
