@@ -69,7 +69,7 @@ const Profile: React.FC = () => {
   async function getPartList() {
     try {
       setLoading(true);
-      const response = await fetch('${process.env.REACT_APP_SERVER_ROUTE}/list/parts');
+      const response = await fetch(`${process.env.REACT_APP_SERVER_ROUTE}/list/parts`);
       const parts: Part[] = await response.json();
       setUserPartList(parts);
       setLoading(false);

@@ -100,6 +100,10 @@
     display: none;
 }
 
+.hamburguerMenuDialog{
+    background-color: #25252500;
+}
+
 .hamburguerMenu {
     width: 30px;
     height: 30px;

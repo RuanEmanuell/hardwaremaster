@@ -7,18 +7,6 @@ import hamburguerIcon from '../../images/hamburguer.png'
 import BuildMode from './buildmode';
 
 const HamburguerMenu: React.FC = () => {
-    const [hamburguerMenuDisplay, setShareMenuDisplay] = useState<string>('none');
-
-    function showHamburguerMenu() {
-        setShareMenuDisplay(hamburguerMenuDisplay === 'none' ? 'block' : 'none');
-    }
-
-    function closeHamburguerMenuOutside() {
-        if (hamburguerMenuDisplay === 'block') {
-            showHamburguerMenu();
-        }
-    }
-    
     const buildDialogRef = useRef<HTMLDialogElement>(null);
 
     function openBuildPcModal() {
@@ -29,25 +17,30 @@ const HamburguerMenu: React.FC = () => {
         buildDialogRef.current!.close();
     }
 
-    function handleBuildPcClick() {
-        openBuildPcModal();
+    const hamburguerMenuDialogRef = useRef<HTMLDialogElement>(null);
+
+    function openMenuModal() {
+        hamburguerMenuDialogRef.current!.showModal();
     }
 
+    function closeMenuModal() {
+        hamburguerMenuDialogRef.current!.close();
+    }
 
     return (
         <div className={globalComponentStyle.hamburguerMenuContainer}>
             <div>
-                <img src={hamburguerIcon} className={globalComponentStyle.hamburguerMenu} onClick={showHamburguerMenu}>
-
+                <img src={hamburguerIcon} className={globalComponentStyle.hamburguerMenu} onClick = {openMenuModal}>
                 </img>
             </div>
-            <div className={globalComponentStyle.hamburguerMenuOptions} style={{ display: hamburguerMenuDisplay }}>
+            <dialog ref = {hamburguerMenuDialogRef} onClick = {closeMenuModal} className={globalComponentStyle.hamburguerMenuDialog}>
+                <div className={globalComponentStyle.hamburguerMenuOptions} >
                 <Link to='/'>
                     <div className={globalComponentStyle.hamburguerMenuOption}>
                         <h4>Inicio</h4>
                     </div>
                 </Link>
-                <div onClick={handleBuildPcClick}>
+                <div onClick={openBuildPcModal}>
                 <div className={globalComponentStyle.hamburguerMenuOption}>
                     <h4>Montar PC</h4>
                 </div>
@@ -62,7 +55,8 @@ const HamburguerMenu: React.FC = () => {
                         <h4>Meu perfil</h4>
                     </div>
                 </Link>
-            </div>
+                </div>
+            </dialog>
             <BuildMode
             dialogRef={buildDialogRef}
             closeModal={closeBuildPcModal}
