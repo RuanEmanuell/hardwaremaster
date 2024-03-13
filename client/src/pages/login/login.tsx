@@ -59,12 +59,12 @@ const Login: React.FC = () => {
     try {
       const newUser = await signInWithPopup(auth, googleProvider);
       const authId = newUser.user.uid;
-      const response = await fetch(`https://hardwaremaster-server.onrender.com/users/${authId}`);
+      const response = await fetch(`${process.env.REACT_APP_SERVER_ROUTE}/users/${authId}`);
       const user = await response.json();
 
       if (!user) {
         const saveUserToDB = await fetch(
-          'https://hardwaremaster-server.onrender.com/users/post', {
+          `${process.env.REACT_APP_SERVER_ROUTE}/users/post`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

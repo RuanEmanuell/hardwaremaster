@@ -18,9 +18,7 @@ const HamburguerMenu: React.FC = () => {
             showHamburguerMenu();
         }
     }
-
-    const hamburguerMenuRef = useDetectClickOutside({ onTriggered: closeHamburguerMenuOutside });
-
+    
     const buildDialogRef = useRef<HTMLDialogElement>(null);
 
     function openBuildPcModal() {
@@ -39,7 +37,7 @@ const HamburguerMenu: React.FC = () => {
     return (
         <div className={globalComponentStyle.hamburguerMenuContainer}>
             <div>
-                <img src={hamburguerIcon} className={globalComponentStyle.hamburguerMenu} ref={hamburguerMenuRef} onClick={showHamburguerMenu}>
+                <img src={hamburguerIcon} className={globalComponentStyle.hamburguerMenu} onClick={showHamburguerMenu}>
 
                 </img>
             </div>

@@ -145,7 +145,7 @@ button {
 .updateAllPricesButton{
     position: fixed;
     bottom: 0.5em;
-    right: 25em;
+    left: 0.5em;
 }
 
 .choosePartType {

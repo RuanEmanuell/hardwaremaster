@@ -38,7 +38,7 @@ const Profile: React.FC = () => {
     try {
       setLoading(true);
       if(currentUser){
-      const response = await fetch(`https://hardwaremaster-server.onrender.com/users/${currentUser.uid}`);
+      const response = await fetch(`${process.env.REACT_APP_SERVER_ROUTE}/users/${currentUser.uid}`);
       const user: User = await response.json();
       setUserProfile(user);
       getUserBuildList();
@@ -53,7 +53,7 @@ const Profile: React.FC = () => {
   async function getUserBuildList() {
     try {
       if(currentUser){
-      const response = await fetch(`https://hardwaremaster-server.onrender.com/builds/users/${currentUser.uid}`);
+      const response = await fetch(`${process.env.REACT_APP_SERVER_ROUTE}/builds/users/${currentUser.uid}`);
       const builds: Build[] = await response.json();
       setUserBuildList(builds);
       if (builds.length > 0) {
@@ -69,7 +69,7 @@ const Profile: React.FC = () => {
   async function getPartList() {
     try {
       setLoading(true);
-      const response = await fetch('https://hardwaremaster-server.onrender.com/list/parts');
+      const response = await fetch('${process.env.REACT_APP_SERVER_ROUTE}/list/parts');
       const parts: Part[] = await response.json();
       setUserPartList(parts);
       setLoading(false);
@@ -128,7 +128,7 @@ const Profile: React.FC = () => {
           photoURL = await uploadImageToStorage(editUserFile); 
         }
     
-      await fetch(`https://hardwaremaster-server.onrender.com/users/update/${userProfile!._id}`, {
+      await fetch(`${process.env.REACT_APP_SERVER_ROUTE}/users/update/${userProfile!._id}`, {
         method: 'PUT',
         headers: { 'Content-type': 'application/json' },
         body: JSON.stringify({
@@ -151,7 +151,7 @@ const Profile: React.FC = () => {
 
   async function deleteBuild() {
     try {
-      await fetch(`https://hardwaremaster-server.onrender.com/builds/delete/${selectedBuildId}`, {
+      await fetch(`${process.env.REACT_APP_SERVER_ROUTE}/builds/delete/${selectedBuildId}`, {
         method: 'DELETE',
         headers: { 'Content-type': 'application/json' }
       });
