@@ -8,4 +8,6 @@ mongoose.connect(uri);
 
 const db : Connection = mongoose.connection;
 
+console.log(process.env.MONGO_PASSWORD!);
+
 export default db;
