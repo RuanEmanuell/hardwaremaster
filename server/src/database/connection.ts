@@ -1,8 +1,8 @@
 import mongoose, { Connection } from 'mongoose';
-import fs from 'fs';
 
-const mongoPasswordPath = '../server/confidential/mongopassword.txt';
-const uri : string = fs.readFileSync(mongoPasswordPath, 'utf8').trim();
+require('dotenv').config();
+
+const uri = process.env.MONGO_PASSWORD!;
 
 mongoose.connect(uri);
 

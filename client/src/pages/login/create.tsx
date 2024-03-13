@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import loginComponentStyle from './styles/login.module.css';
 import GoogleIcon from '../../images/google.png'
 import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { auth, googleProvider } from '../../confidential/firebase.config';
+import { auth, googleProvider } from '../../connection/firebase.config';
 import { Link, useNavigate } from 'react-router-dom';
 
 const CreateAccount: React.FC = () => {

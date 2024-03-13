@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import loginComponentStyle from './styles/login.module.css';
 import { sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '../../confidential/firebase.config';
+import { auth } from '../../connection/firebase.config';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 

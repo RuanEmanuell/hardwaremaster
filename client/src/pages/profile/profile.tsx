@@ -11,7 +11,7 @@ import Part from '../../utils/part';
 import Build from '../../utils/build';
 import BuildBox from '../../components/profile/buildbox';
 import Loading from '../../components/global/loading';
-import { storage } from '../../confidential/firebase.config';
+import { storage } from '../../connection/firebase.config';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
 const Profile: React.FC = () => {

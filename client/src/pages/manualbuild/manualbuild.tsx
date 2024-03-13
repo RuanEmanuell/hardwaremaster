@@ -380,7 +380,6 @@ const ManualBuild: React.FC = () => {
       && (!willHaveGpu ? part.cpuIgpu!.length > 3 : (currentAvailableBudget < 3500 ? part.cpuIgpu!.length <= 3 : part.type === 'cpu'))
       && automaticSelectedCpuBrand.includes(part.brand)).sort((a, b) => ((b.costBenefit / cpuPerformanceBonus) * b.cpuPerformance! * ((b.cpuCores! + b.cpuThreads!)) * (b.cpuRamType?.includes('DDR5') ? 2 : 1)) - ((a.costBenefit / cpuPerformanceBonus) * a.cpuPerformance! * ((a.cpuCores! + a.cpuThreads!)) * (a.cpuRamType?.includes('DDR5') ? 2 : 1)));
 
-    console.log(possibleCpus);
     setSelectedCpu(possibleCpus[0]);
 
     currentAvailableBudget -= fixPrice(possibleCpus[0].price);
@@ -399,7 +398,6 @@ const ManualBuild: React.FC = () => {
         && fixPrice(part.price) < (currentAvailableBudget < 10000 ? currentAvailableBudget / 2 : currentAvailableBudget / 1.25)
         && automaticSelectedGpuBrand.includes(part.brand)).sort((a, b) => ((b.costBenefit / gpuPerformanceBonus + b.gpuPerformance!) - (a.costBenefit / gpuPerformanceBonus + a.gpuPerformance!)));
       setSelectedGpu(possibleGpus[0]);
-      console.log(possibleGpus);
       currentAvailableBudget -= fixPrice(possibleGpus[0].price);
     }
 
@@ -409,8 +407,6 @@ const ManualBuild: React.FC = () => {
       && possibleCpus[0].cpuRamType?.includes(part.moboRamCompatibility!)).sort((a, b) => b.costBenefit - a.costBenefit);
 
     setSelectedMobo(possibleMobos[0]);
-
-    console.log(possibleMobos);
 
     currentAvailableBudget -= fixPrice(possibleMobos[0].price);
 
@@ -443,8 +439,6 @@ const ManualBuild: React.FC = () => {
     ).sort((a, b) => (b.costBenefit * b.ssdCapacity! * b.ssdSpeed!) - (a.costBenefit * a.ssdCapacity! * a.ssdSpeed!));
 
     setSelectedSsd(possibleSsds[0]);
-
-    console.log(possibleSsds);
 
     currentAvailableBudget -= fixPrice(possibleSsds[0].price);
 

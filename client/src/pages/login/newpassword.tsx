@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import loginComponentStyle from './styles/login.module.css';
-import { auth } from '../../confidential/firebase.config';
+import { auth } from '../../connection/firebase.config';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { confirmPasswordReset } from 'firebase/auth';
 import queryString from 'query-string';

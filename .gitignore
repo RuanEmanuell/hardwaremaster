@@ -1,0 +1,4 @@
+
+client/process.env
+server/.env
+client/.env
