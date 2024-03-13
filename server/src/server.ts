@@ -9,11 +9,7 @@ import buildRouter from './routes/builds.ts';
 const app = express();
 const port = 3001;
 
-app.use(cors({
-    origin: ["https://hardwaremaster.vercel.app/", "http://localhost:3000"]
-}));
-app.options('*', cors())
-
+app.use(cors());
 app.use(bodyParser.json());
 
 db.on('error', console.error.bind(console, 'Erro de conexão com o MongoDB'));
