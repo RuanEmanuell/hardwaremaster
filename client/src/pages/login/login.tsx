@@ -41,7 +41,6 @@ const Login: React.FC = () => {
   function handleLoginUserClick() {
     let emailinvalid = checkEmail();
     let passwordinvalid = checkPassword();
-    console.log(emailinvalid, passwordinvalid);
     if (!emailinvalid && !passwordinvalid) {
       loginUser(email, password);
     }

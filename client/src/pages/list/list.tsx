@@ -486,8 +486,8 @@ const List: React.FC<ListProps> = () => {
       });
 
       getPartList();
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
     }
   };
 
