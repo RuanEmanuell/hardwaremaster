@@ -42,7 +42,7 @@ const PriceAndChangeButton: React.FC<Props> = ({ selectedPart, selectedMobo, onD
         <a
           className={mbComponentStyle.visitLink}
           target='_blank'
-          href={selectedPart?.bestPriceLink}>
+          href={selectedPart.bestPriceLink}>
           <StandartButton
             backgroundColor='#0066FF'
             buttonLabel='Visitar site'

@@ -304,7 +304,8 @@ const ManualBuild: React.FC = () => {
 
   async function getUserBuildPartList() {
     try {
-      const response = await fetch(`http://localhost:3001/builds/users/${currentUser?.uid}`);
+      if(currentUser){
+      const response = await fetch(`http://localhost:3001/builds/users/${currentUser.uid}`);
       const allUserBuilds: Build[] = await response.json();
       const temporarySelectedBuild = allUserBuilds.find(build => build._id === buildId);
 
@@ -348,6 +349,7 @@ const ManualBuild: React.FC = () => {
         setUserBuildLoaded(true);
         setBuildMode('manual');
       }
+    }
     } catch (err) {
       console.log(err);
     }
@@ -378,7 +380,7 @@ const ManualBuild: React.FC = () => {
     let possibleCpus = partList.filter(part => part.type === 'cpu'
       && fixPrice(part.price) < (willHaveGpu ? currentAvailableBudget / 4 : (currentAvailableBudget < 10000 ? currentAvailableBudget / 2 : currentAvailableBudget / 1.5))
       && (!willHaveGpu ? part.cpuIgpu!.length > 3 : (currentAvailableBudget < 3500 ? part.cpuIgpu!.length <= 3 : part.type === 'cpu'))
-      && automaticSelectedCpuBrand.includes(part.brand)).sort((a, b) => ((b.costBenefit / cpuPerformanceBonus) * b.cpuPerformance! * ((b.cpuCores! + b.cpuThreads!)) * (b.cpuRamType?.includes('DDR5') ? 2 : 1)) - ((a.costBenefit / cpuPerformanceBonus) * a.cpuPerformance! * ((a.cpuCores! + a.cpuThreads!)) * (a.cpuRamType?.includes('DDR5') ? 2 : 1)));
+      && automaticSelectedCpuBrand.includes(part.brand)).sort((a, b) => ((b.costBenefit / cpuPerformanceBonus) * b.cpuPerformance! * ((b.cpuCores! + b.cpuThreads!)) * (b.cpuRamType!.includes('DDR5') ? 2 : 1)) - ((a.costBenefit / cpuPerformanceBonus) * a.cpuPerformance! * ((a.cpuCores! + a.cpuThreads!)) * (a.cpuRamType!.includes('DDR5') ? 2 : 1)));
 
     setSelectedCpu(possibleCpus[0]);
 
@@ -404,7 +406,7 @@ const ManualBuild: React.FC = () => {
     let possibleMobos = partList.filter(part => part.type === 'mobo'
       && fixPrice(part.price) < currentAvailableBudget / 2.5
       && possibleCpus[0].cpuSocket === part.moboSocketCompatibility
-      && possibleCpus[0].cpuRamType?.includes(part.moboRamCompatibility!)).sort((a, b) => b.costBenefit - a.costBenefit);
+      && possibleCpus[0].cpuRamType!.includes(part.moboRamCompatibility!)).sort((a, b) => b.costBenefit - a.costBenefit);
 
     setSelectedMobo(possibleMobos[0]);
 
@@ -493,16 +495,16 @@ const ManualBuild: React.FC = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(
               {
-                userId: currentUser?.uid,
-                cpuId: selectedCpu?._id,
-                gpuId: selectedGpu?._id,
-                moboId: selectedMobo?._id,
-                ramId: selectedRam?._id,
-                powerId: selectedPower?._id,
-                ssdId: selectedSsd?._id,
-                caseId: selectedCase?._id,
-                ramQuantity: selectedRam?.partQuantity,
-                ssdQuantity: selectedSsd?.partQuantity
+                userId: currentUser!.uid,
+                cpuId: selectedCpu!._id,
+                gpuId: selectedGpu!._id,
+                moboId: selectedMobo!._id,
+                ramId: selectedRam!._id,
+                powerId: selectedPower!._id,
+                ssdId: selectedSsd!._id,
+                caseId: selectedCase!._id,
+                ramQuantity: selectedRam!.partQuantity,
+                ssdQuantity: selectedSsd!.partQuantity
               })
           }));
       navigate('/profile');

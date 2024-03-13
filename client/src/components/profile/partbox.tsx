@@ -22,7 +22,9 @@ const PartBox: React.FC<Props> = ({ userParts, build, calculateBuildPrice }) => 
   };
   return (
     <div className={profileComponentStyle.partBox}>
-      {userParts?.filter
+      {!userParts ? <></> :
+      <>
+      {userParts.filter
         ((part: Part) => (part._id === buildPartType[part['type']])).map
         (part =>
           <ProfileBuildPart
@@ -31,7 +33,9 @@ const PartBox: React.FC<Props> = ({ userParts, build, calculateBuildPrice }) => 
             build={build}
             calculateBuildPrice = {calculateBuildPrice}
           />
-        )}</div>
+        )}
+        </>}
+        </div>
   )
 }
 
