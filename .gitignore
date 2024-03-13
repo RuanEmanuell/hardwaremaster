@@ -2,3 +2,4 @@
 client/process.env
 server/.env
 client/.env
+server/tsconfig.tsbuildinfo
