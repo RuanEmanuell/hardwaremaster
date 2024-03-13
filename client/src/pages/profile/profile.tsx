@@ -37,13 +37,14 @@ const Profile: React.FC = () => {
   async function getUserProfile() {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:3001/users/${currentUser?.uid}`);
+      if(currentUser){
+      const response = await fetch(`http://localhost:3001/users/${currentUser.uid}`);
       const user: User = await response.json();
       setUserProfile(user);
-      if (!user) {
-        setLoading(false);
-      }
       getUserBuildList();
+    }else{
+      setLoading(false);
+    }
     } catch (err) {
       console.log(err);
     }
@@ -51,14 +52,15 @@ const Profile: React.FC = () => {
 
   async function getUserBuildList() {
     try {
-      const response = await fetch(`http://localhost:3001/builds/users/${currentUser?.uid}`);
+      if(currentUser){
+      const response = await fetch(`http://localhost:3001/builds/users/${currentUser.uid}`);
       const builds: Build[] = await response.json();
       setUserBuildList(builds);
       if (builds.length > 0) {
         getPartList();
-      } else {
-        setLoading(false);
       }
+    }
+    setLoading(false);
     } catch (err) {
       console.log(err);
     }
@@ -77,13 +79,13 @@ const Profile: React.FC = () => {
   }
 
   function showEditUserMenu() {
-    editUserRef.current?.showModal();
+    editUserRef.current!.showModal();
     setUserNameCheckError(false);
     setEditUserName(userProfile!.name);
   }
 
   function closeEditUserMenu() {
-    editUserRef.current?.close();
+    editUserRef.current!.close();
   }
 
   const editUserImage = (event: ChangeEvent<HTMLInputElement>) => {
@@ -101,7 +103,7 @@ const Profile: React.FC = () => {
 
   async function uploadImageToStorage(file: File) {
     try {
-      const storageRef = ref(getStorage(), `userImages/${userProfile?._id}`);
+      const storageRef = ref(getStorage(), `userImages/${userProfile!._id}`);
       await uploadBytes(storageRef, file);
   
       const downloadURL = await getDownloadURL(storageRef);
@@ -126,7 +128,7 @@ const Profile: React.FC = () => {
           photoURL = await uploadImageToStorage(editUserFile); 
         }
     
-      await fetch(`http://localhost:3001/users/update/${userProfile?._id}`, {
+      await fetch(`http://localhost:3001/users/update/${userProfile!._id}`, {
         method: 'PUT',
         headers: { 'Content-type': 'application/json' },
         body: JSON.stringify({
@@ -183,7 +185,7 @@ const Profile: React.FC = () => {
 
   useEffect(() =>{
     if(userProfile && userProfile.photo){
-      const storageRef = ref(storage, `userImages/${userProfile?._id}`);
+      const storageRef = ref(storage, `userImages/${userProfile!._id}`);
       getDownloadURL(storageRef).then((url) => {
         setUserPhoto(url)
       });
@@ -197,14 +199,14 @@ const Profile: React.FC = () => {
         <main>
           {isLoading ?
             <Loading /> :
-            <> {currentUser ?
+            <> {currentUser && userProfile ?
               <div>
                 <div className={profileStyle.userProfile}>
                   <div className={profileStyle.userPhotoBox}>
                     <img src={!userPhoto ? ProfileIcon : userPhoto} className={profileStyle.userPhoto}></img>
                   </div>
                   <div className={profileStyle.userNameBox}>
-                    <h1>{userProfile?.name}</h1>
+                    <h1>{userProfile!.name}</h1>
                     <img src={EditIcon} onClick={showEditUserMenu}></img>
                   </div>
                 </div>
@@ -265,7 +267,9 @@ const Profile: React.FC = () => {
           }
 
           <div className={profileStyle.buildsContainer}>
-            {userBuilds?.map
+            {!userBuilds ? <></> :
+            <>
+            {userBuilds.map
               ((build: Build, index) => (
                 <BuildBox
                   key={build._id}
@@ -275,6 +279,8 @@ const Profile: React.FC = () => {
                   onEditBuildClick={editBuild}
                   onShowDeleteBuildMenuClick={showDeleteBuildMenu}
                 />))}
+                </>
+              }
           </div>
           <dialog ref={deleteBuildRef}>
             <div className={profileStyle.deleteBuildMenuBackground}>
