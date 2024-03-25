@@ -4,7 +4,7 @@
 }
 
 .userProfile{
-  margin-top: 3%;
+  margin-top: 1%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -23,9 +23,9 @@
 
 .userPhoto{
   background-color: grey;
-  width: 50%;
+  width: 200px;
+  height: 180px;
   object-fit: cover;
-  height: 100%;
   border-radius: 30px;
   border: 2px solid black;
 }
@@ -34,6 +34,7 @@
   display: flex;
   justify-content: center;
   text-align: center;
+  min-width: 300px;
 }
 
 .userNameBox img{
@@ -57,6 +58,7 @@
   width: 50%;
   min-width: 400px;
   max-width: 600px;
+  min-height: 500px;
   color: #DB5510;
   display: flex;
   align-items: center;
@@ -64,9 +66,9 @@
 }
 
 .editUserPhoto{
-  width: 45%;
+  width: 200px;
+  height: 180px;
   object-fit: cover;
-  height: 15em;
   border-radius: 20px;
   margin-bottom: 2%;
   border: 2px solid black;
@@ -133,7 +135,7 @@
 .buildsContainer{
   display: grid;
   grid-template-columns: 1fr 1fr;
-  min-width: 250px;
+  min-width: 300px;
 }
 
 .deleteBuildMenuBackground{
@@ -168,13 +170,7 @@
 }
 
 @media screen and (max-width: 480px) {
-  .editUserProfile{
-    height: 80%;
-  }
-}
-
-@media screen and (max-width: 360px) {
-  .editUserProfile{
-    height: 120%;
+  .userNameBox h1{
+    font-size: larger;
   }
 }

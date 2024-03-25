@@ -23,7 +23,6 @@ const ProfileBuildPart : React.FC<Props> = ({part, calculateBuildPrice, build}) 
           quantity = 1;
         break;
       }
-      //console.log(parseFloat(part.price.replace(',', '.')) * quantity)
       calculateBuildPrice((parseFloat(part.price.replace(',', '.')) * quantity).toString());
     }, [])
 
