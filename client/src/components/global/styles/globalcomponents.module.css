@@ -1,7 +1,7 @@
 .orangeButton {
     background-color: #DB5510;
     border: none;
-    padding: 5%;
+    padding: 1em 2em;
     font-weight: bold;
     color: white;
     border-radius: 5px;
@@ -36,8 +36,7 @@
     background-color: #DB5510;
     width: 100vw;
     min-width: 320px;
-    height: 7.5vh;
-    min-height: 60px;
+    height: 5em;
     display: flex;
     justify-content: center;
 }
@@ -60,11 +59,10 @@
     display: flex;
     justify-content: center;
     text-align: center;
-    margin-left: 5%;
 }
 
 .navLogo h1 {
-    margin: auto;
+    margin: auto 12.5px;
     text-transform: uppercase;
     font-weight: 900;
 }
@@ -88,7 +86,7 @@
 }
 
 .navIcon {
-    width: 15%;
+    width: 1.5em;
 }
 
 .navLabel {
@@ -101,7 +99,7 @@
     display: none;
 }
 
-.hamburguerMenuDialog{
+.hamburguerMenuDialog {
     background-color: #25252500;
 }
 
@@ -168,7 +166,7 @@
     }
 }
 
-.chooseBuildMode{
+.chooseBuildMode {
     background-color: #252525;
     border-radius: 25px;
     min-width: 400px;
@@ -177,17 +175,17 @@
     justify-content: center;
     align-items: center;
     margin: auto;
-  }
+}
 
-.chooseBuildMode div{
+.chooseBuildMode div {
     padding: 10%;
 }
 
-.chooseBuildMode div button{
+.chooseBuildMode div button {
     width: 100%;
 }
 
-.chooseBuildMode div button:hover{
+.chooseBuildMode div button:hover {
     background-color: #DB5510;
 }
 
@@ -199,9 +197,5 @@
     .hamburguerMenuContainer {
         display: flex;
         align-items: center;
-    }
-
-    .navBar {
-        margin: 0 2.5%;
     }
 }

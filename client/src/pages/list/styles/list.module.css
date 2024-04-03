@@ -20,7 +20,7 @@ button {
 .partFilters {
     height: 70px;
     display: grid;
-    grid-template-columns: 0.25fr 1fr 1fr 0.25fr;
+    grid-template-columns: 0.125fr 1fr 1fr 0.125fr;
     position: relative;
     right: 0;
     width: 100%;
@@ -145,7 +145,7 @@ button {
 .updateAllPricesButton{
     position: fixed;
     bottom: 0.5em;
-    left: 0.5em;
+    left: 2.5em;
 }
 
 .choosePartType {

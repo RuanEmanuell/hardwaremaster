@@ -25,7 +25,7 @@
 
 .homeOptionImg {
     margin: 5%;
-    height: fit-content;
+    height: auto;
     width: 70%;
     transition: 0.5s all;
 }
@@ -41,8 +41,8 @@
 }
 
 .homeOptionLabel {
-    margin: 5%;
-    font-size: min(max(27px), calc(1.25vh + 1.2vw));
+    margin: 0.5em;
+    font-size: x-large;
     color: white;
     text-align: center;
 }
@@ -50,11 +50,12 @@
 .homeOptionButtonBox {
     display: flex;
     justify-content: center;
+    width: 100%;
 }
 
 .homeOptionButtonBox button {
-    height: 75%;
-    font-size: large;
+    height: 5em;
+    font-size: medium;
 }
 
 
@@ -73,24 +74,25 @@
 
     .homeOptionDescriptionBox {
         min-height: 10vh;
-        grid-template-columns: 2fr 1fr;
+        grid-template-columns: 3fr 2fr;
         grid-template-rows: 1fr;
         border-radius: 0 20px 20px 0;
     }
 
     .homeOptionLabel {
-        font-size: min(max(20px), calc(1vh + 1vw));
-        margin: auto 5%;
+        font-size: small;
+        margin: auto 0.5em;
     }
 
     .homeOptionButtonBox {
-        height: 40%;
-        min-height: 10vh;
-        margin: auto 5%;
+        margin: auto 0;
     }
 
     .homeOptionButtonBox button {
-        font-size: min(max(20px), calc(1vh + 1vw));
+        width: 10em;
+        height: auto;
+        font-size: small;
+        margin: 0 5px;
     }
 
     .homeOption:hover {
