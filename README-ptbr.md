@@ -2,12 +2,19 @@
 
 ## HardwareMaster
 
+### O que é isso? 🤔
 Este projeto é uma ferramenta poderosa projetada para simplificar o processo de montagem de PCs personalizados. Quer você seja um entusiasta experiente ou um novato no mundo da construção de computadores,
 este aplicativo oferece uma experiência amigável para ajudá-lo a escolher os melhores componentes com base no seu orçamento.
 
 Ainda em desenvolvimento.
 
-### Como rodar
+### Onde posso acessá-lo? 🖥
+Você pode acessar ele <a href="https://hardwaremaster-client.onrender.com">aqui</a>
+
+### Quais tecnologias foram utilizadas para construí-lo? 🚀
+Ele foi feito com ReactJS, NodeJS, ExpressJS, MongoDB, FirebaseAuth e FirebaseStorage.
+
+### Como executar em modo de desenvolvimento 🏃
 
     1 - Execução manual
 
@@ -26,7 +33,7 @@ Ainda em desenvolvimento.
     Clone o repositório.
     Abra o arquivo "run.sh" (pode ser necessário inserir a senha para executar alguns dos comandos).
 
-### Aqui estão algumas imagens do projeto rodando:
-
+### Aqui estão algumas imagens do projeto em execução ⚡️:
 ![Screenshot_714](https://github.com/RuanEmanuell/hardwaremaster/assets/113607857/b9039349-85eb-43b7-9560-0eb8aa488875)
 ![Screenshot_715](https://github.com/RuanEmanuell/hardwaremaster/assets/113607857/fbd4a424-4f68-4de9-88b0-8f677404b2b6)
+
