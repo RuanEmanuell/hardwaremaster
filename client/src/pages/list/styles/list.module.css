@@ -29,7 +29,7 @@ button {
     margin-bottom: 3%;
 }
 
-.searchInputBox{
+.searchInputBox {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -38,16 +38,16 @@ button {
     width: 100%;
 }
 
-.searchInputBox div{
+.searchInputBox div {
     width: 50%;
 }
 
-.searchInputBox label{
+.searchInputBox label {
     width: 100%;
     text-align: start;
 }
 
-.searchPartInput{
+.searchPartInput {
     font-weight: bold;
     padding: 2.5%;
     width: 100%;
@@ -95,7 +95,7 @@ button {
     width: 100%;
     min-width: 170px;
     text-align: center;
-    margin-bottom: 15%;
+    margin-bottom: 33%;
 }
 
 .partSpecs h1 {
@@ -142,10 +142,10 @@ button {
     background-color: black;
 }
 
-.updateAllPricesButton{
+.updateAllPricesButton {
     position: fixed;
     bottom: 0.5em;
-    left: 2.5em;
+    left: 2em;
 }
 
 .choosePartType {
@@ -232,7 +232,7 @@ button {
     height: 75%;
 }
 
-.saveButtonContainer{
+.saveButtonContainer {
     display: flex;
     justify-content: center;
 }
@@ -242,8 +242,6 @@ button {
     padding: 2%;
     margin: auto;
 }
-
-
 
 @media screen and (max-width: 960px) {
     .partList {
@@ -255,14 +253,8 @@ button {
     }
 }
 
-@media screen and (max-width: 720px) {
+@media screen and (max-width: 768px) {
     .partList {
         grid-template-columns: 1fr 1fr;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .partList {
-        grid-template-columns: 1fr;
     }
 }
