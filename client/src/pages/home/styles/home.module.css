@@ -36,3 +36,10 @@
         grid-template-rows: repeat(3, 1fr);
     }
 }
+
+@media screen and (max-height: 480px) {
+    .homeBody{
+        height: 180vh;
+    }
+}
+
