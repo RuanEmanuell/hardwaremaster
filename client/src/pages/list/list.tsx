@@ -336,7 +336,7 @@ const List: React.FC<ListProps> = () => {
 
   function updateListSearch(searchValue: string) {
     const orderedSearchResults = sortByCriteria(fullPartList.filter(part =>
-      (`${part['brand']} ${part['name']}`).toLowerCase().trim().includes(searchValue)
+      (`${part['brand']} ${part['name']}`).toLowerCase().trim().includes(searchValue.toLowerCase().trim())
     ), filterOrderLabel);
 
     const currentTypeFilter = Object.keys(partFilterMenu).find(key => partFilterMenu[key] === filterPartLabel);

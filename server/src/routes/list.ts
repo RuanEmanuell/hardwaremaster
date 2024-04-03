@@ -52,75 +52,82 @@ listRouter.get('/currentprice/:partId', async (req, res) => {
   const id = req.params.partId;
   const selectedPart: mongoose.mongo.WithId<mongoose.AnyObject> | null = await db.collection('parts').findOne({ "_id": new mongoose.Types.ObjectId(id) });
 
-  puppeteer.use(StealthPlugin());
-  const browserPromise = puppeteer.launch();
-  const browser = await browserPromise;
+  try {
+    puppeteer.use(StealthPlugin());
+    const browserPromise = await puppeteer.launch({
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+    const browser = await browserPromise;
 
-  let price: string;
+    let price: string;
 
-  if (selectedPart !== null) {
-    price = selectedPart['price'];
-  }
+    if (selectedPart !== null) {
+      price = selectedPart['price'];
+    }
 
-  async function choosePrice(partLinks: Array<string>) {
-    let currentPrice = price;
-    const page = await browser.newPage();
+    async function choosePrice(partLinks: Array<string>) {
+      let currentPrice = price;
+      const page = await browser.newPage();
 
-    for (const partLink of partLinks) {
-      if (partLink !== '') {
-        await page.goto(partLink);
+      for (const partLink of partLinks) {
+        if (partLink !== '') {
+          await page.goto(partLink);
 
-        let priceLink = '0.0';
+          let priceLink = '0.0';
 
-        if (partLink.includes('pichau')) {
-          let possibleDivs = ['.jss258', '.jss266', '.jss267', '.jss272'];
+          if (partLink.includes('pichau')) {
+            let possibleDivs = ['.jss258', '.jss266', '.jss267', '.jss272'];
 
-          for (let i = 0; i < possibleDivs.length; i++) {
-            if (await page.$(possibleDivs[i])) {
-              let temporaryPriceLink = '0.0';
-              temporaryPriceLink = await page.$eval(possibleDivs[i], (div) => (div as HTMLElement).innerText.substring(3));
-              if (temporaryPriceLink.length < 15) {
-                priceLink = temporaryPriceLink;
+            for (let i = 0; i < possibleDivs.length; i++) {
+              if (await page.$(possibleDivs[i])) {
+                let temporaryPriceLink = '0.0';
+                temporaryPriceLink = await page.$eval(possibleDivs[i], (div) => (div as HTMLElement).innerText.substring(3));
+                if (temporaryPriceLink.length < 15) {
+                  priceLink = temporaryPriceLink;
+                }
               }
             }
+          } else if (partLink.includes('kabum')) {
+            if (await page.$('.sc-5492faee-2.ipHrwP.finalPrice')) {
+              priceLink = await page.$eval('.sc-5492faee-2.ipHrwP.finalPrice', (h4) => (h4 as HTMLElement).innerText.substring(3));
+            }
+          } else if (partLink.includes('terabyte')) {
+            if (await page.$('#valVista')) {
+              priceLink = await page.$eval('#valVista', (p) => (p as HTMLElement).innerText.substring(3));
+            }
+          } else if (partLink.includes('amazon')) {
+            if (await page.$('.a-offscreen')) {
+              priceLink = await page.$eval('.a-offscreen', (span) => (span as HTMLElement).innerText.substring(2));
+            }
           }
-        } else if (partLink.includes('kabum')) {
-          if (await page.$('.sc-5492faee-2.ipHrwP.finalPrice')) {
-            priceLink = await page.$eval('.sc-5492faee-2.ipHrwP.finalPrice', (h4) => (h4 as HTMLElement).innerText.substring(3));
-          }
-        } else if (partLink.includes('terabyte')) {
-          if (await page.$('#valVista')) {
-            priceLink = await page.$eval('#valVista', (p) => (p as HTMLElement).innerText.substring(3));
-          }
-        } else if (partLink.includes('amazon')) {
-          if (await page.$('.a-offscreen')) {
-            priceLink = await page.$eval('.a-offscreen', (span) => (span as HTMLElement).innerText.substring(2));
-          }
-        }
 
-        priceLink = priceLink.replace('.', '');
+          priceLink = priceLink.replace('.', '');
 
-        if (parseFloat(priceLink) != parseFloat(currentPrice) && parseFloat(priceLink) > 0) {
-          currentPrice = priceLink;
+          if (parseFloat(priceLink) != parseFloat(currentPrice) && parseFloat(priceLink) > 0) {
+            currentPrice = priceLink;
+          }
         }
       }
+
+      page.close();
+
+      return currentPrice;
     }
 
-    page.close();
+    if (selectedPart !== null) {
+      price = await choosePrice([selectedPart['shopLink'], selectedPart['shopLink2'], selectedPart['shopLink3']]);
 
-    return currentPrice;
-  }
-
-  if (selectedPart !== null) {
-    price = await choosePrice([selectedPart['shopLink'], selectedPart['shopLink2'], selectedPart['shopLink3']]);
-
-    if (price != selectedPart['price']) {
-      res.json({ newPrice: price, newBestLink: selectedPart['shopLink'] });
-    } else {
-      res.json({ newPrice: price, newBestLink: selectedPart['shopLink'] });
-      console.log('Mesmo preço!');
+      if (price != selectedPart['price']) {
+        res.json({ newPrice: price, newBestLink: selectedPart['shopLink'] });
+      } else {
+        res.json({ newPrice: price, newBestLink: selectedPart['shopLink'] });
+        console.log('Mesmo preço!');
+      }
     }
+  } catch (err) {
+    console.log(err);
   }
+
 });
 
 export default listRouter;
