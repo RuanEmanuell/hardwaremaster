@@ -419,6 +419,7 @@ const ManualBuild: React.FC = () => {
     ).sort((a, b) => b.costBenefit - a.costBenefit);
 
     if (budgetSlideValue >= 2000) {
+      possibleRams[0].price = (fixPrice(possibleRams[0].price) / possibleRams[0].partQuantity).toString();
       possibleRams[0].price = (fixPrice(possibleRams[0].price) * 2).toString().replace('.', ',');
       possibleRams[0].partQuantity = 2;
     }
@@ -446,7 +447,7 @@ const ManualBuild: React.FC = () => {
 
     let possibleCases = partList.filter(part => part.type === 'case'
       && fixPrice(part.price) < currentAvailableBudget
-    ).sort((a, b) => (b.costBenefit / currentAvailableBudget * b.caseFanSupport! * (b.caseWcSupport! / 25)) - (a.costBenefit * a.caseFanSupport!) * (b.caseWcSupport! / 25));
+    ).sort((a, b) => (b.costBenefit / currentAvailableBudget * (b.caseFanSupport!*5) * b.caseWcSupport!) - (a.costBenefit / currentAvailableBudget * (a.caseFanSupport!*5) * a.caseWcSupport!));
 
     setSelectedCase(possibleCases[0]);
 
@@ -465,6 +466,7 @@ const ManualBuild: React.FC = () => {
 
     setBuildMode('manual');
   }catch(err){
+    console.error(err);
     alert('Não achamos nenhum PC possível com os filtros aplicados. Tente novamente!');
   }
   }
