@@ -583,6 +583,7 @@ const ManualBuild: React.FC = () => {
                     <div className={mbStyle.automaticBuildFilterBox}>
                       <h2>Marca de processador preferida</h2>
                       {cpuBrands.map((cpuBrand) => <StandartButton
+                                            key={cpuBrand}
                         buttonLabel={cpuBrand}
                         backgroundColor={preferedCpuBrand === cpuBrand ? '#0066FF' : '#DB5510'}
                         onClick={() => setPreferedCpuBrand(cpuBrand)}
@@ -592,6 +593,7 @@ const ManualBuild: React.FC = () => {
                     <div className={mbStyle.automaticBuildFilterBox}>
                       <h2>Marca de placa de vídeo preferida</h2>
                       {gpuBrands.map((gpuBrand) => <StandartButton
+                      key={gpuBrand}
                         buttonLabel={gpuBrand}
                         backgroundColor={preferedGpuBrand === gpuBrand ? '#0066FF' : '#DB5510'}
                         onClick={() => setPreferedGpuBrand(gpuBrand)}
@@ -767,8 +769,7 @@ const ManualBuild: React.FC = () => {
                         <img src={RestartIcon} alt='Reiniciar'></img>
                       </button>
                     </div>
-                  </div>
-                  <div className={mbStyle.copiedToTABox}>
+                    <div className={mbStyle.copiedToTABox}>
                     <div className={mbStyle.copiedToTA} style={{ display: copiedToTA }}>
                       <h4>Copiado para a área de transferência</h4>
                     </div>
@@ -782,6 +783,7 @@ const ManualBuild: React.FC = () => {
                       <img src={CopyIcon} className={mbStyle.shareOptionImg}></img>
                       <p>Copiar texto da montagem</p>
                     </div>
+                  </div>
                   </div>
                   {!currentUser ? <div></div> :
                     <dialog ref={saveRef}>
