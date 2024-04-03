@@ -9,11 +9,22 @@ Still under development.
 
 ### How to Run
 
+     1 - Manual run:
+
      Clone the repository.
-     Install dependencies using 'npm install' (install ReactJS and NodeJs dependencies).
+     Cd to "client" and install dependencies using 'npm install' 
+     Change "example.env" to ".env" and add the necessary variables.
      Run ReactJS with 'npm start'.
+
+     Cd to "server" and install dependencies using 'npm install' 
+     Change "example.env" to ".env" and add the necessary variables.
      Run the NodeJS server with 'npm run dev'.
      Access http://localhost:3000 in your browser.
+
+     2 - Automatic run (Linux only):
+
+     Clone the repository.
+     Open the "run.sh" file (password input may be necessary to run some of the commands)
     
 ### Here are some images of the project running:
 

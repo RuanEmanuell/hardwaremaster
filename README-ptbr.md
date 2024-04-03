@@ -9,12 +9,23 @@ Ainda em desenvolvimento.
 
 ### Como rodar
 
-     Clone o repositório.
-     Instale dependências usando 'npm install' (instale as dependências ReactJS e NodeJs também).
-     Execute o ReactJS com 'npm start'.
-     Execute o servidor NodeJS com 'npm run dev'.
-     Acesse http://localhost:3000 no seu navegador.
-    
+    1 - Execução manual
+
+    Clone o repositório.
+    Navegue até "cliente" e instale as dependências usando 'npm install'.
+    Mude o nome de "example.env" para ".env" e adicione as variáveis necessárias.
+    Execute o ReactJS com 'npm start'.
+
+    Navegue até "servidor" e instale as dependências usando 'npm install'.
+    Mude o nome de "example.env" para ".env" e adicione as variáveis necessárias.
+    Execute o servidor NodeJS com 'npm run dev'.
+    Acesse http://localhost:3000 em seu navegador.
+
+    2 - Execução automática (apenas Linux)
+
+    Clone o repositório.
+    Abra o arquivo "run.sh" (pode ser necessário inserir a senha para executar alguns dos comandos).
+
 ### Aqui estão algumas imagens do projeto rodando:
 
 ![Screenshot_714](https://github.com/RuanEmanuell/hardwaremaster/assets/113607857/b9039349-85eb-43b7-9560-0eb8aa488875)
