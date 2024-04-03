@@ -11,20 +11,17 @@ interface Props {
 
 const HomeOption : React.FC <Props> = ({icon, optionDescription, buttonLabel, buttonBackgroundColor}) => {
     return (
-        <div className={homeComponentStyle.homeOption}>
-            <div className={homeComponentStyle.homeOptionImgBox}>
-                <img src={icon} className={homeComponentStyle.homeOptionImg}></img>
+        <section className={homeComponentStyle.homeOption}>
+            <div className={homeComponentStyle.optionIconBox}>
+                <img src={icon} className={homeComponentStyle.optionIcon}></img>
             </div>
-            <div className={homeComponentStyle.homeOptionDescriptionBox}>
-                <h2 className={homeComponentStyle.homeOptionLabel}>
-                    {optionDescription}
-                </h2>
-                <div className={homeComponentStyle.homeOptionButtonBox}>
-                    <StandartButton buttonLabel={buttonLabel} backgroundColor = {buttonBackgroundColor}/>
-                </div>
-
+            <div className={homeComponentStyle.optionDescriptionButtonBox}>
+                <h1>{optionDescription}</h1>
+                <StandartButton 
+                buttonLabel={buttonLabel} 
+                backgroundColor={buttonBackgroundColor}/>
             </div>
-        </div>
+        </section>
     )
 }
 

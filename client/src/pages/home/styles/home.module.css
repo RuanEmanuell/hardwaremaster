@@ -1,39 +1,38 @@
 .homeBody{
-    height: 100vh;
-    overflow: auto;
+    height: 90vh;
 }
 
 .mainContainer {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     padding: 0;
     margin: 0;
+    width: 100%;
+    height: 100%;
+    max-width: 1280px;
+    margin: auto;
 }
 
-.homeOptionsGrid {
-    position: relative;
-    z-index: 1;
+.optionsBox{
+    width: 100%;
+    height: 100%;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    height: 80vh;
 }
 
-.homeOptionsGrid a {
-    text-decoration: none;
+.optionsBox a{
+    height: 75%;
+    margin: auto;
 }
 
-.homeFooterBox h2{
-    display: flex;
-    justify-content: center;
+.homeFooter h2{
+    text-align: center;
 }
 
 @media screen and (max-width: 960px) {
-    .homeOptionsGrid {
-        margin-top: min(max(10vh), 25%);
-        display: block;
-        height: 66vh;
-    }
-    .homeFooterBox h2{
-        font-size: medium;
+    .optionsBox{
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(3, 1fr);
     }
 }
