@@ -276,12 +276,12 @@ const ManualBuild: React.FC = () => {
 
   function showShareOptions() {
     if (allPartsSelected) {
-      setShareMenuDisplay(shareMenu == 'none' ? 'block' : 'none');
+      setShareMenuDisplay(shareMenu === 'none' ? 'block' : 'none');
     }
   }
 
   function closeShareMenu() {
-    if (shareMenu == 'block') {
+    if (shareMenu === 'block') {
       showShareOptions();
     }
   }
@@ -541,7 +541,7 @@ const ManualBuild: React.FC = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      if (copiedToTA == 'flex') {
+      if (copiedToTA === 'flex') {
         setCopiedDisplay('none')
       }
     }, 2000)
@@ -566,7 +566,7 @@ const ManualBuild: React.FC = () => {
       <NavBar />
       <div className={mbStyle.mainContainer}>
         <main>
-          {partList.length === 0 || buildId && !userBuildLoaded ? <Loading /> :
+          {(partList.length === 0 || buildId) && (!userBuildLoaded) ? <Loading /> :
             <>
               <h1 className={mbStyle.pageTitle}>Montagem {automaticBuild ? 'Automática' : 'Manual'}</h1>
               {buildMode === 'automatic' ?

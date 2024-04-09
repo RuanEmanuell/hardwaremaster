@@ -368,7 +368,7 @@ const List: React.FC<ListProps> = () => {
       const response = await fetch(`${process.env.REACT_APP_SERVER_ROUTE}/list/parts`);
       const data: Part[] = await response.json();
       setFullPartList(data);
-      if (filterPartLabel == 'Todas as peças') {
+      if (filterPartLabel === 'Todas as peças') {
         setInterfaceList(data);
       } else {
         const filteredAndOrderedList = sortByCriteria(data.filter((part) => part.type === Object.keys(partFilterMenu).find(key => partFilterMenu[key] === filterPartLabel)), filterOrderLabel)
