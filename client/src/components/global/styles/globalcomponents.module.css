@@ -189,6 +189,12 @@
     background-color: #DB5510;
 }
 
+.searchPartInput {
+    font-weight: bold;
+    width: 100%;
+    padding: 10px;
+}
+
 @media screen and (max-width: 960px) {
     .navOption {
         display: none;

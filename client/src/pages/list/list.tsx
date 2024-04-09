@@ -10,6 +10,7 @@ import CircleButton from '../../components/global/circlebutton';
 import { useDetectClickOutside } from 'react-detect-click-outside';
 import { useAuth } from '../../utils/auth';
 import Loading from '../../components/global/loading';
+import CustomInput from '../../components/global/custominput';
 
 interface PartData {
   name: string;
@@ -551,11 +552,11 @@ const List: React.FC<ListProps> = () => {
               <section className={listStyle.searchInputBox}>
                 <div>
                   <label>Pesquisar por</label>
-                  <input
-                    className={listStyle.searchPartInput}
-                    placeholder='Digite o nome de uma peça...'
-                    value={partSearch}
-                    onChange={handleSearch}></input>
+                  <CustomInput 
+                  placeholder='Digite o nome de uma peça'
+                  value= {partSearch}
+                  onChange={handleSearch}
+                  />
                 </div>
               </section>
               <div className={listStyle.partList}>

@@ -23,6 +23,7 @@ import queryString from 'query-string';
 import Part from '../../utils/part';
 import Build from '../../utils/build';
 import Loading from '../../components/global/loading';
+import CustomInput from '../../components/global/custominput';
 
 const ManualBuild: React.FC = () => {
 
@@ -58,6 +59,7 @@ const ManualBuild: React.FC = () => {
 
   const [allPartsSelected, setAllPartsSelected] = useState<boolean>(false);
   const [totalBuildPrice, setTotalBuildPrice] = useState<number>(0);
+  const [buildName, setBuildName] = useState<string>("");
 
   const [shareMenu, setShareMenuDisplay] = useState<string>('none');
   const [copiedToTA, setCopiedDisplay] = useState<string>('none');
@@ -236,7 +238,7 @@ const ManualBuild: React.FC = () => {
     setSelectedCase(undefined);
     setSelectCaseInput('');
     setTotalBuildPrice(0);
-    if(automaticBuild){
+    if (automaticBuild) {
       setBuildMode('automatic');
     }
   }
@@ -304,52 +306,54 @@ const ManualBuild: React.FC = () => {
 
   async function getUserBuildPartList() {
     try {
-      if(currentUser){
-      const response = await fetch(`${process.env.REACT_APP_SERVER_ROUTE}/builds/users/${currentUser.uid}`);
-      const allUserBuilds: Build[] = await response.json();
-      const temporarySelectedBuild = allUserBuilds.find(build => build._id === buildId);
+      if (currentUser) {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_ROUTE}/builds/users/${currentUser.uid}`);
+        const allUserBuilds: Build[] = await response.json();
+        const temporarySelectedBuild = allUserBuilds.find(build => build._id === buildId);
+        console.log(temporarySelectedBuild);
 
-      if (temporarySelectedBuild && partList.length > 0) {
-        const temporarySelectedCpu = partList.find(part => part._id === temporarySelectedBuild.cpuId);
-        const temporarySelectedGpu = partList.find(part => part._id === temporarySelectedBuild.gpuId);
-        const temporarySelectedMobo = partList.find(part => part._id === temporarySelectedBuild.moboId);
-        const temporarySelectedRam = partList.find(part => part._id === temporarySelectedBuild.ramId);
-        const temporarySelectedPower = partList.find(part => part._id === temporarySelectedBuild.powerId);
-        const temporarySelectedSsd = partList.find(part => part._id === temporarySelectedBuild.ssdId);
-        const temporarySelectedCase = partList.find(part => part._id === temporarySelectedBuild.caseId);
+        if (temporarySelectedBuild && partList.length > 0) {
+          const temporarySelectedCpu = partList.find(part => part._id === temporarySelectedBuild.cpuId);
+          const temporarySelectedGpu = partList.find(part => part._id === temporarySelectedBuild.gpuId);
+          const temporarySelectedMobo = partList.find(part => part._id === temporarySelectedBuild.moboId);
+          const temporarySelectedRam = partList.find(part => part._id === temporarySelectedBuild.ramId);
+          const temporarySelectedPower = partList.find(part => part._id === temporarySelectedBuild.powerId);
+          const temporarySelectedSsd = partList.find(part => part._id === temporarySelectedBuild.ssdId);
+          const temporarySelectedCase = partList.find(part => part._id === temporarySelectedBuild.caseId);
 
-        temporarySelectedRam!.partQuantity = temporarySelectedBuild.ramQuantity;
-        temporarySelectedSsd!.partQuantity = temporarySelectedBuild.ssdQuantity;
+          temporarySelectedRam!.partQuantity = temporarySelectedBuild.ramQuantity;
+          temporarySelectedSsd!.partQuantity = temporarySelectedBuild.ssdQuantity;
 
-        temporarySelectedSsd!.price = (fixPrice(temporarySelectedSsd!.price) * temporarySelectedSsd!.partQuantity).toString();
-        temporarySelectedSsd!.price = temporarySelectedSsd!.price.replaceAll('.', ',');
+          temporarySelectedSsd!.price = (fixPrice(temporarySelectedSsd!.price) * temporarySelectedSsd!.partQuantity).toString();
+          temporarySelectedSsd!.price = temporarySelectedSsd!.price.replaceAll('.', ',');
 
-        temporarySelectedRam!.price = (fixPrice(temporarySelectedRam!.price) * temporarySelectedRam!.partQuantity).toString();
-        temporarySelectedRam!.price = temporarySelectedRam!.price.replaceAll('.', ',');
+          temporarySelectedRam!.price = (fixPrice(temporarySelectedRam!.price) * temporarySelectedRam!.partQuantity).toString();
+          temporarySelectedRam!.price = temporarySelectedRam!.price.replaceAll('.', ',');
 
-        let temporaryBuildPrice =
-          fixPrice(temporarySelectedCpu!.price) +
-          fixPrice(temporarySelectedGpu ? temporarySelectedGpu!.price : '0.0') +
-          fixPrice(temporarySelectedMobo!.price) +
-          fixPrice(temporarySelectedRam!.price) +
-          fixPrice(temporarySelectedPower!.price) +
-          fixPrice(temporarySelectedSsd!.price) +
-          fixPrice(temporarySelectedCase!.price);
+          let temporaryBuildPrice =
+            fixPrice(temporarySelectedCpu!.price) +
+            fixPrice(temporarySelectedGpu ? temporarySelectedGpu!.price : '0.0') +
+            fixPrice(temporarySelectedMobo!.price) +
+            fixPrice(temporarySelectedRam!.price) +
+            fixPrice(temporarySelectedPower!.price) +
+            fixPrice(temporarySelectedSsd!.price) +
+            fixPrice(temporarySelectedCase!.price);
 
-        setSelectedCpu(temporarySelectedCpu);
-        if (temporarySelectedGpu) {
-          setSelectedGpu(temporarySelectedGpu);
+          setSelectedCpu(temporarySelectedCpu);
+          if (temporarySelectedGpu) {
+            setSelectedGpu(temporarySelectedGpu);
+          }
+          setSelectedMobo(temporarySelectedMobo);
+          setSelectedRam(temporarySelectedRam);
+          setSelectedPower(temporarySelectedPower);
+          setSelectedSsd(temporarySelectedSsd);
+          setSelectedCase(temporarySelectedCase);
+          setTotalBuildPrice(temporaryBuildPrice);
+          setBuildName(temporarySelectedBuild.buildName);
+          setUserBuildLoaded(true);
+          setBuildMode('manual');
         }
-        setSelectedMobo(temporarySelectedMobo);
-        setSelectedRam(temporarySelectedRam);
-        setSelectedPower(temporarySelectedPower);
-        setSelectedSsd(temporarySelectedSsd);
-        setSelectedCase(temporarySelectedCase);
-        setTotalBuildPrice(temporaryBuildPrice);
-        setUserBuildLoaded(true);
-        setBuildMode('manual');
       }
-    }
     } catch (err) {
       console.log(err);
     }
@@ -360,115 +364,115 @@ const ManualBuild: React.FC = () => {
   }
 
   function getAutomaticPCParts() {
-    try{
-    let willHaveGpu = true;
+    try {
+      let willHaveGpu = true;
 
-    let currentAvailableBudget = budgetSlideValue * 1.05;
+      let currentAvailableBudget = budgetSlideValue * 1.05;
 
-    if (currentAvailableBudget < 2500) {
-      willHaveGpu = false;
+      if (currentAvailableBudget < 2500) {
+        willHaveGpu = false;
+      }
+
+      let automaticSelectedCpuBrand: string = preferedCpuBrand;
+
+      if (preferedCpuBrand === cpuBrands[2]) {
+        automaticSelectedCpuBrand = 'AMD/Intel';
+      }
+
+      const cpuPerformanceBonus = currentAvailableBudget;
+
+      let possibleCpus = partList.filter(part => part.type === 'cpu'
+        && fixPrice(part.price) < (willHaveGpu ? currentAvailableBudget / 4 : (currentAvailableBudget < 10000 ? currentAvailableBudget / 2 : currentAvailableBudget / 1.5))
+        && (!willHaveGpu ? part.cpuIgpu!.length > 3 : (currentAvailableBudget < 3500 ? part.cpuIgpu!.length <= 3 : part.type === 'cpu'))
+        && automaticSelectedCpuBrand.includes(part.brand)).sort((a, b) => ((b.costBenefit / cpuPerformanceBonus) * b.cpuPerformance! * ((b.cpuCores! + b.cpuThreads!)) * (b.cpuRamType!.includes('DDR5') ? 2 : 1)) - ((a.costBenefit / cpuPerformanceBonus) * a.cpuPerformance! * ((a.cpuCores! + a.cpuThreads!)) * (a.cpuRamType!.includes('DDR5') ? 2 : 1)));
+
+      setSelectedCpu(possibleCpus[0]);
+
+      currentAvailableBudget -= fixPrice(possibleCpus[0].price);
+
+      let automaticSelectedGpuBrand: string = preferedGpuBrand;
+      if (preferedGpuBrand === gpuBrands[3]) {
+        automaticSelectedGpuBrand = 'NVIDIA/AMD/Intel';
+      }
+
+      let possibleGpus: Part[] | undefined;
+
+      const gpuPerformanceBonus = currentAvailableBudget;
+
+      if (willHaveGpu) {
+        possibleGpus = partList.filter(part => part.type === 'gpu'
+          && fixPrice(part.price) < (currentAvailableBudget < 10000 ? currentAvailableBudget / 2 : currentAvailableBudget / 1.25)
+          && automaticSelectedGpuBrand.includes(part.brand)).sort((a, b) => ((b.costBenefit / gpuPerformanceBonus + b.gpuPerformance!) - (a.costBenefit / gpuPerformanceBonus + a.gpuPerformance!)));
+        setSelectedGpu(possibleGpus[0]);
+        currentAvailableBudget -= fixPrice(possibleGpus[0].price);
+      }
+
+      let possibleMobos = partList.filter(part => part.type === 'mobo'
+        && fixPrice(part.price) < currentAvailableBudget / 2.5
+        && possibleCpus[0].cpuSocket === part.moboSocketCompatibility
+        && possibleCpus[0].cpuRamType!.includes(part.moboRamCompatibility!)).sort((a, b) => b.costBenefit - a.costBenefit);
+
+      setSelectedMobo(possibleMobos[0]);
+
+      currentAvailableBudget -= fixPrice(possibleMobos[0].price);
+
+      let possibleRams = partList.filter(part => part.type === 'ram'
+        && fixPrice(part.price) < currentAvailableBudget / 3
+        && currentAvailableBudget / 3 < 500 ? part.ramCapacity! <= 8 : part.type === 'ram'
+      && possibleMobos[0].moboRamCompatibility!.includes(part.ramType!)
+      ).sort((a, b) => b.costBenefit - a.costBenefit);
+
+      if (budgetSlideValue >= 2000) {
+        possibleRams[0].price = (fixPrice(possibleRams[0].price) / possibleRams[0].partQuantity).toString();
+        possibleRams[0].price = (fixPrice(possibleRams[0].price) * 2).toString().replace('.', ',');
+        possibleRams[0].partQuantity = 2;
+      }
+
+      setSelectedRam(possibleRams[0]);
+
+      currentAvailableBudget -= fixPrice(possibleRams[0].price);
+
+      let possiblePowers = partList.filter(part => part.type === 'power'
+        && fixPrice(part.price) < currentAvailableBudget / 2
+        && part.powerWatts! >= (possibleGpus ? possibleGpus[0].gpuRecommendedPower! : 0)
+      ).sort((a, b) => b.costBenefit - a.costBenefit);
+
+      setSelectedPower(possiblePowers[0]);
+
+      currentAvailableBudget -= fixPrice(possiblePowers[0].price);
+
+      let possibleSsds = partList.filter(part => part.type === 'ssd'
+        && fixPrice(part.price) < currentAvailableBudget / 2
+      ).sort((a, b) => (b.costBenefit * b.ssdCapacity! * b.ssdSpeed!) - (a.costBenefit * a.ssdCapacity! * a.ssdSpeed!));
+
+      setSelectedSsd(possibleSsds[0]);
+
+      currentAvailableBudget -= fixPrice(possibleSsds[0].price);
+
+      let possibleCases = partList.filter(part => part.type === 'case'
+        && fixPrice(part.price) < currentAvailableBudget
+      ).sort((a, b) => (b.costBenefit / currentAvailableBudget * (b.caseFanSupport! * 5) * b.caseWcSupport!) - (a.costBenefit / currentAvailableBudget * (a.caseFanSupport! * 5) * a.caseWcSupport!));
+
+      setSelectedCase(possibleCases[0]);
+
+      currentAvailableBudget -= fixPrice(possibleCases[0].price)
+
+      let automaticBuildPrice: number =
+        fixPrice(possibleCpus[0].price) +
+        fixPrice(possibleGpus ? possibleGpus[0].price : '0.0') +
+        fixPrice(possibleMobos[0].price) +
+        fixPrice(possibleRams[0].price) +
+        fixPrice(possiblePowers[0].price) +
+        fixPrice(possibleSsds[0].price) +
+        fixPrice(possibleCases[0].price);
+
+      setTotalBuildPrice(automaticBuildPrice);
+
+      setBuildMode('manual');
+    } catch (err) {
+      console.error(err);
+      alert('Não achamos nenhum PC possível com os filtros aplicados. Tente novamente!');
     }
-
-    let automaticSelectedCpuBrand: string = preferedCpuBrand;
-
-    if (preferedCpuBrand === cpuBrands[2]) {
-      automaticSelectedCpuBrand = 'AMD/Intel';
-    }
-
-    const cpuPerformanceBonus = currentAvailableBudget;
-
-    let possibleCpus = partList.filter(part => part.type === 'cpu'
-      && fixPrice(part.price) < (willHaveGpu ? currentAvailableBudget / 4 : (currentAvailableBudget < 10000 ? currentAvailableBudget / 2 : currentAvailableBudget / 1.5))
-      && (!willHaveGpu ? part.cpuIgpu!.length > 3 : (currentAvailableBudget < 3500 ? part.cpuIgpu!.length <= 3 : part.type === 'cpu'))
-      && automaticSelectedCpuBrand.includes(part.brand)).sort((a, b) => ((b.costBenefit / cpuPerformanceBonus) * b.cpuPerformance! * ((b.cpuCores! + b.cpuThreads!)) * (b.cpuRamType!.includes('DDR5') ? 2 : 1)) - ((a.costBenefit / cpuPerformanceBonus) * a.cpuPerformance! * ((a.cpuCores! + a.cpuThreads!)) * (a.cpuRamType!.includes('DDR5') ? 2 : 1)));
-
-    setSelectedCpu(possibleCpus[0]);
-
-    currentAvailableBudget -= fixPrice(possibleCpus[0].price);
-
-    let automaticSelectedGpuBrand: string = preferedGpuBrand;
-    if (preferedGpuBrand === gpuBrands[3]) {
-      automaticSelectedGpuBrand = 'NVIDIA/AMD/Intel';
-    }
-
-    let possibleGpus: Part[] | undefined;
-
-    const gpuPerformanceBonus = currentAvailableBudget;
-
-    if (willHaveGpu) {
-      possibleGpus = partList.filter(part => part.type === 'gpu'
-        && fixPrice(part.price) < (currentAvailableBudget < 10000 ? currentAvailableBudget / 2 : currentAvailableBudget / 1.25)
-        && automaticSelectedGpuBrand.includes(part.brand)).sort((a, b) => ((b.costBenefit / gpuPerformanceBonus + b.gpuPerformance!) - (a.costBenefit / gpuPerformanceBonus + a.gpuPerformance!)));
-      setSelectedGpu(possibleGpus[0]);
-      currentAvailableBudget -= fixPrice(possibleGpus[0].price);
-    }
-
-    let possibleMobos = partList.filter(part => part.type === 'mobo'
-      && fixPrice(part.price) < currentAvailableBudget / 2.5
-      && possibleCpus[0].cpuSocket === part.moboSocketCompatibility
-      && possibleCpus[0].cpuRamType!.includes(part.moboRamCompatibility!)).sort((a, b) => b.costBenefit - a.costBenefit);
-
-    setSelectedMobo(possibleMobos[0]);
-
-    currentAvailableBudget -= fixPrice(possibleMobos[0].price);
-
-    let possibleRams = partList.filter(part => part.type === 'ram'
-      && fixPrice(part.price) < currentAvailableBudget / 3
-      && currentAvailableBudget / 3 < 500 ? part.ramCapacity! <= 8 : part.type === 'ram'
-    && possibleMobos[0].moboRamCompatibility!.includes(part.ramType!)
-    ).sort((a, b) => b.costBenefit - a.costBenefit);
-
-    if (budgetSlideValue >= 2000) {
-      possibleRams[0].price = (fixPrice(possibleRams[0].price) / possibleRams[0].partQuantity).toString();
-      possibleRams[0].price = (fixPrice(possibleRams[0].price) * 2).toString().replace('.', ',');
-      possibleRams[0].partQuantity = 2;
-    }
-
-    setSelectedRam(possibleRams[0]);
-
-    currentAvailableBudget -= fixPrice(possibleRams[0].price);
-
-    let possiblePowers = partList.filter(part => part.type === 'power'
-      && fixPrice(part.price) < currentAvailableBudget / 2
-      && part.powerWatts! >= (possibleGpus ? possibleGpus[0].gpuRecommendedPower! : 0)
-    ).sort((a, b) => b.costBenefit - a.costBenefit);
-
-    setSelectedPower(possiblePowers[0]);
-
-    currentAvailableBudget -= fixPrice(possiblePowers[0].price);
-
-    let possibleSsds = partList.filter(part => part.type === 'ssd'
-      && fixPrice(part.price) < currentAvailableBudget / 2
-    ).sort((a, b) => (b.costBenefit * b.ssdCapacity! * b.ssdSpeed!) - (a.costBenefit * a.ssdCapacity! * a.ssdSpeed!));
-
-    setSelectedSsd(possibleSsds[0]);
-
-    currentAvailableBudget -= fixPrice(possibleSsds[0].price);
-
-    let possibleCases = partList.filter(part => part.type === 'case'
-      && fixPrice(part.price) < currentAvailableBudget
-    ).sort((a, b) => (b.costBenefit / currentAvailableBudget * (b.caseFanSupport!*5) * b.caseWcSupport!) - (a.costBenefit / currentAvailableBudget * (a.caseFanSupport!*5) * a.caseWcSupport!));
-
-    setSelectedCase(possibleCases[0]);
-
-    currentAvailableBudget -= fixPrice(possibleCases[0].price)
-
-    let automaticBuildPrice: number =
-      fixPrice(possibleCpus[0].price) +
-      fixPrice(possibleGpus ? possibleGpus[0].price : '0.0') +
-      fixPrice(possibleMobos[0].price) +
-      fixPrice(possibleRams[0].price) +
-      fixPrice(possiblePowers[0].price) +
-      fixPrice(possibleSsds[0].price) +
-      fixPrice(possibleCases[0].price);
-
-    setTotalBuildPrice(automaticBuildPrice);
-
-    setBuildMode('manual');
-  }catch(err){
-    console.error(err);
-    alert('Não achamos nenhum PC possível com os filtros aplicados. Tente novamente!');
-  }
   }
 
 
@@ -506,7 +510,8 @@ const ManualBuild: React.FC = () => {
                 ssdId: selectedSsd!._id,
                 caseId: selectedCase!._id,
                 ramQuantity: selectedRam!.partQuantity,
-                ssdQuantity: selectedSsd!.partQuantity
+                ssdQuantity: selectedSsd!.partQuantity,
+                buildName: buildName
               })
           }));
       navigate('/profile');
@@ -553,8 +558,8 @@ const ManualBuild: React.FC = () => {
     selectedPower, selectedSsd, selectedCase]);
 
   useEffect(() => {
-   setBuildMode(automaticBuild ? 'automatic':'manual');
-  },[automaticBuild])
+    setBuildMode(automaticBuild ? 'automatic' : 'manual');
+  }, [automaticBuild])
 
   return (
     <div>
@@ -583,7 +588,7 @@ const ManualBuild: React.FC = () => {
                     <div className={mbStyle.automaticBuildFilterBox}>
                       <h2>Marca de processador preferida</h2>
                       {cpuBrands.map((cpuBrand) => <StandartButton
-                                            key={cpuBrand}
+                        key={cpuBrand}
                         buttonLabel={cpuBrand}
                         backgroundColor={preferedCpuBrand === cpuBrand ? '#0066FF' : '#DB5510'}
                         onClick={() => setPreferedCpuBrand(cpuBrand)}
@@ -593,7 +598,7 @@ const ManualBuild: React.FC = () => {
                     <div className={mbStyle.automaticBuildFilterBox}>
                       <h2>Marca de placa de vídeo preferida</h2>
                       {gpuBrands.map((gpuBrand) => <StandartButton
-                      key={gpuBrand}
+                        key={gpuBrand}
                         buttonLabel={gpuBrand}
                         backgroundColor={preferedGpuBrand === gpuBrand ? '#0066FF' : '#DB5510'}
                         onClick={() => setPreferedGpuBrand(gpuBrand)}
@@ -770,20 +775,20 @@ const ManualBuild: React.FC = () => {
                       </button>
                     </div>
                     <div className={mbStyle.copiedToTABox}>
-                    <div className={mbStyle.copiedToTA} style={{ display: copiedToTA }}>
-                      <h4>Copiado para a área de transferência</h4>
+                      <div className={mbStyle.copiedToTA} style={{ display: copiedToTA }}>
+                        <h4>Copiado para a área de transferência</h4>
+                      </div>
                     </div>
-                  </div>
-                  <div className={mbStyle.shareMenu} style={{ display: shareMenu }}>
-                    <div onClick={() => shareText('whatsapp')}>
-                      <img src={WhatsappIcon} className={mbStyle.shareOptionImg}></img>
-                      <p>Compartilhar via Whatsapp</p>
+                    <div className={mbStyle.shareMenu} style={{ display: shareMenu }}>
+                      <div onClick={() => shareText('whatsapp')}>
+                        <img src={WhatsappIcon} className={mbStyle.shareOptionImg}></img>
+                        <p>Compartilhar via Whatsapp</p>
+                      </div>
+                      <div onClick={() => shareText('copy')}>
+                        <img src={CopyIcon} className={mbStyle.shareOptionImg}></img>
+                        <p>Copiar texto da montagem</p>
+                      </div>
                     </div>
-                    <div onClick={() => shareText('copy')}>
-                      <img src={CopyIcon} className={mbStyle.shareOptionImg}></img>
-                      <p>Copiar texto da montagem</p>
-                    </div>
-                  </div>
                   </div>
                   {!currentUser ? <div></div> :
                     <dialog ref={saveRef}>
@@ -820,6 +825,13 @@ const ManualBuild: React.FC = () => {
                             partLabel='Gabinete'
                             selectedPart={selectedCase!}
                           />
+                          <div className={mbStyle.buildNameBox}>
+                            <CustomInput
+                              placeholder='Digite o nome da build...'
+                              value={buildName}
+                              onChange={(event) => setBuildName(event.target.value)}
+                            />
+                          </div>
                           <StandartButton
                             buttonLabel='Salvar'
                             onClick={saveBuild}

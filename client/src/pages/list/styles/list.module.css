@@ -47,12 +47,6 @@ button {
     text-align: start;
 }
 
-.searchPartInput {
-    font-weight: bold;
-    padding: 2.5%;
-    width: 100%;
-}
-
 .partList {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;

@@ -10,6 +10,7 @@ interface Build {
   caseId: string;
   ramQuantity: number;
   ssdQuantity: number;
+  buildName: string;
 }
 
 export default Build;

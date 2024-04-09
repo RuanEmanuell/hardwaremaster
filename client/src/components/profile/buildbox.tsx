@@ -27,7 +27,7 @@ const BuildBox: React.FC<Props> = ({ build, index, parts, onEditBuildClick, onSh
   return (
     <div className={profileComponentStyle.buildBox}>
       <div className={profileComponentStyle.buildInfoAndButtons}>
-        <h2 className={profileComponentStyle.buildLabel}>Build {index + 1}</h2>
+        <h2 className={profileComponentStyle.buildLabel}>{build.buildName == "" ? `Build ${index+1}` : build.buildName}</h2>
         <div className={profileComponentStyle.buildButtons}>
           <div>
             <img src={EditIcon} onClick={() => onEditBuildClick(build._id)}></img>

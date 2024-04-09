@@ -157,6 +157,15 @@
     color: #DB5510;
 }
 
+.buildNameBox{
+    width: 75%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    margin-top: 2.5em;
+}
+
 .automaticBuildFiltersContainer{
     display: flex;
     justify-content: center;

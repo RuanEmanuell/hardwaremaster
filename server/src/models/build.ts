@@ -13,7 +13,8 @@ const buildSchema = new Schema({
     ssdId: String,
     caseId: String,
     ramQuantity: Number,
-    ssdQuantity: Number
+    ssdQuantity: Number,
+    buildName: String
 })
 
 const Build = mongoose.model('build', buildSchema);
