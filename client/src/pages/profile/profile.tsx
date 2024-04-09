@@ -11,8 +11,9 @@ import Part from '../../utils/part';
 import Build from '../../utils/build';
 import BuildBox from '../../components/profile/buildbox';
 import Loading from '../../components/global/loading';
-import { storage } from '../../connection/firebase.config';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import LeaveIcon from '../../images/leave.png';
+import { auth, googleProvider } from '../../connection/firebase.config';
 
 const Profile: React.FC = () => {
   const { currentUser } = useAuth();
@@ -37,14 +38,14 @@ const Profile: React.FC = () => {
   async function getUserProfile() {
     try {
       setLoading(true);
-      if(currentUser){
-      const response = await fetch(`${process.env.REACT_APP_SERVER_ROUTE}/users/${currentUser.uid}`);
-      const user: User = await response.json();
-      setUserProfile(user);
-      getUserBuildList();
-    }else{
-      setLoading(false);
-    }
+      if (currentUser) {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_ROUTE}/users/${currentUser.uid}`);
+        const user: User = await response.json();
+        setUserProfile(user);
+        getUserBuildList();
+      } else {
+        setLoading(false);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -52,15 +53,15 @@ const Profile: React.FC = () => {
 
   async function getUserBuildList() {
     try {
-      if(currentUser){
-      const response = await fetch(`${process.env.REACT_APP_SERVER_ROUTE}/builds/users/${currentUser.uid}`);
-      const builds: Build[] = await response.json();
-      setUserBuildList(builds);
-      if (builds.length > 0) {
-        getPartList();
+      if (currentUser) {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_ROUTE}/builds/users/${currentUser.uid}`);
+        const builds: Build[] = await response.json();
+        setUserBuildList(builds);
+        if (builds.length > 0) {
+          getPartList();
+        }
       }
-    }
-    setLoading(false);
+      setLoading(false);
     } catch (err) {
       console.log(err);
     }
@@ -105,44 +106,44 @@ const Profile: React.FC = () => {
     try {
       const storageRef = ref(getStorage(), `userImages/${userProfile!._id}`);
       await uploadBytes(storageRef, file);
-  
+
       const downloadURL = await getDownloadURL(storageRef);
-  
+
       return downloadURL;
     } catch (error) {
       console.error('Erro durante o upload para o Firebase Storage:', error);
       throw error;
     }
   }
-  
+
 
   async function saveEditUserMenuChanges() {
-    if(editUserName.length<5){
+    if (editUserName.length < 5) {
       setUserNameCheckError(true);
-    }else{
+    } else {
       setLoading(true);
       try {
-        let photoURL : unknown;
-    
+        let photoURL: unknown;
+
         if (editUserFile) {
-          photoURL = await uploadImageToStorage(editUserFile); 
+          photoURL = await uploadImageToStorage(editUserFile);
         }
-    
-      await fetch(`${process.env.REACT_APP_SERVER_ROUTE}/users/update/${userProfile!._id}`, {
-        method: 'PUT',
-        headers: { 'Content-type': 'application/json' },
-        body: JSON.stringify({
-          name: editUserName,
-          photo: userPhoto,
-        })
-      });
-      getUserProfile();
-      closeEditUserMenu();
-    } catch (err) {
-      console.log(err);
+
+        await fetch(`${process.env.REACT_APP_SERVER_ROUTE}/users/update/${userProfile!._id}`, {
+          method: 'PUT',
+          headers: { 'Content-type': 'application/json' },
+          body: JSON.stringify({
+            name: editUserName,
+            photo: userPhoto,
+          })
+        });
+        getUserProfile();
+        closeEditUserMenu();
+      } catch (err) {
+        console.log(err);
+      }
+      setLoading(false);
     }
-    setLoading(false);
-  }
   }
 
   async function editBuild(buildId: string) {
@@ -159,6 +160,16 @@ const Profile: React.FC = () => {
       closeDeleteBuildMenu();
     } catch (err) {
       console.log(err);
+    }
+  }
+
+  async function leaveAccount() {
+    try {
+      auth.signOut().then(function () {
+        navigate("/login");
+      });
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -183,8 +194,8 @@ const Profile: React.FC = () => {
     getUserProfile();
   }, [currentUser]);
 
-  useEffect(() =>{
-    if(userProfile && userProfile.photo){
+  useEffect(() => {
+    if (userProfile && userProfile.photo) {
       const storageRef = ref(storage, `userImages/${userProfile!._id}`);
       getDownloadURL(storageRef).then((url) => {
         setUserPhoto(url)
@@ -202,8 +213,14 @@ const Profile: React.FC = () => {
             <> {currentUser && userProfile ?
               <div>
                 <div className={profileStyle.userProfile}>
-                  <div className={profileStyle.userPhotoBox}>
-                    <img src={!userPhoto ? ProfileIcon : userPhoto} className={profileStyle.userPhoto}></img>
+                  <div className={profileStyle.leaveAccountAndPhotoBox}>
+                    <div className={profileStyle.userPhotoBox}>
+                      <img src={!userPhoto ? ProfileIcon : userPhoto} className={profileStyle.userPhoto}></img>
+                    </div>
+                    <div className={profileStyle.leaveAccountBox} onClick={leaveAccount}>
+                      <img src={LeaveIcon} className={profileStyle.leaveButton}></img>
+                      <h3>Sair</h3>
+                    </div>
                   </div>
                   <div className={profileStyle.userNameBox}>
                     <h1>{userProfile!.name}</h1>
@@ -214,7 +231,7 @@ const Profile: React.FC = () => {
                   <div className={profileStyle.editUserProfileBox}>
                     <div className={profileStyle.editUserProfile}>
                       <h1>Editar perfil</h1>
-                      <img src={!userPhoto  ? ProfileIcon : userPhoto} className={profileStyle.editUserPhoto}></img>
+                      <img src={!userPhoto ? ProfileIcon : userPhoto} className={profileStyle.editUserPhoto}></img>
                       <StandartButton
                         buttonLabel='Editar foto'
                         onClick={() => {
@@ -268,19 +285,19 @@ const Profile: React.FC = () => {
 
           <div className={profileStyle.buildsContainer}>
             {!userBuilds ? <></> :
-            <>
-            {userBuilds.map
-              ((build: Build, index) => (
-                <BuildBox
-                  key={build._id}
-                  build={build}
-                  index={index}
-                  parts={userParts!}
-                  onEditBuildClick={editBuild}
-                  onShowDeleteBuildMenuClick={showDeleteBuildMenu}
-                />))}
-                </>
-              }
+              <>
+                {userBuilds.map
+                  ((build: Build, index) => (
+                    <BuildBox
+                      key={build._id}
+                      build={build}
+                      index={index}
+                      parts={userParts!}
+                      onEditBuildClick={editBuild}
+                      onShowDeleteBuildMenuClick={showDeleteBuildMenu}
+                    />))}
+              </>
+            }
           </div>
           <dialog ref={deleteBuildRef}>
             <div className={profileStyle.deleteBuildMenuBackground}>

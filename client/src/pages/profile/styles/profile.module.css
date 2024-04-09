@@ -12,13 +12,36 @@
   width: 100%;
 }
 
+.leaveAccountAndPhotoBox{
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  margin-top: 10px;
+  width: 100%;
+}
+
 .userPhotoBox{
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 15em;
+  height: 12.5em;
   width: 100%;
-  max-width: 500px;
+}
+
+.leaveAccountBox{
+  display: flex;
+  align-items: flex-end;
+  margin-top: 20px;
+  flex-direction: column;
+  cursor: pointer;
+} 
+
+.leaveButton{
+  width: 30px;
+}
+
+.leaveAccountBox h3{
+  margin: 5px 0;
 }
 
 .userPhoto{
