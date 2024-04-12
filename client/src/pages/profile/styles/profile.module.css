@@ -172,13 +172,14 @@
 
 .deleteBuildMenu{
   width: 60%;
-  height: 25%;
+  height: auto;
   min-width: 300px;
   max-width: 600px;
   min-height: 200px;
   color: #DB5510;
   background-color: #252525;
   border-radius: 20px;
+  padding: 10px;
 }
 
 .deleteBuildMenu button{

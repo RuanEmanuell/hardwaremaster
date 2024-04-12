@@ -27,7 +27,7 @@
 
 .imgBox img {
     margin: auto;
-    height: fit-content;
+    height: auto;
     width: 80%;
     max-height: 70px;
     max-width: 70px;
@@ -97,7 +97,7 @@
 .inputImg {
     margin: auto 10%;
     width: min(max(50%), 50px);
-    height: fit-content;
+    height: auto;
     border-radius: 5px;
 }
 
